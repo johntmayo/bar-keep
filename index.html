@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#0c0a09">
   <title>Barkeep</title>
   <link rel="manifest" href="./manifest.json">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230c0a09' width='100' height='100'/><text y='.9em' x='50%' text-anchor='middle' font-size='50' fill='%23d4a574'>B</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230c0a09' width='100' height='100'/><text y='65' x='50%' text-anchor='middle' font-size='40' font-family='Georgia' fill='%23d4a574'>B</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
@@ -54,45 +54,34 @@
           },
           fontSize: {
             '2xs': '0.65rem',
-          },
-          letterSpacing: {
-            'widest': '0.2em',
           }
         }
       }
     }
   </script>
   <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { -webkit-tap-highlight-color: transparent; }
     body {
       font-family: 'Inter', system-ui, sans-serif;
       background-color: #0c0a09;
       color: #d6d3d1;
       font-weight: 300;
+      overscroll-behavior: none;
     }
+    .font-display { font-family: 'Cormorant Garamond', Georgia, serif; }
     
-    /* Typography */
-    .font-display {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-    }
-    
-    /* Subtle paper texture overlay */
-    .paper-texture {
-      position: relative;
-    }
+    /* Subtle texture */
     .paper-texture::before {
       content: '';
-      position: absolute;
+      position: fixed;
       inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      opacity: 0.015;
+      opacity: 0.012;
       pointer-events: none;
-      mix-blend-mode: overlay;
+      z-index: 9999;
     }
     
-    /* Card styling */
+    /* Cards */
     .card {
       background: linear-gradient(145deg, #1c1917 0%, #171412 100%);
       border: 1px solid rgba(255,255,255,0.03);
@@ -102,77 +91,41 @@
       border: 1px solid rgba(255,255,255,0.05);
     }
     
-    /* Subtle glow for active states */
-    .glow-copper {
-      box-shadow: 0 0 20px rgba(212, 165, 116, 0.1);
-    }
-    
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #44403c;
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #57534e;
-    }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #44403c; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #57534e; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
     /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in {
-      animation: fadeIn 0.3s ease;
-    }
-    .animate-slide-up {
-      animation: slideUp 0.4s ease;
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .animate-fade-in { animation: fadeIn 0.2s ease; }
+    .animate-slide-up { animation: slideUp 0.3s ease; }
+    .animate-slide-down { animation: slideDown 0.3s ease; }
+    .animate-scale-in { animation: scaleIn 0.2s ease; }
+    .animate-pulse { animation: pulse 2s ease infinite; }
     
-    /* Focus states */
-    input:focus, textarea:focus, select:focus, button:focus-visible {
-      outline: none;
-    }
+    /* Staggered grid animation */
+    .stagger-item { opacity: 0; animation: slideUp 0.4s ease forwards; }
+    .stagger-item:nth-child(1) { animation-delay: 0ms; }
+    .stagger-item:nth-child(2) { animation-delay: 30ms; }
+    .stagger-item:nth-child(3) { animation-delay: 60ms; }
+    .stagger-item:nth-child(4) { animation-delay: 90ms; }
+    .stagger-item:nth-child(5) { animation-delay: 120ms; }
+    .stagger-item:nth-child(6) { animation-delay: 150ms; }
+    .stagger-item:nth-child(7) { animation-delay: 180ms; }
+    .stagger-item:nth-child(8) { animation-delay: 210ms; }
+    .stagger-item:nth-child(9) { animation-delay: 240ms; }
+    .stagger-item:nth-child(n+10) { animation-delay: 270ms; }
     
-    /* Star rating */
-    .star-rating {
-      display: inline-flex;
-      gap: 1px;
-    }
-    .star {
-      cursor: pointer;
-      transition: all 0.15s ease;
-      font-size: 0.75rem;
-    }
-    .star:hover {
-      transform: scale(1.1);
-    }
-    
-    /* iOS standalone adjustments */
-    @media all and (display-mode: standalone) {
-      body {
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-      }
-    }
-    
-    /* Divider line */
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
-    }
-    
-    /* Input styling */
+    /* Focus & inputs */
+    input:focus, textarea:focus, select:focus, button:focus-visible { outline: none; }
     .input-field {
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.06);
@@ -182,54 +135,73 @@
       background: rgba(255,255,255,0.04);
       border-color: rgba(212, 165, 116, 0.3);
     }
-    .input-field::placeholder {
-      color: #57534e;
-    }
+    .input-field::placeholder { color: #57534e; }
     
-    /* Button hover */
-    .btn-ghost:hover {
-      background: rgba(255,255,255,0.04);
-    }
+    /* Buttons */
+    .btn-ghost:hover { background: rgba(255,255,255,0.04); }
     .btn-copper {
       background: linear-gradient(145deg, #d4a574, #b8956a);
       color: #0c0a09;
+      transition: all 0.2s ease;
     }
-    .btn-copper:hover {
-      background: linear-gradient(145deg, #e8c9a8, #d4a574);
+    .btn-copper:hover { background: linear-gradient(145deg, #e8c9a8, #d4a574); }
+    .btn-copper:active { transform: scale(0.98); }
+    
+    /* Divider */
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent); }
+    
+    /* Star rating */
+    .star-rating { display: inline-flex; gap: 1px; }
+    .star { cursor: pointer; transition: all 0.15s ease; }
+    .star:hover { transform: scale(1.15); }
+    
+    /* Toast */
+    @keyframes toastIn { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(100%); } }
+    .toast-enter { animation: toastIn 0.3s ease; }
+    .toast-exit { animation: toastOut 0.3s ease forwards; }
+    
+    /* Bottom nav for mobile */
+    @media (max-width: 640px) {
+      .mobile-bottom-nav {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+      }
+    }
+    
+    /* iOS standalone */
+    @media all and (display-mode: standalone) {
+      body { padding-top: env(safe-area-inset-top); }
+      .mobile-bottom-nav { padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem); }
     }
   </style>
 </head>
 <body class="min-h-screen paper-texture">
   <div id="root"></div>
   
-  <!-- Service Worker Registration -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(registration => console.log('SW registered'))
-          .catch(error => console.log('SW registration failed'));
+        navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW failed'));
       });
     }
   </script>
 
   <script type="text/babel">
-    const { useState, useEffect, useRef, useMemo } = React;
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
-    // Icon component
+    // ============ UTILITIES ============
+    
     const Icon = ({ name, className = "w-5 h-5" }) => {
       const ref = useRef(null);
       useEffect(() => {
         if (ref.current && lucide.icons[name]) {
           ref.current.innerHTML = '';
-          const icon = lucide.createElement(lucide.icons[name]);
-          ref.current.appendChild(icon);
+          ref.current.appendChild(lucide.createElement(lucide.icons[name]));
         }
       }, [name]);
       return <span ref={ref} className={`inline-flex items-center justify-center ${className}`} />;
     };
 
-    // Star Rating
     const StarRating = ({ rating = 0, onRate, size = "text-sm", readonly = false }) => {
       const [hover, setHover] = useState(0);
       return (
@@ -241,32 +213,72 @@
               onMouseEnter={() => !readonly && setHover(star)}
               onMouseLeave={() => !readonly && setHover(0)}
               onClick={() => !readonly && onRate?.(star)}
-            >
-              ★
-            </span>
+            >★</span>
           ))}
         </div>
       );
     };
 
-    // Storage helper
     const storage = {
-      get: (key) => {
-        try {
-          const value = localStorage.getItem(key);
-          return value ? { value } : null;
-        } catch (e) { return null; }
-      },
-      set: (key, value) => {
-        try { localStorage.setItem(key, value); } 
-        catch (e) { console.error('Storage error:', e); }
-      }
+      get: (key) => { try { const v = localStorage.getItem(key); return v ? { value: v } : null; } catch { return null; } },
+      set: (key, value) => { try { localStorage.setItem(key, value); } catch (e) { console.error(e); } }
     };
 
-    // Spirit categories
-    const SPIRIT_CATEGORIES = ['All', 'Gin', 'Vodka', 'Whiskey', 'Rum', 'Tequila', 'Brandy', 'Other'];
+    // ============ TOAST SYSTEM ============
+    
+    const ToastContext = React.createContext();
+    
+    const ToastProvider = ({ children }) => {
+      const [toasts, setToasts] = useState([]);
+      
+      const addToast = useCallback((message, type = 'default') => {
+        const id = Date.now();
+        setToasts(prev => [...prev, { id, message, type, exiting: false }]);
+        setTimeout(() => {
+          setToasts(prev => prev.map(t => t.id === id ? { ...t, exiting: true } : t));
+          setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 300);
+        }, 2500);
+      }, []);
+      
+      return (
+        <ToastContext.Provider value={addToast}>
+          {children}
+          <div className="fixed bottom-20 sm:bottom-6 left-4 right-4 sm:left-auto sm:right-6 z-50 flex flex-col gap-2 pointer-events-none">
+            {toasts.map(toast => (
+              <div
+                key={toast.id}
+                className={`${toast.exiting ? 'toast-exit' : 'toast-enter'} px-4 py-3 rounded-lg bg-ink-800 border border-white/5 shadow-xl flex items-center gap-3 pointer-events-auto`}
+              >
+                {toast.type === 'success' && <Icon name="Check" className="w-4 h-4 text-emerald-400" />}
+                {toast.type === 'error' && <Icon name="X" className="w-4 h-4 text-red-400" />}
+                <span className="text-sm text-ink-200 font-light">{toast.message}</span>
+              </div>
+            ))}
+          </div>
+        </ToastContext.Provider>
+      );
+    };
+    
+    const useToast = () => React.useContext(ToastContext);
 
-    // Main App
+    // ============ CONSTANTS ============
+    
+    const SPIRIT_CATEGORIES = ['All', 'Gin', 'Vodka', 'Whiskey', 'Rum', 'Tequila', 'Brandy', 'Other'];
+    const SORT_OPTIONS = [
+      { value: 'name', label: 'A–Z' },
+      { value: 'rating', label: 'Top Rated' },
+      { value: 'ingredients', label: 'Fewest Ingredients' },
+    ];
+    
+    const COMMON_INGREDIENTS = [
+      'Gin', 'Vodka', 'Rum', 'Tequila', 'Bourbon', 'Rye Whiskey', 'Scotch', 'Cognac', 'Mezcal',
+      'Sweet Vermouth', 'Dry Vermouth', 'Campari', 'Aperol', 'Cointreau', 'Green Chartreuse',
+      'Maraschino Liqueur', 'Simple Syrup', 'Honey Syrup', 'Agave', 'Angostura Bitters',
+      'Orange Bitters', 'Lime Juice', 'Lemon Juice', 'Club Soda', 'Tonic Water'
+    ];
+
+    // ============ MAIN APP ============
+    
     const App = () => {
       const [view, setView] = useState('browse');
       const [curatedDrinks, setCuratedDrinks] = useState([]);
@@ -282,6 +294,30 @@
       const [showAddDrink, setShowAddDrink] = useState(false);
       const [showImportExport, setShowImportExport] = useState(false);
       const [spiritFilter, setSpiritFilter] = useState('All');
+      const [sortBy, setSortBy] = useState('name');
+      const [showConfirmDelete, setShowConfirmDelete] = useState(null);
+      const mainRef = useRef(null);
+      const toast = useToast();
+
+      // Keyboard shortcuts
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (e.key === 'Escape') {
+            if (showConfirmDelete) setShowConfirmDelete(null);
+            else if (selectedDrink) setSelectedDrink(null);
+            else if (showAddDrink) setShowAddDrink(false);
+            else if (showImportExport) setShowImportExport(false);
+          }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [selectedDrink, showAddDrink, showImportExport, showConfirmDelete]);
+
+      // Scroll to top on view change
+      useEffect(() => {
+        mainRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, [view]);
 
       // Load data
       useEffect(() => {
@@ -308,14 +344,13 @@
           const fav = storage.get('favorites');
           const tryList = storage.get('want-to-try');
           const rate = storage.get('ratings');
-
           if (custom?.value) setCustomDrinks(JSON.parse(custom.value));
           if (inv?.value) setBarInventory(JSON.parse(inv.value));
           if (saved?.value) setSavedDrinks(new Set(JSON.parse(saved.value)));
           if (fav?.value) setFavorites(new Set(JSON.parse(fav.value)));
           if (tryList?.value) setWantToTry(new Set(JSON.parse(tryList.value)));
           if (rate?.value) setRatings(JSON.parse(rate.value));
-        } catch (e) { console.log('No saved data'); }
+        } catch { }
       };
 
       const saveData = (key, data) => storage.set(key, JSON.stringify(data));
@@ -327,8 +362,7 @@
           savedDrinks: Array.from(savedDrinks),
           favorites: Array.from(favorites),
           wantToTry: Array.from(wantToTry),
-          ratings,
-          exportDate: new Date().toISOString()
+          ratings, exportDate: new Date().toISOString()
         };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -337,10 +371,12 @@
         a.download = `barkeep-backup-${new Date().toISOString().split('T')[0]}.json`;
         a.click();
         URL.revokeObjectURL(url);
+        toast('Backup downloaded', 'success');
+        setShowImportExport(false);
       };
 
       const importData = (event) => {
-        const file = event.target.files[0];
+        const file = event.target.files?.[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -352,46 +388,49 @@
             if (data.favorites) { setFavorites(new Set(data.favorites)); saveData('favorites', data.favorites); }
             if (data.wantToTry) { setWantToTry(new Set(data.wantToTry)); saveData('want-to-try', data.wantToTry); }
             if (data.ratings) { setRatings(data.ratings); saveData('ratings', data.ratings); }
+            toast('Data restored successfully', 'success');
             setShowImportExport(false);
-          } catch (err) { alert('Error importing data'); }
+          } catch { toast('Failed to import data', 'error'); }
         };
         reader.readAsText(file);
       };
 
-      // Drink helpers
-      const getAllDrinks = () => {
-        const curated = curatedDrinks.map(d => ({...d, source: 'curated'}));
-        const custom = customDrinks.map(d => ({...d, source: 'custom'}));
-        return [...curated, ...custom];
-      };
+      // Helpers
+      const getAllDrinks = () => [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
 
       const detectSpirit = (drink) => {
         const ings = drink.ingredients?.map(i => i.name.toLowerCase()).join(' ') || '';
         if (ings.includes('gin')) return 'Gin';
         if (ings.includes('vodka')) return 'Vodka';
-        if (ings.includes('whiskey') || ings.includes('whisky') || ings.includes('bourbon') || ings.includes('rye') || ings.includes('scotch')) return 'Whiskey';
+        if (ings.match(/whiskey|whisky|bourbon|rye|scotch/)) return 'Whiskey';
         if (ings.includes('rum')) return 'Rum';
-        if (ings.includes('tequila') || ings.includes('mezcal')) return 'Tequila';
-        if (ings.includes('brandy') || ings.includes('cognac')) return 'Brandy';
+        if (ings.match(/tequila|mezcal/)) return 'Tequila';
+        if (ings.match(/brandy|cognac/)) return 'Brandy';
         return 'Other';
       };
 
       const canMakeDrink = (drink) => {
         if (!drink.ingredients?.length) return false;
         const inv = barInventory.map(i => i.name.toLowerCase());
-        return drink.ingredients.every(ing => 
-          inv.some(i => i.includes(ing.name.toLowerCase()) || ing.name.toLowerCase().includes(i))
-        );
+        return drink.ingredients.every(ing => inv.some(i => i.includes(ing.name.toLowerCase()) || ing.name.toLowerCase().includes(i)));
+      };
+
+      const getMissingCount = (drink) => {
+        if (!drink.ingredients?.length) return 0;
+        const inv = barInventory.map(i => i.name.toLowerCase());
+        return drink.ingredients.filter(ing => !inv.some(i => i.includes(ing.name.toLowerCase()) || ing.name.toLowerCase().includes(i))).length;
       };
 
       const getMakeableDrinks = () => getAllDrinks().filter(canMakeDrink);
 
-      // Actions
-      const toggle = (set, setFn, key, id) => {
+      // Actions with toast feedback
+      const toggle = (set, setFn, key, id, addMsg, removeMsg) => {
         const newSet = new Set(set);
-        newSet.has(id) ? newSet.delete(id) : newSet.add(id);
+        const wasAdded = !newSet.has(id);
+        wasAdded ? newSet.add(id) : newSet.delete(id);
         setFn(newSet);
         saveData(key, Array.from(newSet));
+        if (addMsg && removeMsg) toast(wasAdded ? addMsg : removeMsg, 'success');
       };
 
       const rateDrink = (id, r) => {
@@ -406,6 +445,7 @@
         setCustomDrinks(updated);
         saveData('custom-drinks', updated);
         setShowAddDrink(false);
+        toast('Recipe saved', 'success');
       };
 
       const deleteCustomDrink = (id) => {
@@ -413,12 +453,19 @@
         setCustomDrinks(updated);
         saveData('custom-drinks', updated);
         setSelectedDrink(null);
+        setShowConfirmDelete(null);
+        toast('Recipe deleted', 'success');
       };
 
       const addToInventory = (item) => {
+        if (barInventory.some(i => i.name.toLowerCase() === item.toLowerCase())) {
+          toast('Already in your bar', 'error');
+          return;
+        }
         const updated = [...barInventory, { id: Date.now(), name: item.toLowerCase() }];
         setBarInventory(updated);
         saveData('bar-inventory', updated);
+        toast(`Added ${item}`, 'success');
       };
 
       const removeFromInventory = (id) => {
@@ -427,33 +474,43 @@
         saveData('bar-inventory', updated);
       };
 
-      // Filtered drinks
+      // Random cocktail
+      const pickRandom = () => {
+        const drinks = displayDrinks;
+        if (drinks.length === 0) return;
+        const random = drinks[Math.floor(Math.random() * drinks.length)];
+        setSelectedDrink(random);
+      };
+
+      // Filtered & sorted drinks
       const displayDrinks = useMemo(() => {
         let drinks = getAllDrinks();
         
         if (view === 'saved') drinks = drinks.filter(d => savedDrinks.has(d.id));
         else if (view === 'favorites') drinks = drinks.filter(d => favorites.has(d.id));
         else if (view === 'wantToTry') drinks = drinks.filter(d => wantToTry.has(d.id));
-        else if (view === 'canMake') drinks = getMakeableDrinks();
+        else if (view === 'canMake') drinks = drinks.filter(d => canMakeDrink(d));
         else if (view === 'custom') drinks = drinks.filter(d => d.source === 'custom');
         
         if (searchTerm.trim()) {
           const term = searchTerm.toLowerCase();
-          drinks = drinks.filter(d => 
-            d.name.toLowerCase().includes(term) ||
-            d.ingredients?.some(i => i.name.toLowerCase().includes(term))
-          );
+          drinks = drinks.filter(d => d.name.toLowerCase().includes(term) || d.ingredients?.some(i => i.name.toLowerCase().includes(term)));
         }
         
-        if (spiritFilter !== 'All') {
-          drinks = drinks.filter(d => detectSpirit(d) === spiritFilter);
-        }
+        if (spiritFilter !== 'All') drinks = drinks.filter(d => detectSpirit(d) === spiritFilter);
+        
+        // Sort
+        drinks = [...drinks].sort((a, b) => {
+          if (sortBy === 'rating') return (ratings[b.id] || 0) - (ratings[a.id] || 0);
+          if (sortBy === 'ingredients') return (a.ingredients?.length || 0) - (b.ingredients?.length || 0);
+          return a.name.localeCompare(b.name);
+        });
         
         return drinks;
-      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, barInventory, searchTerm, spiritFilter]);
+      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, barInventory, searchTerm, spiritFilter, sortBy, ratings]);
 
       const navItems = [
-        { id: 'browse', label: 'All', icon: 'Grid3X3' },
+        { id: 'browse', label: 'All', icon: 'LayoutGrid' },
         { id: 'saved', label: 'Saved', icon: 'Bookmark', count: savedDrinks.size },
         { id: 'favorites', label: 'Favorites', icon: 'Heart', count: favorites.size },
         { id: 'canMake', label: 'Make', icon: 'Sparkles', count: getMakeableDrinks().length },
@@ -461,51 +518,34 @@
       ];
 
       return (
-        <div className="min-h-screen flex flex-col">
-          {/* Header */}
-          <header className="sticky top-0 z-50 bg-ink-950/95 backdrop-blur-sm border-b border-white/[0.03]">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6">
-              {/* Top bar */}
-              <div className="flex items-center justify-between h-14 sm:h-16">
-                <div className="flex items-center gap-2">
-                  <h1 className="font-display text-xl sm:text-2xl font-light tracking-wide text-cream">Barkeep</h1>
-                </div>
+        <div className="min-h-screen flex flex-col pb-16 sm:pb-0">
+          {/* Desktop Header */}
+          <header className="hidden sm:block sticky top-0 z-40 bg-ink-950/95 backdrop-blur-sm border-b border-white/[0.03]">
+            <div className="max-w-6xl mx-auto px-6">
+              <div className="flex items-center justify-between h-16">
+                <h1 className="font-display text-2xl font-light tracking-wide text-cream">Barkeep</h1>
                 <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setShowImportExport(true)}
-                    className="p-2 text-ink-500 hover:text-ink-300 btn-ghost rounded-lg transition-colors"
-                    title="Backup"
-                  >
-                    <Icon name="Download" className="w-4 h-4" />
+                  <button onClick={() => setShowImportExport(true)} className="p-2.5 text-ink-500 hover:text-ink-300 btn-ghost rounded-lg" title="Backup">
+                    <Icon name="HardDrive" className="w-4 h-4" />
                   </button>
-                  <button
-                    onClick={() => setShowAddDrink(true)}
-                    className="p-2 text-ink-500 hover:text-copper btn-ghost rounded-lg transition-colors"
-                    title="New Recipe"
-                  >
+                  <button onClick={() => setShowAddDrink(true)} className="p-2.5 text-ink-500 hover:text-copper btn-ghost rounded-lg" title="New Recipe">
                     <Icon name="Plus" className="w-4 h-4" />
                   </button>
                 </div>
               </div>
-              
-              {/* Navigation */}
-              <nav className="flex gap-1 pb-3 overflow-x-auto hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+              <nav className="flex gap-1 pb-3">
                 {navItems.map(item => (
                   <button
                     key={item.id}
                     onClick={() => setView(item.id)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-light whitespace-nowrap transition-all ${
-                      view === item.id
-                        ? 'bg-white/[0.05] text-cream'
-                        : 'text-ink-500 hover:text-ink-300 hover:bg-white/[0.02]'
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-light transition-all ${
+                      view === item.id ? 'bg-white/[0.05] text-cream' : 'text-ink-500 hover:text-ink-300 hover:bg-white/[0.02]'
                     }`}
                   >
                     <Icon name={item.icon} className="w-4 h-4" />
                     <span>{item.label}</span>
-                    {item.count !== undefined && item.count > 0 && (
-                      <span className={`text-2xs px-1.5 py-0.5 rounded-full ${
-                        view === item.id ? 'bg-copper/20 text-copper' : 'bg-white/5 text-ink-500'
-                      }`}>
+                    {item.count > 0 && (
+                      <span className={`text-2xs px-1.5 py-0.5 rounded-full ${view === item.id ? 'bg-copper/20 text-copper' : 'bg-white/5 text-ink-500'}`}>
                         {item.count}
                       </span>
                     )}
@@ -515,67 +555,110 @@
             </div>
           </header>
 
+          {/* Mobile Header */}
+          <header className="sm:hidden sticky top-0 z-40 bg-ink-950/95 backdrop-blur-sm border-b border-white/[0.03]">
+            <div className="flex items-center justify-between px-4 h-14">
+              <h1 className="font-display text-xl font-light text-cream">Barkeep</h1>
+              <div className="flex items-center gap-1">
+                <button onClick={() => setShowImportExport(true)} className="p-2 text-ink-500">
+                  <Icon name="HardDrive" className="w-4 h-4" />
+                </button>
+                <button onClick={() => setShowAddDrink(true)} className="p-2 text-copper">
+                  <Icon name="Plus" className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </header>
+
           {/* Main Content */}
-          <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6">
+          <main ref={mainRef} className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-6">
             {view === 'inventory' ? (
-              <InventoryView
-                inventory={barInventory}
-                onAdd={addToInventory}
-                onRemove={removeFromInventory}
-              />
+              <InventoryView inventory={barInventory} onAdd={addToInventory} onRemove={removeFromInventory} />
             ) : (
               <>
-                {/* Search & Filter */}
-                <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                  <div className="flex-1 relative">
-                    <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-600" />
-                    <input
-                      type="text"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      placeholder="Search recipes..."
-                      className="w-full pl-10 pr-4 py-3 input-field rounded-lg text-sm text-ink-200 font-light"
-                    />
-                    {searchTerm && (
+                {/* Search & Filters */}
+                <div className="flex flex-col gap-3 mb-5">
+                  <div className="flex gap-2">
+                    <div className="flex-1 relative">
+                      <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-600" />
+                      <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search recipes or ingredients..."
+                        className="w-full pl-10 pr-10 py-3 input-field rounded-lg text-sm text-ink-200 font-light"
+                      />
+                      {searchTerm && (
+                        <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-600 hover:text-ink-400">
+                          <Icon name="X" className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      onClick={pickRandom}
+                      className="px-3 py-3 input-field rounded-lg text-ink-500 hover:text-copper hover:border-copper/30 transition-colors"
+                      title="Random cocktail"
+                    >
+                      <Icon name="Shuffle" className="w-4 h-4" />
+                    </button>
+                  </div>
+                  
+                  <div className="flex gap-2 overflow-x-auto hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <select
+                      value={spiritFilter}
+                      onChange={(e) => setSpiritFilter(e.target.value)}
+                      className="px-3 py-2 input-field rounded-lg text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer whitespace-nowrap"
+                    >
+                      {SPIRIT_CATEGORIES.map(cat => (
+                        <option key={cat} value={cat} className="bg-ink-900">{cat === 'All' ? 'All Spirits' : cat}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="px-3 py-2 input-field rounded-lg text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer whitespace-nowrap"
+                    >
+                      {SORT_OPTIONS.map(opt => (
+                        <option key={opt.value} value={opt.value} className="bg-ink-900">{opt.label}</option>
+                      ))}
+                    </select>
+                    {(spiritFilter !== 'All' || searchTerm) && (
                       <button
-                        onClick={() => setSearchTerm('')}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-600 hover:text-ink-400"
+                        onClick={() => { setSpiritFilter('All'); setSearchTerm(''); }}
+                        className="px-3 py-2 text-xs text-copper hover:text-copper-light whitespace-nowrap"
                       >
-                        <Icon name="X" className="w-4 h-4" />
+                        Clear filters
                       </button>
                     )}
                   </div>
-                  <select
-                    value={spiritFilter}
-                    onChange={(e) => setSpiritFilter(e.target.value)}
-                    className="px-4 py-3 input-field rounded-lg text-sm text-ink-300 font-light bg-transparent appearance-none cursor-pointer"
-                  >
-                    {SPIRIT_CATEGORIES.map(cat => (
-                      <option key={cat} value={cat} className="bg-ink-900">{cat === 'All' ? 'All Spirits' : cat}</option>
-                    ))}
-                  </select>
                 </div>
 
-                {/* Results count */}
+                {/* Results info */}
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-xs text-ink-600 tracking-wide uppercase">
+                  <p className="text-xs text-ink-600 tracking-wide">
                     {displayDrinks.length} {displayDrinks.length === 1 ? 'recipe' : 'recipes'}
+                    {spiritFilter !== 'All' && <span className="text-copper ml-1">· {spiritFilter}</span>}
                   </p>
                 </div>
 
                 {/* Recipe Grid */}
                 {loading ? (
-                  <div className="flex items-center justify-center py-20">
-                    <div className="w-8 h-8 border border-ink-700 border-t-copper rounded-full animate-spin" />
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="card rounded-xl overflow-hidden animate-pulse">
+                        <div className="h-40 bg-ink-800" />
+                        <div className="p-4 space-y-2">
+                          <div className="h-5 bg-ink-800 rounded w-3/4" />
+                          <div className="h-3 bg-ink-800 rounded w-1/2" />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ) : displayDrinks.length === 0 ? (
-                  <div className="text-center py-20">
-                    <p className="text-ink-500 font-light">No recipes found</p>
-                    <p className="text-ink-600 text-sm mt-1">Try adjusting your search or filters</p>
-                  </div>
+                  <EmptyState view={view} onAction={() => view === 'canMake' ? setView('inventory') : setShowAddDrink(true)} />
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {displayDrinks.map(drink => (
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {displayDrinks.map((drink, i) => (
                       <RecipeCard
                         key={drink.id}
                         drink={drink}
@@ -583,9 +666,11 @@
                         isSaved={savedDrinks.has(drink.id)}
                         isFavorite={favorites.has(drink.id)}
                         canMake={canMakeDrink(drink)}
+                        missingCount={getMissingCount(drink)}
                         onClick={() => setSelectedDrink(drink)}
-                        onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', drink.id)}
-                        onToggleFavorite={() => toggle(favorites, setFavorites, 'favorites', drink.id)}
+                        onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', drink.id, 'Saved', 'Removed from saved')}
+                        onToggleFavorite={() => toggle(favorites, setFavorites, 'favorites', drink.id, 'Added to favorites', 'Removed from favorites')}
+                        className="stagger-item"
                       />
                     ))}
                   </div>
@@ -593,6 +678,27 @@
               </>
             )}
           </main>
+
+          {/* Mobile Bottom Nav */}
+          <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-ink-950/95 backdrop-blur-sm border-t border-white/[0.03] mobile-bottom-nav z-40">
+            <div className="flex justify-around py-2">
+              {navItems.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => setView(item.id)}
+                  className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+                    view === item.id ? 'text-copper' : 'text-ink-500'
+                  }`}
+                >
+                  <Icon name={item.icon} className="w-5 h-5" />
+                  <span className="text-2xs">{item.label}</span>
+                  {item.count > 0 && view !== item.id && (
+                    <span className="absolute -top-1 right-1 w-1.5 h-1.5 bg-copper rounded-full" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </nav>
 
           {/* Modals */}
           {selectedDrink && (
@@ -605,186 +711,173 @@
               isWantToTry={wantToTry.has(selectedDrink.id)}
               canMake={canMakeDrink(selectedDrink)}
               inventory={barInventory}
-              onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', selectedDrink.id)}
-              onToggleFavorite={() => toggle(favorites, setFavorites, 'favorites', selectedDrink.id)}
-              onToggleWantToTry={() => toggle(wantToTry, setWantToTry, 'want-to-try', selectedDrink.id)}
+              onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', selectedDrink.id, 'Saved', 'Removed')}
+              onToggleFavorite={() => toggle(favorites, setFavorites, 'favorites', selectedDrink.id, 'Favorited', 'Unfavorited')}
+              onToggleWantToTry={() => toggle(wantToTry, setWantToTry, 'want-to-try', selectedDrink.id, 'Added to try list', 'Removed from try list')}
               onRate={(r) => rateDrink(selectedDrink.id, r)}
-              onDelete={selectedDrink.source === 'custom' ? () => deleteCustomDrink(selectedDrink.id) : null}
+              onDelete={selectedDrink.source === 'custom' ? () => setShowConfirmDelete(selectedDrink.id) : null}
             />
           )}
 
-          {showAddDrink && (
-            <AddRecipeModal
-              onClose={() => setShowAddDrink(false)}
-              onAdd={addCustomDrink}
-            />
-          )}
-
-          {showImportExport && (
-            <BackupModal
-              onClose={() => setShowImportExport(false)}
-              onExport={exportData}
-              onImport={importData}
+          {showAddDrink && <AddRecipeModal onClose={() => setShowAddDrink(false)} onAdd={addCustomDrink} />}
+          {showImportExport && <BackupModal onClose={() => setShowImportExport(false)} onExport={exportData} onImport={importData} />}
+          
+          {showConfirmDelete && (
+            <ConfirmDialog
+              title="Delete Recipe"
+              message="This will permanently delete this recipe. This cannot be undone."
+              onConfirm={() => deleteCustomDrink(showConfirmDelete)}
+              onCancel={() => setShowConfirmDelete(null)}
             />
           )}
         </div>
       );
     };
 
-    // Recipe Card Component
-    const RecipeCard = ({ drink, rating, isSaved, isFavorite, canMake, onClick, onToggleSaved, onToggleFavorite }) => (
-      <div 
-        className="card rounded-xl overflow-hidden group cursor-pointer transition-all hover:border-white/[0.06]"
-        onClick={onClick}
-      >
-        {/* Image */}
-        <div className="relative h-40 sm:h-44 overflow-hidden bg-ink-900">
+    // ============ COMPONENTS ============
+
+    const EmptyState = ({ view, onAction }) => {
+      const config = {
+        browse: { icon: 'Search', title: 'No recipes found', subtitle: 'Try a different search', action: null },
+        saved: { icon: 'Bookmark', title: 'No saved recipes', subtitle: 'Save recipes to find them quickly', action: null },
+        favorites: { icon: 'Heart', title: 'No favorites yet', subtitle: 'Heart the recipes you love', action: null },
+        canMake: { icon: 'Wine', title: 'Add ingredients to your bar', subtitle: 'See what cocktails you can make', action: 'Stock Your Bar', actionFn: onAction },
+        custom: { icon: 'FlaskConical', title: 'No custom recipes', subtitle: 'Create your own cocktail specs', action: 'Create Recipe', actionFn: onAction },
+      };
+      const c = config[view] || config.browse;
+      
+      return (
+        <div className="text-center py-16 animate-fade-in">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/[0.02] flex items-center justify-center">
+            <Icon name={c.icon} className="w-7 h-7 text-ink-700" />
+          </div>
+          <p className="text-ink-400 font-light">{c.title}</p>
+          <p className="text-ink-600 text-sm mt-1">{c.subtitle}</p>
+          {c.action && (
+            <button onClick={c.actionFn} className="mt-4 px-4 py-2 btn-copper rounded-lg text-sm font-medium">
+              {c.action}
+            </button>
+          )}
+        </div>
+      );
+    };
+
+    const RecipeCard = ({ drink, rating, isSaved, isFavorite, canMake, missingCount, onClick, onToggleSaved, onToggleFavorite, className }) => (
+      <div className={`card rounded-xl overflow-hidden group cursor-pointer transition-all hover:border-white/[0.06] ${className}`} onClick={onClick}>
+        <div className="relative h-36 sm:h-44 overflow-hidden bg-ink-900">
           {drink.image ? (
-            <img 
-              src={drink.image} 
-              alt={drink.name}
-              className="w-full h-full object-cover opacity-80 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500"
-              loading="lazy"
-            />
+            <img src={drink.image} alt={drink.name} className="w-full h-full object-cover opacity-75 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500" loading="lazy" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="font-display text-4xl text-ink-800">{drink.name.charAt(0)}</span>
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-ink-850 to-ink-900">
+              <span className="font-display text-4xl text-ink-700">{drink.name.charAt(0)}</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent" />
           
-          {/* Badges */}
-          <div className="absolute top-3 left-3 flex gap-2">
+          {/* Status badges */}
+          <div className="absolute top-2.5 left-2.5 flex gap-1.5">
             {canMake && (
-              <span className="text-2xs px-2 py-1 rounded bg-emerald-900/80 text-emerald-300 tracking-wide uppercase">
-                Ready
+              <span className="text-2xs px-2 py-1 rounded bg-emerald-900/80 text-emerald-300 tracking-wide uppercase font-medium">Ready</span>
+            )}
+            {!canMake && missingCount > 0 && missingCount <= 2 && (
+              <span className="text-2xs px-2 py-1 rounded bg-amber-900/60 text-amber-300 tracking-wide uppercase font-medium">
+                {missingCount} away
               </span>
             )}
             {drink.source === 'custom' && (
-              <span className="text-2xs px-2 py-1 rounded bg-copper/20 text-copper tracking-wide uppercase">
-                Custom
-              </span>
+              <span className="text-2xs px-2 py-1 rounded bg-copper/20 text-copper tracking-wide uppercase font-medium">Custom</span>
             )}
           </div>
           
           {/* Quick actions */}
-          <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-2.5 right-2.5 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
-              className={`p-1.5 rounded-lg backdrop-blur-sm transition-colors ${
-                isFavorite ? 'bg-copper/30 text-copper' : 'bg-ink-950/50 text-ink-400 hover:text-copper'
-              }`}
+              className={`p-1.5 rounded-lg backdrop-blur-sm transition-colors ${isFavorite ? 'bg-copper/30 text-copper' : 'bg-ink-950/60 text-ink-400 hover:text-copper'}`}
             >
               <Icon name="Heart" className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onToggleSaved(); }}
-              className={`p-1.5 rounded-lg backdrop-blur-sm transition-colors ${
-                isSaved ? 'bg-copper/30 text-copper' : 'bg-ink-950/50 text-ink-400 hover:text-copper'
-              }`}
+              className={`p-1.5 rounded-lg backdrop-blur-sm transition-colors ${isSaved ? 'bg-copper/30 text-copper' : 'bg-ink-950/60 text-ink-400 hover:text-copper'}`}
             >
               <Icon name="Bookmark" className="w-3.5 h-3.5" />
             </button>
           </div>
+          
+          {/* Ingredient count */}
+          <div className="absolute bottom-2.5 right-2.5">
+            <span className="text-2xs text-ink-500 bg-ink-950/60 backdrop-blur-sm px-2 py-1 rounded">
+              {drink.ingredients?.length || 0} ing.
+            </span>
+          </div>
         </div>
         
-        {/* Content */}
-        <div className="p-4">
-          <h3 className="font-display text-lg text-cream font-normal mb-1 group-hover:text-copper-light transition-colors">
+        <div className="p-3 sm:p-4">
+          <h3 className="font-display text-base sm:text-lg text-cream font-normal leading-tight group-hover:text-copper-light transition-colors line-clamp-1">
             {drink.name}
           </h3>
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-ink-500 font-light">{drink.glass || drink.category}</p>
-            {rating > 0 && <StarRating rating={rating} readonly size="text-xs" />}
+          <div className="flex items-center justify-between mt-1.5">
+            <p className="text-2xs sm:text-xs text-ink-500 font-light truncate">{drink.glass || drink.category}</p>
+            {rating > 0 && <StarRating rating={rating} readonly size="text-2xs sm:text-xs" />}
           </div>
         </div>
       </div>
     );
 
-    // Recipe Detail Modal
     const RecipeDetail = ({ drink, onClose, rating, isSaved, isFavorite, isWantToTry, canMake, inventory, onToggleSaved, onToggleFavorite, onToggleWantToTry, onRate, onDelete }) => {
       const invNames = inventory.map(i => i.name.toLowerCase());
       
       return (
-        <div 
-          className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto"
-          onClick={onClose}
-        >
-          <div 
-            className="min-h-screen sm:py-8 sm:px-4"
-            onClick={e => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto" onClick={onClose}>
+          <div className="min-h-screen sm:py-8 sm:px-4" onClick={e => e.stopPropagation()}>
             <div className="max-w-2xl mx-auto bg-ink-950 sm:card sm:rounded-2xl animate-slide-up">
-              {/* Header Image */}
-              <div className="relative h-64 sm:h-72 sm:rounded-t-2xl overflow-hidden">
+              {/* Header */}
+              <div className="relative h-56 sm:h-64 sm:rounded-t-2xl overflow-hidden">
                 {drink.image ? (
-                  <img src={drink.image} alt={drink.name} className="w-full h-full object-cover opacity-70" />
+                  <img src={drink.image} alt={drink.name} className="w-full h-full object-cover opacity-60" />
                 ) : (
-                  <div className="w-full h-full bg-ink-900 flex items-center justify-center">
-                    <span className="font-display text-6xl text-ink-800">{drink.name.charAt(0)}</span>
+                  <div className="w-full h-full bg-gradient-to-br from-ink-850 to-ink-900 flex items-center justify-center">
+                    <span className="font-display text-7xl text-ink-800">{drink.name.charAt(0)}</span>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/60 to-ink-950/20" />
                 
-                <button
-                  onClick={onClose}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-ink-950/50 backdrop-blur-sm text-ink-400 hover:text-cream transition-colors"
-                >
+                <button onClick={onClose} className="absolute top-4 right-4 p-2.5 rounded-full bg-ink-950/50 backdrop-blur-sm text-ink-400 hover:text-cream transition-colors">
                   <Icon name="X" className="w-5 h-5" />
                 </button>
                 
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="flex gap-2 mb-3">
-                    {canMake && (
-                      <span className="text-2xs px-2.5 py-1 rounded bg-emerald-900/80 text-emerald-300 tracking-wide uppercase">
-                        Ready to make
-                      </span>
-                    )}
-                    {drink.source === 'custom' && (
-                      <span className="text-2xs px-2.5 py-1 rounded bg-copper/20 text-copper tracking-wide uppercase">
-                        Custom recipe
-                      </span>
-                    )}
+                <div className="absolute bottom-5 left-5 right-5">
+                  <div className="flex gap-2 mb-2">
+                    {canMake && <span className="text-2xs px-2.5 py-1 rounded bg-emerald-900/80 text-emerald-300 tracking-wide uppercase">Ready to make</span>}
+                    {drink.source === 'custom' && <span className="text-2xs px-2.5 py-1 rounded bg-copper/20 text-copper tracking-wide uppercase">Custom</span>}
                   </div>
-                  <h2 className="font-display text-3xl sm:text-4xl text-cream font-light">{drink.name}</h2>
-                  {drink.glass && (
-                    <p className="text-ink-400 text-sm mt-1 font-light">{drink.glass}</p>
-                  )}
+                  <h2 className="font-display text-2xl sm:text-3xl text-cream font-light leading-tight">{drink.name}</h2>
+                  {drink.glass && <p className="text-ink-400 text-sm mt-1 font-light">{drink.glass}</p>}
                 </div>
               </div>
               
-              <div className="p-6 space-y-8">
+              <div className="p-5 sm:p-6 space-y-6">
                 {/* Rating & Actions */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-ink-500 uppercase tracking-wide">Rating</span>
-                    <StarRating rating={rating || 0} onRate={onRate} size="text-lg" />
+                    <span className="text-2xs text-ink-500 uppercase tracking-widest">Rating</span>
+                    <StarRating rating={rating || 0} onRate={onRate} size="text-xl" />
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={onToggleFavorite}
-                      className={`p-2.5 rounded-lg transition-colors ${
-                        isFavorite ? 'bg-copper/20 text-copper' : 'bg-white/[0.03] text-ink-500 hover:text-copper'
-                      }`}
-                    >
-                      <Icon name="Heart" className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={onToggleSaved}
-                      className={`p-2.5 rounded-lg transition-colors ${
-                        isSaved ? 'bg-copper/20 text-copper' : 'bg-white/[0.03] text-ink-500 hover:text-copper'
-                      }`}
-                    >
-                      <Icon name="Bookmark" className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={onToggleWantToTry}
-                      className={`p-2.5 rounded-lg transition-colors ${
-                        isWantToTry ? 'bg-copper/20 text-copper' : 'bg-white/[0.03] text-ink-500 hover:text-copper'
-                      }`}
-                    >
-                      <Icon name="Clock" className="w-4 h-4" />
-                    </button>
+                  <div className="flex gap-1.5">
+                    {[
+                      { active: isFavorite, onClick: onToggleFavorite, icon: 'Heart' },
+                      { active: isSaved, onClick: onToggleSaved, icon: 'Bookmark' },
+                      { active: isWantToTry, onClick: onToggleWantToTry, icon: 'Clock' },
+                    ].map((btn, i) => (
+                      <button
+                        key={i}
+                        onClick={btn.onClick}
+                        className={`p-2.5 rounded-lg transition-colors ${btn.active ? 'bg-copper/20 text-copper' : 'bg-white/[0.03] text-ink-500 hover:text-copper'}`}
+                      >
+                        <Icon name={btn.icon} className="w-4 h-4" />
+                      </button>
+                    ))}
                   </div>
                 </div>
                 
@@ -792,14 +885,14 @@
                 
                 {/* Ingredients */}
                 <div>
-                  <h3 className="text-xs text-ink-500 uppercase tracking-widest mb-4">Ingredients</h3>
-                  <ul className="space-y-2">
+                  <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-4">Ingredients</h3>
+                  <ul className="space-y-1">
                     {drink.ingredients?.map((ing, i) => {
                       const hasIt = invNames.some(inv => inv.includes(ing.name.toLowerCase()) || ing.name.toLowerCase().includes(inv));
                       return (
-                        <li key={i} className="flex items-center gap-3 py-2">
-                          <span className={`w-1.5 h-1.5 rounded-full ${hasIt ? 'bg-emerald-500' : 'bg-ink-700'}`} />
-                          <span className="text-copper-light font-light">{ing.measure}</span>
+                        <li key={i} className="flex items-center gap-3 py-2.5 border-b border-white/[0.02] last:border-0">
+                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt ? 'bg-emerald-500' : 'bg-ink-700'}`} />
+                          <span className="text-copper-light font-light min-w-[4rem]">{ing.measure}</span>
                           <span className="text-ink-300 font-light capitalize">{ing.name}</span>
                         </li>
                       );
@@ -809,36 +902,27 @@
                 
                 <div className="divider" />
                 
-                {/* Instructions */}
+                {/* Method */}
                 <div>
-                  <h3 className="text-xs text-ink-500 uppercase tracking-widest mb-4">Method</h3>
-                  <p className="text-ink-300 font-light leading-relaxed">
-                    {drink.instructions || 'No instructions provided.'}
-                  </p>
+                  <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-4">Method</h3>
+                  <p className="text-ink-300 font-light leading-relaxed">{drink.instructions || 'No instructions provided.'}</p>
                 </div>
                 
-                {/* Notes */}
                 {drink.notes && (
                   <>
                     <div className="divider" />
                     <div>
-                      <h3 className="text-xs text-ink-500 uppercase tracking-widest mb-4">Notes</h3>
-                      <p className="text-ink-400 font-light leading-relaxed italic">
-                        {drink.notes}
-                      </p>
+                      <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-4">Notes</h3>
+                      <p className="text-ink-400 font-light leading-relaxed italic">{drink.notes}</p>
                     </div>
                   </>
                 )}
                 
-                {/* Delete button for custom drinks */}
                 {onDelete && (
                   <>
                     <div className="divider" />
-                    <button
-                      onClick={onDelete}
-                      className="w-full py-3 text-sm text-ink-600 hover:text-red-400 transition-colors"
-                    >
-                      Delete this recipe
+                    <button onClick={onDelete} className="w-full py-3 text-sm text-ink-600 hover:text-red-400 transition-colors">
+                      Delete recipe
                     </button>
                   </>
                 )}
@@ -849,7 +933,6 @@
       );
     };
 
-    // Add Recipe Modal
     const AddRecipeModal = ({ onClose, onAdd }) => {
       const [name, setName] = useState('');
       const [category, setCategory] = useState('');
@@ -868,127 +951,65 @@
 
       const handleSubmit = () => {
         if (!name.trim()) return;
-        onAdd({
-          name, category, glass, instructions, notes,
-          ingredients: ingredients.filter(i => i.name.trim())
-        });
+        onAdd({ name, category, glass, instructions, notes, ingredients: ingredients.filter(i => i.name.trim()) });
       };
 
       return (
         <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto" onClick={onClose}>
           <div className="min-h-screen sm:py-8 sm:px-4" onClick={e => e.stopPropagation()}>
             <div className="max-w-xl mx-auto bg-ink-950 sm:card sm:rounded-2xl animate-slide-up">
-              <div className="p-6">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-8">
+              <div className="p-5 sm:p-6">
+                <div className="flex items-center justify-between mb-6">
                   <h2 className="font-display text-2xl text-cream font-light">New Recipe</h2>
-                  <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300">
-                    <Icon name="X" className="w-5 h-5" />
-                  </button>
+                  <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300"><Icon name="X" className="w-5 h-5" /></button>
                 </div>
 
-                <div className="space-y-6">
-                  {/* Name */}
+                <div className="space-y-5">
                   <div>
-                    <label className="text-xs text-ink-500 uppercase tracking-widest mb-2 block">Name</label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Recipe name"
-                      className="w-full px-4 py-3 input-field rounded-lg text-cream font-light"
-                    />
+                    <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Name *</label>
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Recipe name" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light" autoFocus />
                   </div>
 
-                  {/* Category & Glass */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs text-ink-500 uppercase tracking-widest mb-2 block">Category</label>
-                      <input
-                        type="text"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        placeholder="e.g. Cocktail"
-                        className="w-full px-4 py-3 input-field rounded-lg text-cream font-light"
-                      />
+                      <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Category</label>
+                      <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Cocktail" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light" />
                     </div>
                     <div>
-                      <label className="text-xs text-ink-500 uppercase tracking-widest mb-2 block">Glass</label>
-                      <input
-                        type="text"
-                        value={glass}
-                        onChange={(e) => setGlass(e.target.value)}
-                        placeholder="e.g. Coupe"
-                        className="w-full px-4 py-3 input-field rounded-lg text-cream font-light"
-                      />
+                      <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Glass</label>
+                      <input type="text" value={glass} onChange={(e) => setGlass(e.target.value)} placeholder="e.g. Coupe" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light" />
                     </div>
                   </div>
 
-                  {/* Ingredients */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="text-xs text-ink-500 uppercase tracking-widest">Ingredients</label>
-                      <button onClick={addIngredient} className="text-xs text-copper hover:text-copper-light">
-                        + Add
-                      </button>
+                      <label className="text-2xs text-ink-500 uppercase tracking-widest">Ingredients</label>
+                      <button onClick={addIngredient} className="text-xs text-copper hover:text-copper-light">+ Add</button>
                     </div>
                     <div className="space-y-2">
                       {ingredients.map((ing, i) => (
                         <div key={i} className="flex gap-2">
-                          <input
-                            type="text"
-                            value={ing.measure}
-                            onChange={(e) => updateIngredient(i, 'measure', e.target.value)}
-                            placeholder="2 oz"
-                            className="w-20 px-3 py-2 input-field rounded-lg text-sm text-copper-light font-light"
-                          />
-                          <input
-                            type="text"
-                            value={ing.name}
-                            onChange={(e) => updateIngredient(i, 'name', e.target.value)}
-                            placeholder="Ingredient"
-                            className="flex-1 px-3 py-2 input-field rounded-lg text-sm text-cream font-light"
-                          />
+                          <input type="text" value={ing.measure} onChange={(e) => updateIngredient(i, 'measure', e.target.value)} placeholder="2 oz" className="w-20 px-3 py-2.5 input-field rounded-lg text-sm text-copper-light font-light" />
+                          <input type="text" value={ing.name} onChange={(e) => updateIngredient(i, 'name', e.target.value)} placeholder="Ingredient" className="flex-1 px-3 py-2.5 input-field rounded-lg text-sm text-cream font-light" />
                           {ingredients.length > 1 && (
-                            <button onClick={() => removeIngredient(i)} className="p-2 text-ink-600 hover:text-red-400">
-                              <Icon name="X" className="w-4 h-4" />
-                            </button>
+                            <button onClick={() => removeIngredient(i)} className="p-2 text-ink-600 hover:text-red-400"><Icon name="X" className="w-4 h-4" /></button>
                           )}
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Instructions */}
                   <div>
-                    <label className="text-xs text-ink-500 uppercase tracking-widest mb-2 block">Method</label>
-                    <textarea
-                      value={instructions}
-                      onChange={(e) => setInstructions(e.target.value)}
-                      placeholder="How to make it..."
-                      rows="4"
-                      className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none"
-                    />
+                    <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Method</label>
+                    <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="Instructions..." rows="3" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none" />
                   </div>
 
-                  {/* Notes */}
                   <div>
-                    <label className="text-xs text-ink-500 uppercase tracking-widest mb-2 block">Notes</label>
-                    <textarea
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      placeholder="Personal notes, tasting notes..."
-                      rows="3"
-                      className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none"
-                    />
+                    <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Notes</label>
+                    <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Personal notes..." rows="2" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none" />
                   </div>
 
-                  {/* Submit */}
-                  <button
-                    onClick={handleSubmit}
-                    disabled={!name.trim()}
-                    className="w-full py-4 btn-copper rounded-lg text-sm font-medium tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  >
+                  <button onClick={handleSubmit} disabled={!name.trim()} className="w-full py-4 btn-copper rounded-lg text-sm font-medium tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed">
                     Save Recipe
                   </button>
                 </div>
@@ -999,10 +1020,10 @@
       );
     };
 
-    // Inventory View
     const InventoryView = ({ inventory, onAdd, onRemove }) => {
       const [newItem, setNewItem] = useState('');
       const [isAdding, setIsAdding] = useState(false);
+      const [showSuggestions, setShowSuggestions] = useState(false);
       const inputRef = useRef(null);
 
       const handleAdd = () => {
@@ -1015,11 +1036,13 @@
         if (isAdding && inputRef.current) inputRef.current.focus();
       }, [isAdding]);
 
+      const suggestions = COMMON_INGREDIENTS.filter(i => !inventory.some(inv => inv.name.toLowerCase() === i.toLowerCase()));
+
       const categories = {
         'Spirits': ['vodka', 'gin', 'rum', 'tequila', 'whiskey', 'bourbon', 'scotch', 'brandy', 'cognac', 'mezcal', 'rye'],
-        'Liqueurs': ['triple sec', 'cointreau', 'kahlua', 'amaretto', 'campari', 'aperol', 'chartreuse', 'benedictine', 'maraschino', 'st germain', 'drambuie', 'fernet'],
+        'Liqueurs': ['triple sec', 'cointreau', 'kahlua', 'amaretto', 'campari', 'aperol', 'chartreuse', 'benedictine', 'maraschino', 'st germain', 'drambuie', 'fernet', 'curacao'],
         'Fortified': ['vermouth', 'lillet', 'sherry', 'port'],
-        'Mixers': ['soda', 'tonic', 'ginger beer', 'cola'],
+        'Mixers': ['soda', 'tonic', 'ginger beer', 'cola', 'club soda'],
         'Citrus & Juice': ['lime', 'lemon', 'orange', 'grapefruit', 'pineapple juice', 'orange juice', 'cranberry'],
         'Sweeteners': ['simple syrup', 'honey', 'agave', 'grenadine', 'orgeat', 'sugar'],
         'Bitters': ['angostura', 'orange bitters', 'peychauds'],
@@ -1029,7 +1052,6 @@
       const categorized = useMemo(() => {
         const result = {};
         Object.keys(categories).forEach(cat => result[cat] = []);
-        
         inventory.forEach(item => {
           let found = false;
           for (const [cat, keywords] of Object.entries(categories)) {
@@ -1046,74 +1068,76 @@
       }, [inventory]);
 
       return (
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+        <div className="max-w-2xl mx-auto animate-fade-in">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="font-display text-2xl text-cream font-light">Your Bar</h2>
-              <p className="text-ink-500 text-sm mt-1">{inventory.length} ingredients on hand</p>
+              <p className="text-ink-500 text-sm mt-0.5">{inventory.length} ingredients</p>
             </div>
             {!isAdding && (
-              <button
-                onClick={() => setIsAdding(true)}
-                className="px-4 py-2 btn-copper rounded-lg text-sm font-medium transition-all"
-              >
+              <button onClick={() => setIsAdding(true)} className="px-4 py-2.5 btn-copper rounded-lg text-sm font-medium">
                 Add Ingredient
               </button>
             )}
           </div>
 
-          {/* Add input */}
           {isAdding && (
-            <div className="card-elevated rounded-xl p-4 mb-6">
-              <div className="flex gap-2">
+            <div className="card-elevated rounded-xl p-4 mb-6 animate-slide-down">
+              <div className="flex gap-2 mb-3">
                 <input
                   ref={inputRef}
                   type="text"
                   value={newItem}
                   onChange={(e) => setNewItem(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+                  onFocus={() => setShowSuggestions(true)}
                   placeholder="Type ingredient and press Enter..."
                   className="flex-1 px-4 py-3 input-field rounded-lg text-cream font-light"
                 />
-                <button
-                  onClick={() => { setIsAdding(false); setNewItem(''); }}
-                  className="px-4 py-3 text-ink-500 hover:text-ink-300"
-                >
+                <button onClick={() => { setIsAdding(false); setNewItem(''); setShowSuggestions(false); }} className="px-4 py-3 text-ink-500 hover:text-ink-300 font-light">
                   Done
                 </button>
               </div>
-              <p className="text-xs text-ink-600 mt-2">Press Enter to add multiple ingredients</p>
+              
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="border-t border-white/[0.03] pt-3">
+                  <p className="text-2xs text-ink-600 uppercase tracking-widest mb-2">Quick add</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {suggestions.slice(0, 12).map(s => (
+                      <button
+                        key={s}
+                        onClick={() => { onAdd(s); }}
+                        className="px-2.5 py-1.5 text-xs text-ink-400 bg-white/[0.02] hover:bg-white/[0.05] hover:text-copper rounded-md transition-colors"
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* Empty state */}
           {inventory.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/[0.02] flex items-center justify-center">
-                <Icon name="Wine" className="w-8 h-8 text-ink-700" />
+                <Icon name="Wine" className="w-7 h-7 text-ink-700" />
               </div>
-              <p className="text-ink-500 font-light">Your bar is empty</p>
+              <p className="text-ink-400 font-light">Your bar is empty</p>
               <p className="text-ink-600 text-sm mt-1">Add ingredients to see what you can make</p>
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-6">
               {Object.entries(categorized).map(([cat, items]) => {
                 if (items.length === 0) return null;
                 return (
                   <div key={cat}>
-                    <h3 className="text-xs text-ink-500 uppercase tracking-widest mb-3">{cat}</h3>
+                    <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-3">{cat}</h3>
                     <div className="flex flex-wrap gap-2">
                       {items.map(item => (
-                        <div
-                          key={item.id}
-                          className="group flex items-center gap-2 px-3 py-2 card rounded-lg"
-                        >
+                        <div key={item.id} className="group flex items-center gap-2 px-3 py-2 card rounded-lg hover:border-white/[0.06] transition-colors">
                           <span className="text-sm text-ink-300 capitalize font-light">{item.name}</span>
-                          <button
-                            onClick={() => onRemove(item.id)}
-                            className="text-ink-700 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
+                          <button onClick={() => onRemove(item.id)} className="text-ink-700 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
                             <Icon name="X" className="w-3 h-3" />
                           </button>
                         </div>
@@ -1128,55 +1152,63 @@
       );
     };
 
-    // Backup Modal
     const BackupModal = ({ onClose, onExport, onImport }) => {
       const fileRef = useRef(null);
-      
       return (
         <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={onClose}>
-          <div className="max-w-sm w-full card rounded-2xl p-6 animate-slide-up" onClick={e => e.stopPropagation()}>
-            <h2 className="font-display text-xl text-cream font-light mb-6">Backup & Restore</h2>
-            
-            <div className="space-y-4">
-              <button
-                onClick={onExport}
-                className="w-full p-4 card-elevated rounded-xl text-left hover:border-white/[0.08] transition-colors"
-              >
+          <div className="max-w-sm w-full card rounded-2xl p-5 animate-scale-in" onClick={e => e.stopPropagation()}>
+            <h2 className="font-display text-xl text-cream font-light mb-5">Backup & Restore</h2>
+            <div className="space-y-3">
+              <button onClick={onExport} className="w-full p-4 card-elevated rounded-xl text-left hover:border-white/[0.08] transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Download" className="w-5 h-5 text-copper" />
                   <div>
-                    <p className="text-cream font-light">Export Data</p>
-                    <p className="text-xs text-ink-500 mt-0.5">Download your recipes and settings</p>
+                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Export Data</p>
+                    <p className="text-2xs text-ink-500 mt-0.5">Download your recipes and settings</p>
                   </div>
                 </div>
               </button>
-              
               <input type="file" ref={fileRef} onChange={onImport} accept=".json" className="hidden" />
-              <button
-                onClick={() => fileRef.current?.click()}
-                className="w-full p-4 card-elevated rounded-xl text-left hover:border-white/[0.08] transition-colors"
-              >
+              <button onClick={() => fileRef.current?.click()} className="w-full p-4 card-elevated rounded-xl text-left hover:border-white/[0.08] transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Upload" className="w-5 h-5 text-copper" />
                   <div>
-                    <p className="text-cream font-light">Import Data</p>
-                    <p className="text-xs text-ink-500 mt-0.5">Restore from a backup file</p>
+                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Import Data</p>
+                    <p className="text-2xs text-ink-500 mt-0.5">Restore from a backup file</p>
                   </div>
                 </div>
               </button>
             </div>
-            
-            <button onClick={onClose} className="w-full mt-6 py-3 text-sm text-ink-500 hover:text-ink-300">
-              Cancel
-            </button>
+            <button onClick={onClose} className="w-full mt-5 py-3 text-sm text-ink-500 hover:text-ink-300">Cancel</button>
           </div>
         </div>
       );
     };
 
-    // Render
+    const ConfirmDialog = ({ title, message, onConfirm, onCancel }) => (
+      <div className="fixed inset-0 z-[60] bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={onCancel}>
+        <div className="max-w-xs w-full card rounded-2xl p-5 animate-scale-in text-center" onClick={e => e.stopPropagation()}>
+          <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-900/20 flex items-center justify-center">
+            <Icon name="Trash2" className="w-5 h-5 text-red-400" />
+          </div>
+          <h3 className="font-display text-lg text-cream mb-2">{title}</h3>
+          <p className="text-sm text-ink-400 font-light mb-5">{message}</p>
+          <div className="flex gap-3">
+            <button onClick={onCancel} className="flex-1 py-3 text-sm text-ink-400 hover:text-ink-200 card rounded-lg">Cancel</button>
+            <button onClick={onConfirm} className="flex-1 py-3 text-sm bg-red-900/50 text-red-300 hover:bg-red-900/70 rounded-lg transition-colors">Delete</button>
+          </div>
+        </div>
+      </div>
+    );
+
+    // ============ RENDER ============
+    
     const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    root.render(
+      <ToastProvider>
+        <App />
+      </ToastProvider>
+    );
   </script>
 </body>
 </html>
