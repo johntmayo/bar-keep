@@ -191,6 +191,57 @@
 
     // ============ UTILITIES ============
     
+    // Ingredient normalization utility
+    let ingredientAliasMap = null;
+    let unmatchedIngredients = new Set();
+    
+    const buildIngredientAliasMap = (ingredientsDb) => {
+      if (ingredientAliasMap) return ingredientAliasMap;
+      if (!ingredientsDb) return {};
+      
+      const map = {};
+      ingredientsDb.categories?.forEach(cat => {
+        cat.subcategories?.forEach(sub => {
+          sub.items?.forEach(item => {
+            const canonical = item.name.toLowerCase().trim();
+            // Map canonical name to itself
+            map[canonical] = canonical;
+            // Map aliases to canonical name
+            if (item.aliases && Array.isArray(item.aliases)) {
+              item.aliases.forEach(alias => {
+                map[alias.toLowerCase().trim()] = canonical;
+              });
+            }
+          });
+        });
+      });
+      ingredientAliasMap = map;
+      return map;
+    };
+    
+    const normalizeIngredient = (name, ingredientsDb) => {
+      if (!name || typeof name !== 'string') return name;
+      
+      // Build alias map if needed
+      const aliasMap = buildIngredientAliasMap(ingredientsDb);
+      
+      // Normalize: lowercase, trim, remove punctuation
+      let normalized = name.toLowerCase().trim();
+      // Remove common punctuation but keep spaces
+      normalized = normalized.replace(/[.,;:!?'"()]/g, '');
+      // Normalize multiple spaces to single space
+      normalized = normalized.replace(/\s+/g, ' ');
+      
+      // Look up in alias map
+      if (aliasMap[normalized]) {
+        return aliasMap[normalized];
+      }
+      
+      // If not found, track for debugging and return normalized version
+      unmatchedIngredients.add(name);
+      return normalized;
+    };
+    
     const Icon = ({ name, className = "w-5 h-5" }) => {
       const ref = useRef(null);
       useEffect(() => {
@@ -297,6 +348,12 @@
       const [sortBy, setSortBy] = useState('name');
       const [showConfirmDelete, setShowConfirmDelete] = useState(null);
       const [ingredientsDb, setIngredientsDb] = useState(null);
+      const [showRecipesHub, setShowRecipesHub] = useState(false);
+      const [showSettings, setShowSettings] = useState(false);
+      const [showImportShared, setShowImportShared] = useState(false);
+      const [sharedRecipeData, setSharedRecipeData] = useState(null);
+      const [collections, setCollections] = useState([]);
+      const [showShoppingList, setShowShoppingList] = useState(null);
       const mainRef = useRef(null);
       const toast = useToast();
 
@@ -343,6 +400,8 @@
           const response = await fetch('./ingredients.json');
           const data = await response.json();
           setIngredientsDb(data);
+          // Build alias map when ingredients DB loads
+          buildIngredientAliasMap(data);
         } catch (error) {
           console.error('Failed to load ingredients:', error);
         }
@@ -356,12 +415,17 @@
           const fav = storage.get('favorites');
           const tryList = storage.get('want-to-try');
           const rate = storage.get('ratings');
+          const coll = storage.get('collections');
           if (custom?.value) setCustomDrinks(JSON.parse(custom.value));
-          if (inv?.value) setBarInventory(JSON.parse(inv.value));
+          if (inv?.value) {
+            const inventory = JSON.parse(inv.value);
+            setBarInventory(inventory);
+          }
           if (saved?.value) setSavedDrinks(new Set(JSON.parse(saved.value)));
           if (fav?.value) setFavorites(new Set(JSON.parse(fav.value)));
           if (tryList?.value) setWantToTry(new Set(JSON.parse(tryList.value)));
           if (rate?.value) setRatings(JSON.parse(rate.value));
+          if (coll?.value) setCollections(JSON.parse(coll.value));
         } catch { }
       };
 
@@ -423,14 +487,20 @@
 
       const canMakeDrink = (drink) => {
         if (!drink.ingredients?.length) return false;
-        const inv = barInventory.map(i => i.name.toLowerCase());
-        return drink.ingredients.every(ing => inv.some(i => i.includes(ing.name.toLowerCase()) || ing.name.toLowerCase().includes(i)));
+        const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
+        return drink.ingredients.every(ing => {
+          const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+          return invCanonical.has(ingCanonical);
+        });
       };
 
       const getMissingCount = (drink) => {
         if (!drink.ingredients?.length) return 0;
-        const inv = barInventory.map(i => i.name.toLowerCase());
-        return drink.ingredients.filter(ing => !inv.some(i => i.includes(ing.name.toLowerCase()) || ing.name.toLowerCase().includes(i))).length;
+        const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
+        return drink.ingredients.filter(ing => {
+          const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+          return !invCanonical.has(ingCanonical);
+        }).length;
       };
 
       const getMakeableDrinks = () => getAllDrinks().filter(canMakeDrink);
@@ -464,17 +534,161 @@
         const updated = customDrinks.filter(d => d.id !== id);
         setCustomDrinks(updated);
         saveData('custom-drinks', updated);
+        // Remove from collections
+        const updatedCollections = collections.map(coll => ({
+          ...coll,
+          recipeIds: coll.recipeIds.filter(rid => rid !== id)
+        }));
+        setCollections(updatedCollections);
+        saveData('collections', updatedCollections);
         setSelectedDrink(null);
         setShowConfirmDelete(null);
         toast('Recipe deleted', 'success');
       };
 
+      // Share recipe
+      const shareRecipe = async (drink) => {
+        const sharePayload = {
+          schema: 'barkeep-recipe-v1',
+          createdAt: new Date().toISOString(),
+          recipe: {
+            id: drink.id,
+            name: drink.name,
+            category: drink.category,
+            glass: drink.glass,
+            ingredients: drink.ingredients,
+            instructions: drink.instructions,
+            notes: drink.notes,
+            image: drink.image,
+            source: drink.source
+          }
+        };
+        
+        const shareText = `${drink.name}\n\nIngredients:\n${drink.ingredients?.map(i => `• ${i.measure} ${i.name}`).join('\n')}\n\n${drink.instructions || ''}\n\n---\nShared from Barkeep\n\n${JSON.stringify(sharePayload, null, 2)}`;
+        
+        // Try Web Share API first
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: drink.name,
+              text: shareText,
+              url: window.location.href
+            });
+            toast('Recipe shared', 'success');
+            return;
+          } catch (err) {
+            if (err.name !== 'AbortError') {
+              // Fall through to clipboard
+            }
+          }
+        }
+        
+        // Fallback to clipboard
+        try {
+          await navigator.clipboard.writeText(shareText);
+          toast('Recipe copied to clipboard', 'success');
+        } catch (err) {
+          // Final fallback: show data for manual copy
+          setSharedRecipeData(sharePayload);
+          toast('Share data prepared', 'success');
+        }
+      };
+
+      // Import shared recipe
+      const importSharedRecipe = (sharedData, dedupeMode = 'new') => {
+        try {
+          if (!sharedData.recipe) {
+            toast('Invalid recipe data', 'error');
+            return;
+          }
+          
+          const recipe = sharedData.recipe;
+          const existingIndex = customDrinks.findIndex(d => d.id === recipe.id);
+          
+          if (existingIndex !== -1 && dedupeMode === 'replace') {
+            // Replace existing
+            const updated = [...customDrinks];
+            updated[existingIndex] = { ...recipe, dateAdded: customDrinks[existingIndex].dateAdded || new Date().toISOString() };
+            setCustomDrinks(updated);
+            saveData('custom-drinks', updated);
+            toast('Recipe replaced', 'success');
+          } else {
+            // Add as new (or if doesn't exist)
+            const newId = existingIndex !== -1 ? `custom-${Date.now()}` : recipe.id;
+            const newDrink = { ...recipe, id: newId, dateAdded: new Date().toISOString(), source: 'custom' };
+            const updated = [...customDrinks, newDrink];
+            setCustomDrinks(updated);
+            saveData('custom-drinks', updated);
+            toast('Recipe imported', 'success');
+          }
+          
+          setShowImportShared(false);
+          setSharedRecipeData(null);
+        } catch (err) {
+          toast('Failed to import recipe', 'error');
+        }
+      };
+
+      // Collections CRUD
+      const addCollection = (name, description = '') => {
+        const newCollection = {
+          id: `collection-${Date.now()}`,
+          name,
+          description,
+          recipeIds: [],
+          createdAt: new Date().toISOString()
+        };
+        const updated = [...collections, newCollection];
+        setCollections(updated);
+        saveData('collections', updated);
+        toast('Collection created', 'success');
+      };
+
+      const updateCollection = (id, updates) => {
+        const updated = collections.map(c => c.id === id ? { ...c, ...updates } : c);
+        setCollections(updated);
+        saveData('collections', updated);
+      };
+
+      const deleteCollection = (id) => {
+        const updated = collections.filter(c => c.id !== id);
+        setCollections(updated);
+        saveData('collections', updated);
+        toast('Collection deleted', 'success');
+      };
+
+      const addRecipeToCollection = (recipeId, collectionId) => {
+        const updated = collections.map(c => {
+          if (c.id === collectionId && !c.recipeIds.includes(recipeId)) {
+            return { ...c, recipeIds: [...c.recipeIds, recipeId] };
+          }
+          return c;
+        });
+        setCollections(updated);
+        saveData('collections', updated);
+        toast('Added to collection', 'success');
+      };
+
+      const removeRecipeFromCollection = (recipeId, collectionId) => {
+        const updated = collections.map(c => {
+          if (c.id === collectionId) {
+            return { ...c, recipeIds: c.recipeIds.filter(id => id !== recipeId) };
+          }
+          return c;
+        });
+        setCollections(updated);
+        saveData('collections', updated);
+        toast('Removed from collection', 'success');
+      };
+
       const addToInventory = (item) => {
-        if (barInventory.some(i => i.name.toLowerCase() === item.toLowerCase())) {
+        const canonicalName = normalizeIngredient(item, ingredientsDb);
+        if (barInventory.some(i => normalizeIngredient(i.name, ingredientsDb) === canonicalName)) {
           toast('Already in your bar', 'error');
           return;
         }
-        const updated = [...barInventory, { id: Date.now(), name: item.toLowerCase() }];
+        // Store with original casing for display, but matching uses canonical name
+        const updated = [...barInventory, { id: Date.now(), name: item }];
         setBarInventory(updated);
         saveData('bar-inventory', updated);
         toast(`Added ${item}`, 'success');
@@ -502,6 +716,10 @@
         else if (view === 'favorites') drinks = drinks.filter(d => favorites.has(d.id));
         else if (view === 'wantToTry') drinks = drinks.filter(d => wantToTry.has(d.id));
         else if (view === 'canMake') drinks = drinks.filter(d => canMakeDrink(d));
+        else if (view === 'almostMake') drinks = drinks.filter(d => {
+          const missing = getMissingCount(d);
+          return missing > 0 && missing <= 2 && !canMakeDrink(d);
+        });
         else if (view === 'custom') drinks = drinks.filter(d => d.source === 'custom');
         
         if (searchTerm.trim()) {
@@ -519,15 +737,20 @@
         });
         
         return drinks;
-      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, barInventory, searchTerm, spiritFilter, sortBy, ratings]);
+      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, barInventory, ingredientsDb, searchTerm, spiritFilter, sortBy, ratings]);
+
+      const getAlmostMakeCount = () => {
+        return getAllDrinks().filter(d => {
+          const missing = getMissingCount(d);
+          return missing > 0 && missing <= 2 && !canMakeDrink(d);
+        }).length;
+      };
 
       const navItems = [
-        { id: 'browse', label: 'All', icon: 'LayoutGrid' },
-        { id: 'saved', label: 'Saved', icon: 'Bookmark', count: savedDrinks.size },
-        { id: 'favorites', label: 'Favorites', icon: 'Heart', count: favorites.size },
-        { id: 'canMake', label: 'Make', icon: 'Sparkles', count: getMakeableDrinks().length },
+        { id: 'recipes', label: 'Recipes', icon: 'LayoutGrid' },
         { id: 'inventory', label: 'Bar', icon: 'Wine', count: barInventory.length },
-    	{ id: 'custom', label: 'My Recipes', icon: 'FlaskConical', count: customDrinks.length },
+        { id: 'search', label: 'Search', icon: 'Search' },
+        { id: 'settings', label: 'Settings', icon: 'Settings' },
       ];
 
       return (
@@ -538,55 +761,119 @@
               <div className="flex items-center justify-between h-16">
                 <h1 className="font-display text-2xl font-light tracking-wide text-cream">Barkeep</h1>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => setShowImportExport(true)} className="p-2.5 text-ink-500 hover:text-ink-300 btn-ghost rounded-lg" title="Backup">
-                    <Icon name="HardDrive" className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => setShowAddDrink(true)} className="p-2.5 text-ink-500 hover:text-copper btn-ghost rounded-lg" title="New Recipe">
-                    <Icon name="Plus" className="w-4 h-4" />
-                  </button>
+                  {(view === 'browse' || view === 'saved' || view === 'favorites' || view === 'canMake' || view === 'almostMake' || view === 'wantToTry' || view === 'custom') && (
+                    <button onClick={() => setShowAddDrink(true)} className="p-2.5 text-ink-500 hover:text-copper btn-ghost rounded-lg" title="New Recipe">
+                      <Icon name="Plus" className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
               </div>
-              <nav className="flex gap-1 pb-3">
-                {navItems.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => setView(item.id)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-light transition-all ${
-                      view === item.id ? 'bg-white/[0.05] text-cream' : 'text-ink-500 hover:text-ink-300 hover:bg-white/[0.02]'
-                    }`}
-                  >
-                    <Icon name={item.icon} className="w-4 h-4" />
-                    <span>{item.label}</span>
-                    {item.count > 0 && (
-                      <span className={`text-2xs px-1.5 py-0.5 rounded-full ${view === item.id ? 'bg-copper/20 text-copper' : 'bg-white/5 text-ink-500'}`}>
-                        {item.count}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </nav>
+              {(view !== 'recipesHub' && view !== 'settings') && (
+                <nav className="flex gap-1 pb-3">
+                  {navItems.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        if (item.id === 'recipes') {
+                          setView('recipesHub');
+                          setShowRecipesHub(true);
+                        } else if (item.id === 'search') {
+                          setView('browse');
+                          setSearchTerm('');
+                          setShowRecipesHub(false);
+                        } else {
+                          setView(item.id);
+                          setShowRecipesHub(false);
+                        }
+                      }}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-light transition-all ${
+                        (view === item.id || (item.id === 'recipes' && showRecipesHub) || (item.id === 'search' && view === 'browse')) ? 'bg-white/[0.05] text-cream' : 'text-ink-500 hover:text-ink-300 hover:bg-white/[0.02]'
+                      }`}
+                    >
+                      <Icon name={item.icon} className="w-4 h-4" />
+                      <span>{item.label}</span>
+                      {item.count > 0 && (
+                        <span className={`text-2xs px-1.5 py-0.5 rounded-full ${view === item.id ? 'bg-copper/20 text-copper' : 'bg-white/5 text-ink-500'}`}>
+                          {item.count}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </nav>
+              )}
             </div>
           </header>
 
           {/* Mobile Header */}
           <header className="sm:hidden sticky top-0 z-40 bg-ink-950/95 backdrop-blur-sm border-b border-white/[0.03]">
             <div className="flex items-center justify-between px-4 h-14">
-              <h1 className="font-display text-xl font-light text-cream">Barkeep</h1>
+              {(view === 'recipesHub' || view === 'settings' || view === 'inventory') ? (
+                <h1 className="font-display text-xl font-light text-cream">Barkeep</h1>
+              ) : (
+                <button onClick={() => {
+                  setView('recipesHub');
+                  setShowRecipesHub(true);
+                }} className="flex items-center gap-2 text-cream">
+                  <Icon name="ArrowLeft" className="w-5 h-5" />
+                  <span className="font-display text-xl font-light">Recipes</span>
+                </button>
+              )}
               <div className="flex items-center gap-1">
-                <button onClick={() => setShowImportExport(true)} className="p-2 text-ink-500">
-                  <Icon name="HardDrive" className="w-4 h-4" />
-                </button>
-                <button onClick={() => setShowAddDrink(true)} className="p-2 text-copper">
-                  <Icon name="Plus" className="w-5 h-5" />
-                </button>
+                {(view === 'browse' || view === 'saved' || view === 'favorites' || view === 'canMake' || view === 'almostMake' || view === 'wantToTry' || view === 'custom') && (
+                  <button onClick={() => setShowAddDrink(true)} className="p-2 text-copper">
+                    <Icon name="Plus" className="w-5 h-5" />
+                  </button>
+                )}
               </div>
             </div>
           </header>
 
           {/* Main Content */}
           <main ref={mainRef} className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-6">
-            {view === 'inventory' ? (
-              <InventoryView inventory={barInventory} onAdd={addToInventory} onRemove={removeFromInventory} />
+            {view === 'recipesHub' || (view === 'recipes' && showRecipesHub) ? (
+              <RecipesHub
+                savedCount={savedDrinks.size}
+                favoritesCount={favorites.size}
+                canMakeCount={getMakeableDrinks().length}
+                almostMakeCount={getAlmostMakeCount()}
+                wantToTryCount={wantToTry.size}
+                customCount={customDrinks.length}
+                allCount={getAllDrinks().length}
+                collectionsCount={collections.length}
+                onNavigate={(viewId) => {
+                  setView(viewId);
+                  setShowRecipesHub(false);
+                }}
+              />
+            ) : view === 'inventory' ? (
+              <InventoryView inventory={barInventory} onAdd={addToInventory} onRemove={removeFromInventory} ingredientsDb={ingredientsDb} />
+            ) : view === 'settings' ? (
+              <SettingsView
+                onClose={() => setView('browse')}
+                onExport={exportData}
+                onImport={importData}
+                unmatchedIngredients={Array.from(unmatchedIngredients)}
+                onImportShared={() => setShowImportShared(true)}
+              />
+            ) : view === 'collections' ? (
+              <CollectionsView
+                collections={collections}
+                allDrinks={getAllDrinks()}
+                onAddCollection={addCollection}
+                onUpdateCollection={updateCollection}
+                onDeleteCollection={deleteCollection}
+                onRemoveRecipe={removeRecipeFromCollection}
+                onNavigate={(collectionId) => setView(`collection-${collectionId}`)}
+                onNavigateToRecipe={(drink) => setSelectedDrink(drink)}
+              />
+            ) : view?.startsWith('collection-') ? (
+              <CollectionDetailView
+                collection={collections.find(c => c.id === view.replace('collection-', ''))}
+                allDrinks={getAllDrinks()}
+                onNavigateBack={() => setView('collections')}
+                onNavigateToRecipe={(drink) => setSelectedDrink(drink)}
+                onRemoveRecipe={removeRecipeFromCollection}
+              />
             ) : (
               <>
                 {/* Search & Filters */}
@@ -652,6 +939,48 @@
                     {displayDrinks.length} {displayDrinks.length === 1 ? 'recipe' : 'recipes'}
                     {spiritFilter !== 'All' && <span className="text-copper ml-1">· {spiritFilter}</span>}
                   </p>
+                  {view === 'almostMake' && displayDrinks.length > 0 && (
+                    <button
+                      onClick={() => {
+                        // Create shopping list
+                        const ingredientCounts = {};
+                        displayDrinks.forEach(drink => {
+                          const missing = drink.ingredients?.filter(ing => {
+                            const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+                            const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
+                            return !invCanonical.has(ingCanonical);
+                          }) || [];
+                          
+                          missing.forEach(ing => {
+                            const key = normalizeIngredient(ing.name, ingredientsDb);
+                            if (!ingredientCounts[key]) {
+                              ingredientCounts[key] = { name: ing.name, count: 0, recipes: [] };
+                            }
+                            if (!ingredientCounts[key].recipes.find(r => r.id === drink.id)) {
+                              ingredientCounts[key].count++;
+                              ingredientCounts[key].recipes.push({ id: drink.id, name: drink.name });
+                            }
+                          });
+                        });
+                        
+                        const shoppingList = Object.values(ingredientCounts)
+                          .sort((a, b) => b.count - a.count)
+                          .map(item => `${item.name} (unlocks ${item.count} ${item.count === 1 ? 'recipe' : 'recipes'})`)
+                          .join('\n');
+                        
+                        // Try clipboard
+                        navigator.clipboard.writeText(shoppingList).then(() => {
+                          toast('Shopping list copied to clipboard', 'success');
+                        }).catch(() => {
+                          setShowShoppingList(shoppingList);
+                        });
+                      }}
+                      className="px-4 py-2 btn-copper rounded-lg text-sm font-medium"
+                    >
+                      <Icon name="ShoppingCart" className="w-4 h-4 inline mr-2" />
+                      <span>Create Shopping List</span>
+                    </button>
+                  )}
                 </div>
 
                 {/* Recipe Grid */}
@@ -698,14 +1027,25 @@
               {navItems.map(item => (
                 <button
                   key={item.id}
-                  onClick={() => setView(item.id)}
-                  className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
-                    view === item.id ? 'text-copper' : 'text-ink-500'
+                  onClick={() => {
+                    if (item.id === 'recipes') {
+                      setView('recipesHub');
+                      setShowRecipesHub(true);
+                    } else if (item.id === 'search') {
+                      setView('browse');
+                      setSearchTerm('');
+                    } else {
+                      setView(item.id);
+                      setShowRecipesHub(false);
+                    }
+                  }}
+                  className={`relative flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+                    (view === item.id || (item.id === 'recipes' && showRecipesHub) || (item.id === 'search' && view === 'browse')) ? 'text-copper' : 'text-ink-500'
                   }`}
                 >
                   <Icon name={item.icon} className="w-5 h-5" />
                   <span className="text-2xs">{item.label}</span>
-                  {item.count > 0 && view !== item.id && (
+                  {item.count > 0 && view !== item.id && !showRecipesHub && (
                     <span className="absolute -top-1 right-1 w-1.5 h-1.5 bg-copper rounded-full" />
                   )}
                 </button>
@@ -724,16 +1064,32 @@
               isWantToTry={wantToTry.has(selectedDrink.id)}
               canMake={canMakeDrink(selectedDrink)}
               inventory={barInventory}
+              ingredientsDb={ingredientsDb}
+              collections={collections}
               onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', selectedDrink.id, 'Saved', 'Removed')}
               onToggleFavorite={() => toggle(favorites, setFavorites, 'favorites', selectedDrink.id, 'Favorited', 'Unfavorited')}
               onToggleWantToTry={() => toggle(wantToTry, setWantToTry, 'want-to-try', selectedDrink.id, 'Added to try list', 'Removed from try list')}
               onRate={(r) => rateDrink(selectedDrink.id, r)}
               onDelete={selectedDrink.source === 'custom' ? () => setShowConfirmDelete(selectedDrink.id) : null}
+              onShare={shareRecipe}
+              onAddToCollection={addRecipeToCollection}
             />
           )}
 
           {showAddDrink && <AddRecipeModal onClose={() => setShowAddDrink(false)} onAdd={addCustomDrink} ingredientsDb={ingredientsDb} />}
-          {showImportExport && <BackupModal onClose={() => setShowImportExport(false)} onExport={exportData} onImport={importData} />}
+          
+          {showImportShared && (
+            <ImportSharedRecipeModal
+              sharedData={sharedRecipeData}
+              existingRecipes={customDrinks}
+              onImport={importSharedRecipe}
+              toast={toast}
+              onClose={() => {
+                setShowImportShared(false);
+                setSharedRecipeData(null);
+              }}
+            />
+          )}
           
           {showConfirmDelete && (
             <ConfirmDialog
@@ -743,11 +1099,571 @@
               onCancel={() => setShowConfirmDelete(null)}
             />
           )}
+          
+          {showShoppingList && (
+            <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={() => setShowShoppingList(null)}>
+              <div className="max-w-xl w-full card rounded-2xl p-6 animate-scale-in" onClick={e => e.stopPropagation()}>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-display text-xl text-cream font-light">Shopping List</h2>
+                  <button onClick={() => setShowShoppingList(null)} className="p-2 text-ink-500 hover:text-ink-300">
+                    <Icon name="X" className="w-5 h-5" />
+                  </button>
+                </div>
+                <textarea
+                  value={showShoppingList}
+                  readOnly
+                  className="w-full h-64 px-4 py-3 input-field rounded-lg text-sm text-cream font-light resize-none mb-4 font-mono"
+                />
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(showShoppingList);
+                      toast('Copied to clipboard', 'success');
+                    }}
+                    className="flex-1 py-3 btn-copper rounded-lg text-sm font-medium"
+                  >
+                    Copy to Clipboard
+                  </button>
+                  <button
+                    onClick={() => {
+                      const blob = new Blob([showShoppingList], { type: 'text/plain' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'shopping-list.txt';
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      toast('Downloaded', 'success');
+                    }}
+                    className="px-4 py-3 text-ink-500 hover:text-ink-300 border border-white/[0.06] rounded-lg"
+                  >
+                    <Icon name="Download" className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       );
     };
 
     // ============ COMPONENTS ============
+
+    const RecipesHub = ({ savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, onNavigate }) => {
+      const recipeItems = [
+        { id: 'browse', label: 'All Recipes', icon: 'LayoutGrid', count: allCount, description: 'Browse all cocktails' },
+        { id: 'canMake', label: 'Can Make', icon: 'Sparkles', count: canMakeCount, description: 'Ready to mix' },
+        { id: 'almostMake', label: 'Almost Make', icon: 'Clock', count: almostMakeCount, description: '1–2 ingredients away' },
+        { id: 'favorites', label: 'Favorites', icon: 'Heart', count: favoritesCount, description: 'Your favorites' },
+        { id: 'saved', label: 'Saved', icon: 'Bookmark', count: savedCount, description: 'Saved recipes' },
+        { id: 'wantToTry', label: 'Want to Try', icon: 'Star', count: wantToTryCount, description: 'On your list' },
+        { id: 'custom', label: 'My Recipes', icon: 'FlaskConical', count: customCount, description: 'Your custom recipes' },
+        { id: 'collections', label: 'Collections', icon: 'Folder', count: collectionsCount, description: 'Organize recipes' },
+      ];
+
+      return (
+        <div className="animate-fade-in">
+          <h2 className="font-display text-2xl text-cream font-light mb-6">Recipes</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {recipeItems.map(item => (
+              <button
+                key={item.id}
+                onClick={() => onNavigate(item.id)}
+                className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all group"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-white/[0.03] group-hover:bg-copper/10 transition-colors">
+                      <Icon name={item.icon} className="w-5 h-5 text-copper" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-lg text-cream font-normal group-hover:text-copper-light transition-colors">
+                        {item.label}
+                      </h3>
+                      <p className="text-2xs text-ink-500 mt-0.5">{item.description}</p>
+                    </div>
+                  </div>
+                  {item.count > 0 && (
+                    <span className="text-2xs px-2 py-1 rounded-full bg-copper/20 text-copper font-medium">
+                      {item.count}
+                    </span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    const CollectionPicker = ({ collections, recipeId, onSelect, onClose }) => {
+      const recipeCollections = collections.filter(c => c.recipeIds.includes(recipeId));
+      
+      return (
+        <div className="absolute top-full left-0 right-0 mt-2 p-3 card-elevated rounded-xl z-50 animate-slide-down">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm text-cream font-light">Add to Collection</h4>
+            <button onClick={onClose} className="p-1 text-ink-500 hover:text-ink-300">
+              <Icon name="X" className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="space-y-1 max-h-48 overflow-y-auto">
+            {collections.length === 0 ? (
+              <p className="text-xs text-ink-500 text-center py-4">No collections yet</p>
+            ) : (
+              collections.map(coll => {
+                const isInCollection = coll.recipeIds.includes(recipeId);
+                return (
+                  <button
+                    key={coll.id}
+                    onClick={() => onSelect(coll.id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                      isInCollection ? 'bg-copper/20 text-copper' : 'hover:bg-white/[0.05] text-ink-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">{coll.name}</span>
+                      {isInCollection && <Icon name="Check" className="w-4 h-4" />}
+                    </div>
+                    {coll.description && (
+                      <p className="text-2xs text-ink-500 mt-0.5">{coll.description}</p>
+                    )}
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    const ImportSharedRecipeModal = ({ sharedData, existingRecipes, onImport, onClose, toast }) => {
+      const [dedupeMode, setDedupeMode] = useState('new');
+      
+      if (!sharedData) {
+        // Allow pasting
+        const [pasteValue, setPasteValue] = useState('');
+        
+        const handlePaste = () => {
+          try {
+            const data = JSON.parse(pasteValue);
+            if (data.schema && data.recipe) {
+              onImport(data, dedupeMode);
+            } else {
+              toast?.('Invalid recipe format', 'error');
+            }
+          } catch {
+            toast?.('Invalid JSON', 'error');
+          }
+        };
+        
+        return (
+          <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={onClose}>
+            <div className="max-w-xl w-full card rounded-2xl p-6 animate-scale-in" onClick={e => e.stopPropagation()}>
+              <h2 className="font-display text-xl text-cream font-light mb-4">Import Shared Recipe</h2>
+              <textarea
+                value={pasteValue}
+                onChange={(e) => setPasteValue(e.target.value)}
+                placeholder="Paste recipe JSON here..."
+                className="w-full h-48 px-4 py-3 input-field rounded-lg text-sm text-cream font-mono resize-none mb-4"
+              />
+              <div className="flex gap-3">
+                <button onClick={handlePaste} className="flex-1 py-3 btn-copper rounded-lg text-sm font-medium">
+                  Import Recipe
+                </button>
+                <button onClick={onClose} className="px-4 py-3 text-ink-500 hover:text-ink-300">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+      
+      const recipe = sharedData.recipe;
+      const existing = existingRecipes.find(r => r.id === recipe.id);
+      
+      return (
+        <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto" onClick={onClose}>
+          <div className="min-h-screen sm:py-8 sm:px-4" onClick={e => e.stopPropagation()}>
+            <div className="max-w-2xl mx-auto bg-ink-950 sm:card sm:rounded-2xl animate-slide-up">
+              <div className="p-6">
+                <h2 className="font-display text-xl text-cream font-light mb-6">Import Recipe</h2>
+                
+                {/* Preview */}
+                <div className="card rounded-xl p-5 mb-6">
+                  <h3 className="font-display text-lg text-cream font-normal mb-2">{recipe.name}</h3>
+                  {recipe.glass && <p className="text-sm text-ink-400 mb-4">{recipe.glass}</p>}
+                  
+                  <div className="mb-4">
+                    <h4 className="text-2xs text-ink-500 uppercase tracking-widest mb-2">Ingredients</h4>
+                    <ul className="space-y-1">
+                      {recipe.ingredients?.map((ing, i) => (
+                        <li key={i} className="text-sm text-ink-300">
+                          {ing.measure} {ing.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  {recipe.instructions && (
+                    <div>
+                      <h4 className="text-2xs text-ink-500 uppercase tracking-widest mb-2">Method</h4>
+                      <p className="text-sm text-ink-300">{recipe.instructions}</p>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Dedupe option */}
+                {existing && (
+                  <div className="mb-6">
+                    <p className="text-sm text-ink-400 mb-3">This recipe already exists in your collection:</p>
+                    <div className="space-y-2">
+                      <label className="flex items-center gap-3 p-3 card rounded-lg cursor-pointer">
+                        <input
+                          type="radio"
+                          name="dedupe"
+                          value="new"
+                          checked={dedupeMode === 'new'}
+                          onChange={(e) => setDedupeMode(e.target.value)}
+                          className="text-copper"
+                        />
+                        <span className="text-sm text-ink-300">Save as new recipe</span>
+                      </label>
+                      <label className="flex items-center gap-3 p-3 card rounded-lg cursor-pointer">
+                        <input
+                          type="radio"
+                          name="dedupe"
+                          value="replace"
+                          checked={dedupeMode === 'replace'}
+                          onChange={(e) => setDedupeMode(e.target.value)}
+                          className="text-copper"
+                        />
+                        <span className="text-sm text-ink-300">Replace existing recipe</span>
+                      </label>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => onImport(sharedData, dedupeMode)}
+                    className="flex-1 py-3 btn-copper rounded-lg text-sm font-medium"
+                  >
+                    {existing ? (dedupeMode === 'replace' ? 'Replace Recipe' : 'Save as New') : 'Save to My Recipes'}
+                  </button>
+                  <button onClick={onClose} className="px-4 py-3 text-ink-500 hover:text-ink-300">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const CollectionsView = ({ collections, allDrinks, onAddCollection, onUpdateCollection, onDeleteCollection, onRemoveRecipe, onNavigate, onNavigateToRecipe }) => {
+      const [showAddCollection, setShowAddCollection] = useState(false);
+      const [editingId, setEditingId] = useState(null);
+      const [newName, setNewName] = useState('');
+      const [newDescription, setNewDescription] = useState('');
+      
+      const handleSave = () => {
+        if (!newName.trim()) return;
+        if (editingId) {
+          onUpdateCollection(editingId, { name: newName, description: newDescription });
+        } else {
+          onAddCollection(newName, newDescription);
+        }
+        setShowAddCollection(false);
+        setEditingId(null);
+        setNewName('');
+        setNewDescription('');
+      };
+      
+      const startEdit = (coll) => {
+        setEditingId(coll.id);
+        setNewName(coll.name);
+        setNewDescription(coll.description || '');
+        setShowAddCollection(true);
+      };
+      
+      return (
+        <div className="animate-fade-in">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-display text-2xl text-cream font-light">Collections</h2>
+            <button
+              onClick={() => {
+                setEditingId(null);
+                setNewName('');
+                setNewDescription('');
+                setShowAddCollection(true);
+              }}
+              className="px-4 py-2 btn-copper rounded-lg text-sm font-medium"
+            >
+              New Collection
+            </button>
+          </div>
+          
+          {showAddCollection && (
+            <div className="card rounded-xl p-5 mb-6 animate-slide-down">
+              <h3 className="font-display text-lg text-cream font-light mb-4">
+                {editingId ? 'Edit Collection' : 'New Collection'}
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Name *</label>
+                  <input
+                    type="text"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Collection name"
+                    className="w-full px-4 py-3 input-field rounded-lg text-cream font-light"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Description</label>
+                  <textarea
+                    value={newDescription}
+                    onChange={(e) => setNewDescription(e.target.value)}
+                    placeholder="Optional description"
+                    rows="2"
+                    className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none"
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={handleSave} className="flex-1 py-3 btn-copper rounded-lg text-sm font-medium">
+                    Save
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowAddCollection(false);
+                      setEditingId(null);
+                      setNewName('');
+                      setNewDescription('');
+                    }}
+                    className="px-4 py-3 text-ink-500 hover:text-ink-300"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {collections.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/[0.02] flex items-center justify-center">
+                <Icon name="Folder" className="w-7 h-7 text-ink-700" />
+              </div>
+              <p className="text-ink-400 font-light">No collections yet</p>
+              <p className="text-ink-600 text-sm mt-1">Create collections to organize your recipes</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {collections.map(coll => {
+                const recipeCount = coll.recipeIds.length;
+                return (
+                  <div key={coll.id} className="card rounded-xl p-4 hover:border-white/[0.08] transition-all">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h3
+                          className="font-display text-lg text-cream font-normal mb-1 cursor-pointer hover:text-copper-light transition-colors"
+                          onClick={() => onNavigate(coll.id)}
+                        >
+                          {coll.name}
+                        </h3>
+                        {coll.description && (
+                          <p className="text-2xs text-ink-500 mb-2">{coll.description}</p>
+                        )}
+                        <p className="text-2xs text-ink-600">{recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}</p>
+                      </div>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => startEdit(coll)}
+                          className="p-2 text-ink-500 hover:text-ink-300"
+                          title="Edit"
+                        >
+                          <Icon name="Edit" className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Delete collection "${coll.name}"?`)) {
+                              onDeleteCollection(coll.id);
+                            }
+                          }}
+                          className="p-2 text-ink-500 hover:text-red-400"
+                          title="Delete"
+                        >
+                          <Icon name="Trash2" className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => onNavigate(coll.id)}
+                      className="w-full mt-3 py-2 text-sm text-copper hover:text-copper-light border border-copper/30 hover:border-copper/50 rounded-lg transition-colors"
+                    >
+                      View Collection
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const CollectionDetailView = ({ collection, allDrinks, onNavigateBack, onNavigateToRecipe, onRemoveRecipe }) => {
+      if (!collection) {
+        return (
+          <div className="animate-fade-in">
+            <button onClick={onNavigateBack} className="mb-6 flex items-center gap-2 text-ink-400 hover:text-cream">
+              <Icon name="ArrowLeft" className="w-4 h-4" />
+              <span>Back to Collections</span>
+            </button>
+            <p className="text-ink-400">Collection not found</p>
+          </div>
+        );
+      }
+      
+      const recipes = allDrinks.filter(d => collection.recipeIds.includes(d.id));
+      
+      return (
+        <div className="animate-fade-in">
+          <div className="flex items-center gap-4 mb-6">
+            <button onClick={onNavigateBack} className="p-2 text-ink-400 hover:text-cream">
+              <Icon name="ArrowLeft" className="w-5 h-5" />
+            </button>
+            <div className="flex-1">
+              <h2 className="font-display text-2xl text-cream font-light">{collection.name}</h2>
+              {collection.description && (
+                <p className="text-sm text-ink-500 mt-1">{collection.description}</p>
+              )}
+              <p className="text-xs text-ink-600 mt-1">{recipes.length} {recipes.length === 1 ? 'recipe' : 'recipes'}</p>
+            </div>
+          </div>
+          
+          {recipes.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-ink-400 font-light">No recipes in this collection</p>
+              <p className="text-ink-600 text-sm mt-1">Add recipes from recipe detail view</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recipes.map(drink => (
+                <div key={drink.id} className="card rounded-xl overflow-hidden group cursor-pointer transition-all hover:border-white/[0.06]">
+                  <div className="relative h-36 sm:h-44 overflow-hidden bg-ink-900" onClick={() => onNavigateToRecipe(drink)}>
+                    {drink.image ? (
+                      <img src={drink.image} alt={drink.name} className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-opacity" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-ink-850 to-ink-900">
+                        <span className="font-display text-4xl text-ink-700">{drink.name.charAt(0)}</span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent" />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRemoveRecipe(drink.id, collection.id);
+                      }}
+                      className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-ink-950/60 backdrop-blur-sm text-ink-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                    >
+                      <Icon name="X" className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div className="p-3 sm:p-4" onClick={() => onNavigateToRecipe(drink)}>
+                    <h3 className="font-display text-base sm:text-lg text-cream font-normal leading-tight group-hover:text-copper-light transition-colors">
+                      {drink.name}
+                    </h3>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const SettingsView = ({ onClose, onExport, onImport, unmatchedIngredients, onImportShared }) => {
+      const fileRef = useRef(null);
+      const [showDebug, setShowDebug] = useState(false);
+
+      return (
+        <div className="animate-fade-in max-w-2xl">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-display text-2xl text-cream font-light">Settings</h2>
+            <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300">
+              <Icon name="X" className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {/* Backup & Restore */}
+            <div className="card rounded-xl p-5">
+              <h3 className="font-display text-lg text-cream font-normal mb-4">Backup & Restore</h3>
+              <div className="space-y-3">
+                <button onClick={onExport} className="w-full p-4 card-elevated rounded-lg text-left hover:border-white/[0.08] transition-colors group">
+                  <div className="flex items-center gap-3">
+                    <Icon name="Download" className="w-5 h-5 text-copper" />
+                    <div>
+                      <p className="text-cream font-light group-hover:text-copper-light transition-colors">Export Data</p>
+                      <p className="text-2xs text-ink-500 mt-0.5">Download your recipes and settings</p>
+                    </div>
+                  </div>
+                </button>
+              <input type="file" ref={fileRef} onChange={onImport} accept=".json" className="hidden" />
+              <button onClick={() => fileRef.current?.click()} className="w-full p-4 card-elevated rounded-lg text-left hover:border-white/[0.08] transition-colors group">
+                <div className="flex items-center gap-3">
+                  <Icon name="Upload" className="w-5 h-5 text-copper" />
+                  <div>
+                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Import Data</p>
+                    <p className="text-2xs text-ink-500 mt-0.5">Restore from a backup file</p>
+                  </div>
+                </div>
+              </button>
+              <button onClick={onImportShared} className="w-full p-4 card-elevated rounded-lg text-left hover:border-white/[0.08] transition-colors group">
+                <div className="flex items-center gap-3">
+                  <Icon name="Share2" className="w-5 h-5 text-copper" />
+                  <div>
+                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Import Shared Recipe</p>
+                    <p className="text-2xs text-ink-500 mt-0.5">Paste a shared recipe JSON</p>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+            {/* Debug (hidden) */}
+            {unmatchedIngredients.length > 0 && (
+              <div className="card rounded-xl p-5">
+                <button
+                  onClick={() => setShowDebug(!showDebug)}
+                  className="w-full flex items-center justify-between text-left"
+                >
+                  <h3 className="font-display text-lg text-cream font-normal">Debug: Unmatched Ingredients</h3>
+                  <Icon name={showDebug ? 'ChevronUp' : 'ChevronDown'} className="w-5 h-5 text-ink-500" />
+                </button>
+                {showDebug && (
+                  <div className="mt-4 pt-4 border-t border-white/[0.03]">
+                    <p className="text-sm text-ink-400 mb-3">Ingredients that couldn't be matched to canonical names:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {unmatchedIngredients.map((ing, i) => (
+                        <span key={i} className="px-2 py-1 rounded bg-white/[0.02] text-xs text-ink-500 font-mono">
+                          {ing}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
 
     const EmptyState = ({ view, onAction }) => {
       const config = {
@@ -755,6 +1671,8 @@
         saved: { icon: 'Bookmark', title: 'No saved recipes', subtitle: 'Save recipes to find them quickly', action: null },
         favorites: { icon: 'Heart', title: 'No favorites yet', subtitle: 'Heart the recipes you love', action: null },
         canMake: { icon: 'Wine', title: 'Add ingredients to your bar', subtitle: 'See what cocktails you can make', action: 'Stock Your Bar', actionFn: onAction },
+        almostMake: { icon: 'Clock', title: 'No almost-ready recipes', subtitle: 'Add more ingredients to unlock', action: null },
+        wantToTry: { icon: 'Star', title: 'No recipes to try', subtitle: 'Mark recipes you want to try', action: null },
         custom: { icon: 'FlaskConical', title: 'No custom recipes', subtitle: 'Create your own cocktail specs', action: 'Create Recipe', actionFn: onAction },
       };
       const c = config[view] || config.browse;
@@ -838,8 +1756,9 @@
       </div>
     );
 
-    const RecipeDetail = ({ drink, onClose, rating, isSaved, isFavorite, isWantToTry, canMake, inventory, onToggleSaved, onToggleFavorite, onToggleWantToTry, onRate, onDelete }) => {
-      const invNames = inventory.map(i => i.name.toLowerCase());
+    const RecipeDetail = ({ drink, onClose, rating, isSaved, isFavorite, isWantToTry, canMake, inventory, ingredientsDb, collections, onToggleSaved, onToggleFavorite, onToggleWantToTry, onRate, onDelete, onShare, onAddToCollection }) => {
+      const invCanonical = new Set(inventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
+      const [showCollectionPicker, setShowCollectionPicker] = useState(false);
       
       return (
         <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto" onClick={onClose}>
@@ -882,17 +1801,32 @@
                       { active: isFavorite, onClick: onToggleFavorite, icon: 'Heart' },
                       { active: isSaved, onClick: onToggleSaved, icon: 'Bookmark' },
                       { active: isWantToTry, onClick: onToggleWantToTry, icon: 'Clock' },
+                      { onClick: () => onShare?.(drink), icon: 'Share2' },
+                      { onClick: () => setShowCollectionPicker(true), icon: 'FolderPlus' },
                     ].map((btn, i) => (
                       <button
                         key={i}
                         onClick={btn.onClick}
                         className={`p-2.5 rounded-lg transition-colors ${btn.active ? 'bg-copper/20 text-copper' : 'bg-white/[0.03] text-ink-500 hover:text-copper'}`}
+                        title={btn.icon === 'Share2' ? 'Share recipe' : btn.icon === 'FolderPlus' ? 'Add to collection' : ''}
                       >
                         <Icon name={btn.icon} className="w-4 h-4" />
                       </button>
                     ))}
                   </div>
                 </div>
+                
+                {showCollectionPicker && (
+                  <CollectionPicker
+                    collections={collections || []}
+                    recipeId={drink.id}
+                    onSelect={(collectionId) => {
+                      onAddToCollection?.(drink.id, collectionId);
+                      setShowCollectionPicker(false);
+                    }}
+                    onClose={() => setShowCollectionPicker(false)}
+                  />
+                )}
                 
                 <div className="divider" />
                 
@@ -901,7 +1835,8 @@
                   <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-4">Ingredients</h3>
                   <ul className="space-y-1">
                     {drink.ingredients?.map((ing, i) => {
-                      const hasIt = invNames.some(inv => inv.includes(ing.name.toLowerCase()) || ing.name.toLowerCase().includes(inv));
+                      const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+                      const hasIt = invCanonical.has(ingCanonical);
                       return (
                         <li key={i} className="flex items-center gap-3 py-2.5 border-b border-white/[0.02] last:border-0">
                           <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt ? 'bg-emerald-500' : 'bg-ink-700'}`} />
@@ -1216,7 +2151,7 @@
       );
     };
 
-    const InventoryView = ({ inventory, onAdd, onRemove }) => {
+    const InventoryView = ({ inventory, onAdd, onRemove, ingredientsDb }) => {
       const [newItem, setNewItem] = useState('');
       const [isAdding, setIsAdding] = useState(false);
       const [showSuggestions, setShowSuggestions] = useState(false);
@@ -1232,7 +2167,10 @@
         if (isAdding && inputRef.current) inputRef.current.focus();
       }, [isAdding]);
 
-      const suggestions = COMMON_INGREDIENTS.filter(i => !inventory.some(inv => inv.name.toLowerCase() === i.toLowerCase()));
+      const suggestions = COMMON_INGREDIENTS.filter(i => {
+        const canonical = normalizeIngredient(i, ingredientsDb);
+        return !inventory.some(inv => normalizeIngredient(inv.name, ingredientsDb) === canonical);
+      });
 
       const categories = {
         'Spirits': ['vodka', 'gin', 'rum', 'tequila', 'whiskey', 'bourbon', 'scotch', 'brandy', 'cognac', 'mezcal', 'rye'],
