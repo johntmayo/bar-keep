@@ -3196,5 +3196,222 @@
     "instructions": "Muddle lemon and mint with syrup. Add bourbon and ice. Shake briefly. Strain into a rocks glass with ice. Garnish with a mint sprig.",
     "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
     "style": "smash"
+  },
+  {
+    "id": "self-starter",
+    "name": "Self Starter",
+    "category": "Cocktail",
+    "glass": "Cocktail glass",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "2 oz"
+      },
+      {
+        "name": "Lillet Blanc",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "apricot liqueur",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "absinthe",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain into a chilled cocktail glass. Express a lemon peel over the drink.",
+    "style": "spirit-forward",
+    "notes": "Invented at Tina's in Tulsa, Oklahoma."
+  },
+  {
+    "id": "division-bell",
+    "name": "Division Bell",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "mezcal",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "aperol",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe.",
+    "style": "sour"
+  },
+  {
+    "id": "mezcal-gin-white-negroni",
+    "name": "Mezcal–Gin White Negroni",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "mezcal",
+        "measure": "1 oz"
+      },
+      {
+        "name": "gin",
+        "measure": "1 oz"
+      },
+      {
+        "name": "Cocchi Americano",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "blanc vermouth",
+        "measure": "3/4 oz"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain over fresh ice in a rocks glass. Express a lemon peel over the drink.",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "banana-cynar-rye",
+    "name": "Banana Cynar Rye",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "rye whiskey",
+        "measure": "2 oz"
+      },
+      {
+        "name": "Cynar",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Amaro Montenegro",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "banana liqueur",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "Angostura bitters",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain over a large cube. Express an orange peel if desired.",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "canadian-rye-cynar",
+    "name": "Canadian Rye & Cynar",
+    "category": "Cocktail",
+    "glass": "Cocktail glass",
+    "ingredients": [
+      {
+        "name": "Canadian rye whisky",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "1 oz"
+      },
+      {
+        "name": "Cynar",
+        "measure": "1/2 oz"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain into a chilled cocktail glass. Garnish with an amarena cherry.",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "banana-coffee-colada",
+    "name": "Banana Coffee Colada",
+    "category": "Cocktail",
+    "glass": "Tiki glass",
+    "ingredients": [
+      {
+        "name": "dark rum",
+        "measure": "1 oz"
+      },
+      {
+        "name": "coffee liqueur",
+        "measure": "1 oz"
+      },
+      {
+        "name": "banana liqueur",
+        "measure": "1 oz"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "2 oz"
+      },
+      {
+        "name": "coconut cream",
+        "measure": "1 oz"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain over crushed ice or blend briefly for a frozen version.",
+    "style": "tropical"
+  },
+  {
+    "id": "medicina-latina",
+    "name": "Medicina Latina",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "tequila blanco",
+        "measure": "2 oz"
+      },
+      {
+        "name": "honey syrup",
+        "measure": "3/8 oz"
+      },
+      {
+        "name": "ginger syrup",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "mezcal",
+        "measure": "1 barspoon (float)"
+      }
+    ],
+    "instructions": "Shake everything except mezcal with ice. Strain over a large cube. Carefully float mezcal on top. Garnish with candied ginger.",
+    "style": "sour"
+  },
+  {
+    "id": "last-fortress",
+    "name": "Last Fortress",
+    "category": "Cocktail",
+    "glass": "Cocktail glass",
+    "ingredients": [
+      {
+        "name": "reposado tequila",
+        "measure": "1 3/4 oz"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "1 oz"
+      },
+      {
+        "name": "banana liqueur",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "aguardiente",
+        "measure": "rinse"
+      }
+    ],
+    "instructions": "Rinse a chilled glass with aguardiente. Stir remaining ingredients with ice. Strain into the prepared glass. Garnish with a lemon twist.",
+    "style": "spirit-forward"
   }
 ]

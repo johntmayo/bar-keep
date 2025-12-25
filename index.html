@@ -2704,22 +2704,150 @@
       const [newItem, setNewItem] = useState('');
       const [isAdding, setIsAdding] = useState(false);
       const [showSuggestions, setShowSuggestions] = useState(false);
+      const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
       const inputRef = useRef(null);
+      const suggestionsRef = useRef(null);
 
-      const handleAdd = () => {
-        if (!newItem.trim()) return;
-        onAdd(newItem.trim());
+      const handleAdd = (itemName = null) => {
+        const item = itemName || newItem.trim();
+        if (!item) return;
+        onAdd(item);
         setNewItem('');
+        setAutocompleteSuggestions([]);
+        setShowSuggestions(false);
       };
 
       useEffect(() => {
         if (isAdding && inputRef.current) inputRef.current.focus();
       }, [isAdding]);
 
-      const suggestions = COMMON_INGREDIENTS.filter(i => {
+      // Close suggestions when clicking outside
+      useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (suggestionsRef.current && !suggestionsRef.current.contains(event.target) && 
+              inputRef.current && !inputRef.current.contains(event.target)) {
+            setShowSuggestions(false);
+          }
+        };
+        
+        if (showSuggestions) {
+          document.addEventListener('mousedown', handleClickOutside);
+          return () => document.removeEventListener('mousedown', handleClickOutside);
+        }
+      }, [showSuggestions]);
+
+      // Flatten all ingredients from ingredients.json for autocomplete
+      const allIngredients = useMemo(() => {
+        if (!ingredientsDb) return [];
+        const flat = [];
+        ingredientsDb.categories?.forEach(cat => {
+          cat.subcategories?.forEach(sub => {
+            sub.items?.forEach(item => {
+              flat.push({
+                name: item.name,
+                id: item.id,
+                category: cat.name,
+                subcategory: sub.name,
+                aliases: item.aliases || []
+              });
+            });
+          });
+        });
+        return flat;
+      }, [ingredientsDb]);
+
+      // Get autocomplete suggestions based on input
+      const getAutocompleteSuggestions = useMemo(() => {
+        if (!newItem.trim() || newItem.length < 1) {
+          // If empty or very short, show common ingredients
+          return COMMON_INGREDIENTS.filter(i => {
+            const canonical = normalizeIngredient(i, ingredientsDb);
+            return !inventory.some(inv => normalizeIngredient(inv.name, ingredientsDb) === canonical);
+          }).slice(0, 20).map(name => ({ name, category: 'Common', subcategory: '' }));
+        }
+
+        const searchTerm = newItem.toLowerCase().trim();
+        const results = [];
+        const seen = new Set();
+
+        // First, find exact matches and close matches
+        allIngredients.forEach(ing => {
+          const nameLower = ing.name.toLowerCase();
+          const aliasesLower = ing.aliases.map(a => a.toLowerCase());
+          
+          // Check if already in inventory
+          const canonical = normalizeIngredient(ing.name, ingredientsDb);
+          if (inventory.some(inv => normalizeIngredient(inv.name, ingredientsDb) === canonical)) {
+            return;
+          }
+
+          // Exact match
+          if (nameLower === searchTerm || aliasesLower.includes(searchTerm)) {
+            if (!seen.has(ing.name)) {
+              results.push({ ...ing, matchType: 'exact' });
+              seen.add(ing.name);
+            }
+            return;
+          }
+
+          // Starts with
+          if (nameLower.startsWith(searchTerm) || aliasesLower.some(a => a.startsWith(searchTerm))) {
+            if (!seen.has(ing.name)) {
+              results.push({ ...ing, matchType: 'starts' });
+              seen.add(ing.name);
+            }
+            return;
+          }
+
+          // Contains (for category searches like "amaro")
+          if (nameLower.includes(searchTerm) || 
+              aliasesLower.some(a => a.includes(searchTerm)) ||
+              ing.subcategory.toLowerCase().includes(searchTerm) ||
+              ing.category.toLowerCase().includes(searchTerm)) {
+            if (!seen.has(ing.name)) {
+              results.push({ ...ing, matchType: 'contains' });
+              seen.add(ing.name);
+            }
+          }
+        });
+
+        // Sort by match type (exact > starts > contains), then alphabetically
+        results.sort((a, b) => {
+          const typeOrder = { exact: 0, starts: 1, contains: 2 };
+          if (typeOrder[a.matchType] !== typeOrder[b.matchType]) {
+            return typeOrder[a.matchType] - typeOrder[b.matchType];
+          }
+          return a.name.localeCompare(b.name);
+        });
+
+        return results.slice(0, 50); // Limit to 50 results
+      }, [newItem, allIngredients, inventory, ingredientsDb]);
+
+      // Update suggestions as user types
+      useEffect(() => {
+        if (newItem.trim().length >= 1) {
+          setAutocompleteSuggestions(getAutocompleteSuggestions);
+          setShowSuggestions(true);
+        } else {
+          setAutocompleteSuggestions([]);
+        }
+      }, [newItem, getAutocompleteSuggestions]);
+
+      // Group suggestions by category
+      const groupedSuggestions = useMemo(() => {
+        const groups = {};
+        autocompleteSuggestions.forEach(ing => {
+          const category = ing.category || 'Other';
+          if (!groups[category]) groups[category] = [];
+          groups[category].push(ing);
+        });
+        return groups;
+      }, [autocompleteSuggestions]);
+
+      const quickSuggestions = COMMON_INGREDIENTS.filter(i => {
         const canonical = normalizeIngredient(i, ingredientsDb);
         return !inventory.some(inv => normalizeIngredient(inv.name, ingredientsDb) === canonical);
-      });
+      }).slice(0, 12);
 
       const categories = {
         'Spirits': ['vodka', 'gin', 'rum', 'tequila', 'whiskey', 'bourbon', 'scotch', 'brandy', 'cognac', 'mezcal', 'rye'],
@@ -2767,29 +2895,78 @@
           {isAdding && (
             <div className="card-elevated rounded-xl p-4 mb-6 animate-slide-down">
               <div className="flex gap-2 mb-3">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-                  onFocus={() => setShowSuggestions(true)}
-                  placeholder="Type ingredient and press Enter..."
-                  className="flex-1 px-4 py-3 input-field rounded-lg text-cream font-light"
-                />
-                <button onClick={() => { setIsAdding(false); setNewItem(''); setShowSuggestions(false); }} className="px-4 py-3 text-ink-500 hover:text-ink-300 font-light">
+                <div className="flex-1 relative">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={newItem}
+                    onChange={(e) => setNewItem(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        if (autocompleteSuggestions.length > 0) {
+                          handleAdd(autocompleteSuggestions[0].name);
+                        } else {
+                          handleAdd();
+                        }
+                      } else if (e.key === 'Escape') {
+                        setShowSuggestions(false);
+                      }
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    placeholder="Type to search ingredients..."
+                    className="w-full px-4 py-3 input-field rounded-lg text-cream font-light"
+                  />
+                  
+                  {/* Autocomplete dropdown */}
+                  {showSuggestions && autocompleteSuggestions.length > 0 && (
+                    <div 
+                      ref={suggestionsRef}
+                      className="absolute top-full left-0 right-0 mt-2 bg-ink-900 border border-white/[0.06] rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto"
+                    >
+                      {Object.entries(groupedSuggestions).map(([category, items]) => (
+                        <div key={category} className="border-b border-white/[0.03] last:border-0">
+                          <div className="px-3 py-2 bg-ink-950/50">
+                            <p className="text-2xs text-ink-500 uppercase tracking-wider">{category}</p>
+                          </div>
+                          {items.map((ing, idx) => (
+                            <button
+                              key={`${ing.id}-${idx}`}
+                              onClick={() => handleAdd(ing.name)}
+                              className="w-full text-left px-4 py-2.5 text-sm text-ink-300 hover:bg-white/[0.05] hover:text-cream transition-colors flex items-center justify-between"
+                            >
+                              <span>{ing.name}</span>
+                              {ing.subcategory && (
+                                <span className="text-2xs text-ink-600 ml-2">{ing.subcategory}</span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <button 
+                  onClick={() => { 
+                    setIsAdding(false); 
+                    setNewItem(''); 
+                    setShowSuggestions(false);
+                    setAutocompleteSuggestions([]);
+                  }} 
+                  className="px-4 py-3 text-ink-500 hover:text-ink-300 font-light"
+                >
                   Done
                 </button>
               </div>
               
-              {showSuggestions && suggestions.length > 0 && (
+              {/* Quick add buttons (when input is empty) */}
+              {!newItem.trim() && quickSuggestions.length > 0 && (
                 <div className="border-t border-white/[0.03] pt-3">
                   <p className="text-2xs text-ink-600 uppercase tracking-widest mb-2">Quick add</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {suggestions.slice(0, 12).map(s => (
+                    {quickSuggestions.map(s => (
                       <button
                         key={s}
-                        onClick={() => { onAdd(s); }}
+                        onClick={() => handleAdd(s)}
                         className="px-2.5 py-1.5 text-xs text-ink-400 bg-white/[0.02] hover:bg-white/[0.05] hover:text-copper rounded-md transition-colors"
                       >
                         {s}
