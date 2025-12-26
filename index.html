@@ -2849,34 +2849,89 @@
         return !inventory.some(inv => normalizeIngredient(inv.name, ingredientsDb) === canonical);
       }).slice(0, 12);
 
-      const categories = {
-        'Spirits': ['vodka', 'gin', 'rum', 'tequila', 'whiskey', 'bourbon', 'scotch', 'brandy', 'cognac', 'mezcal', 'rye'],
-        'Liqueurs': ['triple sec', 'cointreau', 'kahlua', 'amaretto', 'campari', 'aperol', 'chartreuse', 'benedictine', 'maraschino', 'st germain', 'drambuie', 'fernet', 'curacao'],
-        'Fortified': ['vermouth', 'lillet', 'sherry', 'port'],
-        'Mixers': ['soda', 'tonic', 'ginger beer', 'cola', 'club soda'],
-        'Citrus & Juice': ['lime', 'lemon', 'orange', 'grapefruit', 'pineapple juice', 'orange juice', 'cranberry'],
-        'Sweeteners': ['simple syrup', 'honey', 'agave', 'grenadine', 'orgeat', 'sugar'],
-        'Bitters': ['angostura', 'orange bitters', 'peychauds'],
-        'Other': []
-      };
-
+      // Categorize inventory items using ingredients.json database
       const categorized = useMemo(() => {
         const result = {};
-        Object.keys(categories).forEach(cat => result[cat] = []);
+        const categoryOrder = ['Spirits', 'Liqueurs', 'Fortified Wines', 'Bitters', 'Syrups & Sweeteners', 'Citrus & Juices', 'Mixers & Sodas', 'Other'];
+        categoryOrder.forEach(cat => result[cat] = []);
+
         inventory.forEach(item => {
           let found = false;
-          for (const [cat, keywords] of Object.entries(categories)) {
-            if (cat === 'Other') continue;
-            if (keywords.some(k => item.name.includes(k) || k.includes(item.name))) {
-              result[cat].push(item);
-              found = true;
-              break;
+          const itemNameLower = item.name.toLowerCase();
+          const itemCanonical = normalizeIngredient(item.name, ingredientsDb);
+
+          // Try to find in ingredients.json database
+          if (ingredientsDb) {
+            for (const category of ingredientsDb.categories || []) {
+              for (const subcategory of category.subcategories || []) {
+                for (const ing of subcategory.items || []) {
+                  const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+                  if (ingCanonical === itemCanonical || 
+                      ing.aliases?.some(alias => normalizeIngredient(alias, ingredientsDb) === itemCanonical)) {
+                    // Map database categories to display categories
+                    let displayCategory = 'Other';
+                    const catName = category.name.toLowerCase();
+                    const subName = subcategory.name.toLowerCase();
+
+                    if (catName.includes('spirit')) {
+                      displayCategory = 'Spirits';
+                    } else if (catName.includes('liqueur') || subName.includes('amaro') || subName.includes('amari')) {
+                      displayCategory = 'Liqueurs';
+                    } else if (catName.includes('fortified') || catName.includes('vermouth') || catName.includes('sherry') || catName.includes('port')) {
+                      displayCategory = 'Fortified Wines';
+                    } else if (catName.includes('bitter')) {
+                      displayCategory = 'Bitters';
+                    } else if (catName.includes('syrup') || catName.includes('sweetener') || catName.includes('honey') || catName.includes('agave')) {
+                      displayCategory = 'Syrups & Sweeteners';
+                    } else if (catName.includes('citrus') || catName.includes('juice') || subName.includes('juice')) {
+                      displayCategory = 'Citrus & Juices';
+                    } else if (catName.includes('mixer') || catName.includes('soda') || catName.includes('tonic')) {
+                      displayCategory = 'Mixers & Sodas';
+                    }
+
+                    if (!result[displayCategory]) result[displayCategory] = [];
+                    result[displayCategory].push(item);
+                    found = true;
+                    return;
+                  }
+                }
+              }
             }
           }
-          if (!found) result['Other'].push(item);
+
+          // Fallback to keyword matching if not found in database
+          if (!found) {
+            const keywordCategories = {
+              'Spirits': ['vodka', 'gin', 'rum', 'tequila', 'whiskey', 'whisky', 'bourbon', 'scotch', 'brandy', 'cognac', 'mezcal', 'rye', 'pisco'],
+              'Liqueurs': ['triple sec', 'cointreau', 'kahlua', 'amaretto', 'campari', 'aperol', 'chartreuse', 'benedictine', 'maraschino', 'st germain', 'drambuie', 'fernet', 'curacao', 'amaro', 'cynar'],
+              'Fortified Wines': ['vermouth', 'lillet', 'sherry', 'port', 'madeira'],
+              'Bitters': ['angostura', 'orange bitters', 'peychauds', 'bitters'],
+              'Syrups & Sweeteners': ['simple syrup', 'honey', 'agave', 'grenadine', 'orgeat', 'sugar', 'syrup'],
+              'Citrus & Juices': ['lime', 'lemon', 'orange', 'grapefruit', 'pineapple juice', 'orange juice', 'cranberry', 'juice'],
+              'Mixers & Sodas': ['soda', 'tonic', 'ginger beer', 'cola', 'club soda', 'tonic water']
+            };
+
+            for (const [cat, keywords] of Object.entries(keywordCategories)) {
+              if (keywords.some(k => itemNameLower.includes(k.toLowerCase()))) {
+                result[cat].push(item);
+                found = true;
+                break;
+              }
+            }
+          }
+
+          if (!found) {
+            result['Other'].push(item);
+          }
         });
+
+        // Sort items within each category alphabetically
+        Object.keys(result).forEach(cat => {
+          result[cat].sort((a, b) => a.name.localeCompare(b.name));
+        });
+
         return result;
-      }, [inventory]);
+      }, [inventory, ingredientsDb]);
 
       return (
         <div className="max-w-2xl mx-auto animate-fade-in">
