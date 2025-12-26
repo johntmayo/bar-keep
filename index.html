@@ -365,7 +365,7 @@
     // ============ MAIN APP ============
     
     const App = () => {
-      const [view, setView] = useState('browse');
+      const [view, setView] = useState('recipesHub');
       const [curatedDrinks, setCuratedDrinks] = useState([]);
       const [customDrinks, setCustomDrinks] = useState([]);
       const [barInventory, setBarInventory] = useState([]);
@@ -1204,7 +1204,7 @@
       };
 
       const navItems = [
-        { id: 'recipes', label: 'Recipes', icon: 'LayoutGrid' },
+        { id: 'recipesHub', label: 'Recipes', icon: 'LayoutGrid' },
         { id: 'inventory', label: 'Bar', icon: 'Wine', count: barInventory.length },
         { id: 'search', label: 'Search', icon: 'Search' },
         { id: 'settings', label: 'Settings', icon: 'Settings' },
@@ -1231,20 +1231,16 @@
                     <button
                       key={item.id}
                       onClick={() => {
-                        if (item.id === 'recipes') {
-                          setView('recipesHub');
-                          setShowRecipesHub(true);
-                        } else if (item.id === 'search') {
+                        if (item.id === 'search') {
                           setView('browse');
                           setSearchTerm('');
-                          setShowRecipesHub(false);
                         } else {
                           setView(item.id);
-                          setShowRecipesHub(false);
                         }
+                        setShowRecipesHub(false);
                       }}
                       className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-light transition-all ${
-                        (view === item.id || (item.id === 'recipes' && showRecipesHub) || (item.id === 'search' && view === 'browse')) ? 'bg-white/[0.05] text-cream' : 'text-ink-500 hover:text-ink-300 hover:bg-white/[0.02]'
+                        (view === item.id || (item.id === 'search' && view === 'browse')) ? 'bg-white/[0.05] text-cream' : 'text-ink-500 hover:text-ink-300 hover:bg-white/[0.02]'
                       }`}
                     >
                       <Icon name={item.icon} className="w-4 h-4" />
@@ -1269,7 +1265,6 @@
               ) : (
                 <button onClick={() => {
                   setView('recipesHub');
-                  setShowRecipesHub(true);
                 }} className="flex items-center gap-2 text-cream">
                   <Icon name="ArrowLeft" className="w-5 h-5" />
                   <span className="font-display text-xl font-light">Recipes</span>
@@ -1287,7 +1282,7 @@
 
           {/* Main Content */}
           <main ref={mainRef} className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-6">
-            {view === 'recipesHub' || (view === 'recipes' && showRecipesHub) ? (
+            {view === 'recipesHub' ? (
               <RecipesHub
                 savedCount={savedDrinks.size}
                 favoritesCount={favorites.size}
@@ -1300,6 +1295,53 @@
                 onNavigate={(viewId) => {
                   setView(viewId);
                   setShowRecipesHub(false);
+                }}
+                getMakeableDrinks={getMakeableDrinks}
+                getAlmostMakeableDrinks={() => getAllDrinks().filter(d => {
+                  const missing = getMissingCount(d);
+                  return missing > 0 && missing <= 2 && !canMakeDrink(d);
+                })}
+                getAllCollections={getAllCollections}
+                getCollectionRecipes={getCollectionRecipes}
+                onSelectDrink={setSelectedDrink}
+                barInventory={barInventory}
+                ratings={ratings}
+                savedDrinks={savedDrinks}
+                favorites={favorites}
+                getMissingCount={getMissingCount}
+                canMakeDrink={canMakeDrink}
+                ingredientsDb={ingredientsDb}
+                onCreateShoppingList={(drinks) => {
+                  const ingredientCounts = {};
+                  drinks.forEach(drink => {
+                    const missing = drink.ingredients?.filter(ing => {
+                      const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+                      const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
+                      return !invCanonical.has(ingCanonical);
+                    }) || [];
+                    
+                    missing.forEach(ing => {
+                      const key = normalizeIngredient(ing.name, ingredientsDb);
+                      if (!ingredientCounts[key]) {
+                        ingredientCounts[key] = { name: ing.name, count: 0, recipes: [] };
+                      }
+                      if (!ingredientCounts[key].recipes.find(r => r.id === drink.id)) {
+                        ingredientCounts[key].count++;
+                        ingredientCounts[key].recipes.push({ id: drink.id, name: drink.name });
+                      }
+                    });
+                  });
+                  
+                  const shoppingList = Object.values(ingredientCounts)
+                    .sort((a, b) => b.count - a.count)
+                    .map(item => `${item.name} (unlocks ${item.count} ${item.count === 1 ? 'recipe' : 'recipes'})`)
+                    .join('\n');
+                  
+                  navigator.clipboard.writeText(shoppingList).then(() => {
+                    toast('Shopping list copied to clipboard', 'success');
+                  }).catch(() => {
+                    setShowShoppingList(shoppingList);
+                  });
                 }}
               />
             ) : view === 'inventory' ? (
@@ -1570,19 +1612,16 @@
                 <button
                   key={item.id}
                   onClick={() => {
-                    if (item.id === 'recipes') {
-                      setView('recipesHub');
-                      setShowRecipesHub(true);
-                    } else if (item.id === 'search') {
+                    if (item.id === 'search') {
                       setView('browse');
                       setSearchTerm('');
                     } else {
                       setView(item.id);
-                      setShowRecipesHub(false);
                     }
+                    setShowRecipesHub(false);
                   }}
                   className={`relative flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
-                    (view === item.id || (item.id === 'recipes' && showRecipesHub) || (item.id === 'search' && view === 'browse')) ? 'text-copper' : 'text-ink-500'
+                    (view === item.id || (item.id === 'search' && view === 'browse')) ? 'text-copper' : 'text-ink-500'
                   }`}
                 >
                   <Icon name={item.icon} className="w-5 h-5" />
@@ -1715,11 +1754,24 @@
 
     // ============ COMPONENTS ============
 
-    const RecipesHub = ({ savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, onNavigate }) => {
+    const RecipesHub = ({ 
+      savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, 
+      onNavigate, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
+      onSelectDrink, barInventory, ratings, savedDrinks, favorites, getMissingCount, canMakeDrink, ingredientsDb, onCreateShoppingList
+    }) => {
+      // Featured collections: prefer curated, rotate by day if needed
+      // Simple selection: first 2-3 curated collections (or all if less than 3)
+      const allCollections = getAllCollections;
+      const curatedCollections = allCollections.filter(c => c.collectionType === 'curated');
+      const featuredCollections = curatedCollections.length > 0 
+        ? curatedCollections.slice(0, 3)
+        : allCollections.slice(0, 3);
+      
+      const canMakeRecipes = getMakeableDrinks().slice(0, 8);
+      const almostMakeRecipes = getAlmostMakeableDrinks().slice(0, 5);
+      
       const recipeItems = [
         { id: 'browse', label: 'All Recipes', icon: 'LayoutGrid', count: allCount, description: 'Browse all cocktails' },
-        { id: 'canMake', label: 'Can Make', icon: 'Sparkles', count: canMakeCount, description: 'Ready to mix' },
-        { id: 'almostMake', label: 'Almost Make', icon: 'Clock', count: almostMakeCount, description: '1–2 ingredients away' },
         { id: 'favorites', label: 'Favorites', icon: 'Heart', count: favoritesCount, description: 'Your favorites' },
         { id: 'saved', label: 'Saved', icon: 'Bookmark', count: savedCount, description: 'Saved recipes' },
         { id: 'wantToTry', label: 'Want to Try', icon: 'Star', count: wantToTryCount, description: 'On your list' },
@@ -1727,37 +1779,227 @@
         { id: 'collections', label: 'Collections', icon: 'Folder', count: collectionsCount, description: 'Organize recipes' },
       ];
 
-      return (
-        <div className="animate-fade-in">
-          <h2 className="font-display text-2xl text-cream font-light mb-6">Recipes</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {recipeItems.map(item => (
+      // Empty state if bar is empty
+      if (barInventory.length === 0) {
+        return (
+          <div className="animate-fade-in">
+            <div className="card rounded-xl p-8 text-center mb-6">
+              <Icon name="Wine" className="w-12 h-12 text-ink-600 mx-auto mb-4" />
+              <h2 className="font-display text-xl text-cream font-light mb-2">Build Your Bar</h2>
+              <p className="text-sm text-ink-500 mb-6">Add ingredients to your bar to see recipes you can make</p>
               <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all group"
+                onClick={() => onNavigate('inventory')}
+                className="px-6 py-3 btn-copper rounded-lg text-sm font-medium"
               >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-white/[0.03] group-hover:bg-copper/10 transition-colors">
-                      <Icon name={item.icon} className="w-5 h-5 text-copper" />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-lg text-cream font-normal group-hover:text-copper-light transition-colors">
-                        {item.label}
-                      </h3>
-                      <p className="text-2xs text-ink-500 mt-0.5">{item.description}</p>
-                    </div>
-                  </div>
-                  {item.count > 0 && (
-                    <span className="text-2xs px-2 py-1 rounded-full bg-copper/20 text-copper font-medium">
-                      {item.count}
-                    </span>
-                  )}
-                </div>
+                Go to Your Bar
               </button>
-            ))}
+            </div>
+            <h2 className="font-display text-2xl text-cream font-light mb-6">Browse Recipes</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {recipeItems.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all group"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-white/[0.03] group-hover:bg-copper/10 transition-colors">
+                        <Icon name={item.icon} className="w-5 h-5 text-copper" />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-lg text-cream font-normal group-hover:text-copper-light transition-colors">
+                          {item.label}
+                        </h3>
+                        <p className="text-2xs text-ink-500 mt-0.5">{item.description}</p>
+                      </div>
+                    </div>
+                    {item.count > 0 && (
+                      <span className="text-2xs px-2 py-1 rounded-full bg-copper/20 text-copper font-medium">
+                        {item.count}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
+        );
+      }
+
+      return (
+        <div className="animate-fade-in space-y-8">
+          {/* You can make section */}
+          {canMakeRecipes.length > 0 ? (
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-display text-xl text-cream font-light">You can make</h2>
+                <button
+                  onClick={() => onNavigate('canMake')}
+                  className="text-sm text-copper hover:text-copper-light flex items-center gap-1"
+                >
+                  See all
+                  <Icon name="ArrowRight" className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {canMakeRecipes.map(drink => (
+                  <RecipeCard
+                    key={drink.id}
+                    drink={drink}
+                    rating={ratings[drink.id] || 0}
+                    isSaved={savedDrinks.has(drink.id)}
+                    isFavorite={favorites.has(drink.id)}
+                    canMake={true}
+                    missingCount={0}
+                    onClick={() => onSelectDrink(drink)}
+                    onToggleSaved={() => {}}
+                    onToggleFavorite={() => {}}
+                  />
+                ))}
+              </div>
+            </section>
+          ) : (
+            <section>
+              <h2 className="font-display text-xl text-cream font-light mb-4">You can make</h2>
+              <div className="card rounded-xl p-6 text-center">
+                <p className="text-sm text-ink-500 mb-2">No recipes you can make right now</p>
+                {almostMakeRecipes.length > 0 && (
+                  <p className="text-xs text-ink-600">Check out "Almost make" below to see what you're close to making</p>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* Almost make section */}
+          {almostMakeRecipes.length > 0 && (
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-display text-xl text-cream font-light">Almost make</h2>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => {
+                      onCreateShoppingList(almostMakeRecipes);
+                    }}
+                    className="text-sm text-amber-400 hover:text-amber-300 flex items-center gap-1"
+                  >
+                    <Icon name="ShoppingCart" className="w-4 h-4" />
+                    Create shopping list
+                  </button>
+                  <button
+                    onClick={() => onNavigate('almostMake')}
+                    className="text-sm text-copper hover:text-copper-light flex items-center gap-1"
+                  >
+                    See all
+                    <Icon name="ArrowRight" className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                {almostMakeRecipes.map(drink => {
+                  const missing = getMissingCount(drink);
+                  return (
+                    <RecipeCard
+                      key={drink.id}
+                      drink={drink}
+                      rating={ratings[drink.id] || 0}
+                      isSaved={savedDrinks.has(drink.id)}
+                      isFavorite={favorites.has(drink.id)}
+                      canMake={false}
+                      missingCount={missing}
+                      onClick={() => onSelectDrink(drink)}
+                      onToggleSaved={() => {}}
+                      onToggleFavorite={() => {}}
+                    />
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {/* Featured collections section */}
+          {featuredCollections.length > 0 && (
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-display text-xl text-cream font-light">Featured collections</h2>
+                <button
+                  onClick={() => onNavigate('collections')}
+                  className="text-sm text-copper hover:text-copper-light flex items-center gap-1"
+                >
+                  Browse collections
+                  <Icon name="ArrowRight" className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {featuredCollections.map(collection => {
+                  const recipes = getCollectionRecipes(collection);
+                  return (
+                    <button
+                      key={collection.id}
+                      onClick={() => {
+                        onNavigate(`collection-${collection.id}`);
+                      }}
+                      className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all group"
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-display text-lg text-cream font-normal group-hover:text-copper-light transition-colors">
+                              {collection.name}
+                            </h3>
+                            {collection.collectionType === 'curated' && (
+                              <span className="text-2xs px-2 py-0.5 rounded-full bg-copper/10 text-copper border border-copper/20">
+                                Curated
+                              </span>
+                            )}
+                          </div>
+                          {collection.description && (
+                            <p className="text-2xs text-ink-500 mt-0.5">{collection.description}</p>
+                          )}
+                        </div>
+                        <span className="text-2xs px-2 py-1 rounded-full bg-copper/20 text-copper font-medium">
+                          {recipes.length}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {/* Navigation list */}
+          <section>
+            <h2 className="font-display text-2xl text-cream font-light mb-6">Browse</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {recipeItems.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all group"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-white/[0.03] group-hover:bg-copper/10 transition-colors">
+                        <Icon name={item.icon} className="w-5 h-5 text-copper" />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-lg text-cream font-normal group-hover:text-copper-light transition-colors">
+                          {item.label}
+                        </h3>
+                        <p className="text-2xs text-ink-500 mt-0.5">{item.description}</p>
+                      </div>
+                    </div>
+                    {item.count > 0 && (
+                      <span className="text-2xs px-2 py-1 rounded-full bg-copper/20 text-copper font-medium">
+                        {item.count}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
       );
     };
