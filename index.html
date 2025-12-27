@@ -442,6 +442,104 @@
       'Orange Bitters', 'Lime Juice', 'Lemon Juice', 'Club Soda', 'Tonic Water'
     ];
 
+    // ============ UNIT CONVERSION ============
+    
+    // Unit conversion utilities with intelligent rounding
+    const parseMeasure = (measure) => {
+      if (!measure) return { value: 0, unit: '', isFraction: false };
+      
+      const measureStr = measure.toString().trim();
+      
+      // Handle common non-numeric measures (dash, dashes, splash, rinse, etc.)
+      const nonNumericUnits = ['dash', 'dashes', 'splash', 'rinse', 'drops', 'pinch', 'whole', 'leaves', 'barspoon', 'barspoons'];
+      for (const unit of nonNumericUnits) {
+        if (measureStr.toLowerCase().includes(unit)) {
+          return { value: null, unit: measureStr, isFraction: false };
+        }
+      }
+      
+      // Extract number and unit
+      const match = measureStr.match(/^([\d\s\/\.]+)\s*(ml|oz|oz\.|fl\s*oz)?$/i);
+      if (!match) return { value: 0, unit: measureStr, isFraction: false };
+      
+      const numPart = match[1].trim();
+      const unitPart = (match[2] || '').trim().toLowerCase();
+      
+      // Parse fractions and decimals
+      let value = 0;
+      let isFraction = false;
+      
+      if (numPart.includes('/')) {
+        // Handle fractions like "1/2", "1 1/2", "3/4"
+        const parts = numPart.split(/\s+/);
+        for (const part of parts) {
+          if (part.includes('/')) {
+            const [num, den] = part.split('/').map(Number);
+            value += num / den;
+            isFraction = true;
+          } else {
+            value += Number(part) || 0;
+          }
+        }
+      } else {
+        value = Number(numPart) || 0;
+      }
+      
+      // Determine base unit
+      const baseUnit = unitPart.includes('ml') ? 'ml' : 'oz';
+      
+      return { value, unit: baseUnit, isFraction, originalUnit: unitPart };
+    };
+
+    const convertMeasure = (measure, targetUnit) => {
+      const parsed = parseMeasure(measure);
+      
+      // If it's a non-numeric measure, return as-is
+      if (parsed.value === null) return measure;
+      
+      // If already in target unit or no value, return original
+      if (!parsed.value || (targetUnit === 'oz' && parsed.unit === 'oz') || (targetUnit === 'ml' && parsed.unit === 'ml')) {
+        return measure;
+      }
+      
+      // Convert oz to ml (1 oz = 30 ml for clean rounding)
+      if (parsed.unit === 'oz' && targetUnit === 'ml') {
+        const mlValue = parsed.value * 30;
+        // Round intelligently
+        if (mlValue < 1) return `${Math.round(mlValue * 10) / 10} ml`;
+        if (mlValue < 5) return `${Math.round(mlValue * 2) / 2} ml`;
+        return `${Math.round(mlValue)} ml`;
+      }
+      
+      // Convert ml to oz (30 ml = 1 oz)
+      if (parsed.unit === 'ml' && targetUnit === 'oz') {
+        const ozValue = parsed.value / 30;
+        // Round to common fractions
+        if (ozValue < 0.1) return `${Math.round(ozValue * 100) / 100} oz`;
+        if (ozValue < 0.25) return `${Math.round(ozValue * 20) / 20} oz`;
+        if (Math.abs(ozValue - 0.25) < 0.02) return '1/4 oz';
+        if (Math.abs(ozValue - 0.33) < 0.02) return '1/3 oz';
+        if (Math.abs(ozValue - 0.5) < 0.02) return '1/2 oz';
+        if (Math.abs(ozValue - 0.67) < 0.02) return '2/3 oz';
+        if (Math.abs(ozValue - 0.75) < 0.02) return '3/4 oz';
+        if (Math.abs(ozValue - 1) < 0.05) return '1 oz';
+        if (Math.abs(ozValue - 1.5) < 0.05) return '1 1/2 oz';
+        if (Math.abs(ozValue - 2) < 0.05) return '2 oz';
+        // Round to nearest quarter
+        const rounded = Math.round(ozValue * 4) / 4;
+        if (rounded % 1 === 0) return `${rounded} oz`;
+        if (rounded % 0.5 === 0) return `${rounded} oz`;
+        const whole = Math.floor(rounded);
+        const fraction = rounded - whole;
+        if (fraction === 0.25) return `${whole ? whole + ' ' : ''}1/4 oz`;
+        if (fraction === 0.5) return `${whole ? whole + ' ' : ''}1/2 oz`;
+        if (fraction === 0.75) return `${whole ? whole + ' ' : ''}3/4 oz`;
+        return `${rounded} oz`;
+      }
+      
+      return measure;
+    };
+
     // ============ MAIN APP ============
     
     const App = () => {
@@ -480,6 +578,10 @@
       const [showShoppingList, setShowShoppingList] = useState(null);
       const [updateAvailable, setUpdateAvailable] = useState(false);
       const [waitingWorker, setWaitingWorker] = useState(null);
+      const [unitPreference, setUnitPreference] = useState(() => {
+        const saved = storage.get('unit-preference');
+        return saved?.value === 'ml' ? 'ml' : 'oz';
+      });
       const mainRef = useRef(null);
       const toast = useToast();
 
@@ -602,6 +704,23 @@
           storage.set(`sort-${view}`, sortBy);
         }
       }, [filters, sortBy, view]);
+
+      // Save unit preference
+      useEffect(() => {
+        storage.set('unit-preference', unitPreference);
+      }, [unitPreference]);
+
+      // Lock body scroll when modals are open
+      useEffect(() => {
+        if (selectedDrink || showAddDrink || showImportExport || showConfirmDelete || showImportShared) {
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.style.overflow = '';
+        }
+        return () => {
+          document.body.style.overflow = '';
+        };
+      }, [selectedDrink, showAddDrink, showImportExport, showConfirmDelete, showImportShared]);
 
       const saveData = (key, data) => storage.set(key, JSON.stringify(data));
 
@@ -1661,6 +1780,8 @@
                 onImport={importEverything}
                 unmatchedIngredients={Array.from(unmatchedIngredients)}
                 onImportShared={() => setShowImportShared(true)}
+                unitPreference={unitPreference}
+                onToggleUnit={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
               />
             ) : view === 'collections' ? (
               <CollectionsView
@@ -2048,6 +2169,8 @@
               onDelete={selectedDrink.source === 'custom' ? () => setShowConfirmDelete(selectedDrink.id) : null}
               onShare={shareRecipe}
               onAddToCollection={addRecipeToCollection}
+              unitPreference={unitPreference}
+              onToggleUnit={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
             />
           )}
 
@@ -2874,7 +2997,7 @@
       );
     };
 
-    const SettingsView = ({ onClose, onExport, onImport, unmatchedIngredients, onImportShared }) => {
+    const SettingsView = ({ onClose, onExport, onImport, unmatchedIngredients, onImportShared, unitPreference, onToggleUnit }) => {
       const fileRef = useRef(null);
       const [showDebug, setShowDebug] = useState(false);
       const [importMode, setImportMode] = useState('replace');
@@ -2889,6 +3012,25 @@
           </div>
 
           <div className="space-y-4">
+            {/* Preferences */}
+            <div className="card rounded-xl p-5">
+              <h3 className="font-display text-lg text-cream font-normal mb-4">Preferences</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 border border-white/[0.06] rounded-lg">
+                  <div>
+                    <p className="text-sm text-cream font-light">Measurement Units</p>
+                    <p className="text-2xs text-ink-500 mt-0.5">Display measurements in ounces or milliliters</p>
+                  </div>
+                  <button
+                    onClick={onToggleUnit}
+                    className="px-4 py-2 rounded-lg border border-copper/30 bg-copper/10 hover:bg-copper/20 text-copper font-medium text-sm transition-colors"
+                  >
+                    {unitPreference === 'ml' ? 'ml' : 'oz'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {/* Backup & Restore */}
             <div className="card rounded-xl p-5">
               <h3 className="font-display text-lg text-cream font-normal mb-4">Backup & Restore</h3>
@@ -3167,7 +3309,7 @@
       );
     };
 
-    const RecipeDetail = ({ drink, onClose, rating, isSaved, isFavorite, isWantToTry, canMake, inventory, ingredientsDb, collections, onToggleSaved, onToggleFavorite, onToggleWantToTry, onRate, onDelete, onShare, onAddToCollection }) => {
+    const RecipeDetail = ({ drink, onClose, rating, isSaved, isFavorite, isWantToTry, canMake, inventory, ingredientsDb, collections, onToggleSaved, onToggleFavorite, onToggleWantToTry, onRate, onDelete, onShare, onAddToCollection, unitPreference, onToggleUnit }) => {
       const invCanonical = new Set(inventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
       const [showCollectionPicker, setShowCollectionPicker] = useState(false);
       
@@ -3248,10 +3390,11 @@
                     {drink.ingredients?.map((ing, i) => {
                       const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
                       const hasIt = invCanonical.has(ingCanonical);
+                      const displayMeasure = convertMeasure(ing.measure, unitPreference);
                       return (
                         <li key={i} className="flex items-center gap-3 py-2.5 border-b border-white/[0.02] last:border-0">
                           <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt ? 'bg-emerald-500' : 'bg-ink-700'}`} />
-                          <span className="text-copper-light font-light min-w-[4rem]">{ing.measure}</span>
+                          <span className="text-copper-light font-light min-w-[4rem]">{displayMeasure}</span>
                           <span className="text-ink-300 font-light capitalize">{ing.name}</span>
                         </li>
                       );

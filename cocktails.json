@@ -3413,5 +3413,388 @@
     ],
     "instructions": "Rinse a chilled glass with aguardiente. Stir remaining ingredients with ice. Strain into the prepared glass. Garnish with a lemon twist.",
     "style": "spirit-forward"
+  },
+  {
+    "id": "chimp-on-fire",
+    "name": "Chimp on Fire",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "mezcal",
+        "measure": "1 oz"
+      },
+      {
+        "name": "banana Cynar",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "Mr Black or espresso",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "pineapple liqueur",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "saline",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Stir or shake all ingredients with ice. Strain into a rocks glass.",
+    "notes": "Smoke, coffee, caramelized banana, tropical bitterness.",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "china-noir",
+    "name": "China Noir",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "mezcal",
+        "measure": "1 oz"
+      },
+      {
+        "name": "China China",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Amaro Montenegro",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Angostura bitters",
+        "measure": "1 dash"
+      },
+      {
+        "name": "chocolate bitters",
+        "measure": "1 dash (optional)"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain into a chilled glass or bottle and chill. Serve cold.",
+    "notes": "Dark amaro glow, orange-peel bitterness, soft smoke. Not citrusy, not sweet—just deep. (Amaro CioCiaro can be used for more bite.)",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "sunset-park",
+    "name": "Sunset Park",
+    "category": "Cocktail",
+    "glass": "Cocktail glass",
+    "ingredients": [
+      {
+        "name": "rye whiskey",
+        "measure": "2 oz"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "apricot liqueur",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Angostura bitters",
+        "measure": "2 dashes"
+      }
+    ],
+    "instructions": "Add all ingredients to a chilled mixing glass. Add cracked ice and stir for 25–30 seconds. Strain into a chilled cocktail glass. Garnish with a lemon twist.",
+    "notes": "A lighter, summery Manhattan. Inspired by \"Frank's Special.\"",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "washington-apple",
+    "name": "Washington Apple",
+    "category": "Cocktail",
+    "glass": "Cocktail glass",
+    "ingredients": [
+      {
+        "name": "Canadian rye whisky",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "Granny Smith apple juice",
+        "measure": "1 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "cranberry syrup",
+        "measure": "1/2 oz"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled cocktail glass. Garnish with an apple slice.",
+    "style": "sour"
+  },
+  {
+    "id": "royal-sovereign",
+    "name": "The Royal Sovereign",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "Buffalo Trace bourbon",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "Aperol",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "Pedro Ximénez sherry",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/2 oz"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain over a large ice cube in a rocks glass.",
+    "style": "sour"
+  },
+  {
+    "id": "brandy-fernet-nightcap",
+    "name": "Brandy Fernet Nightcap",
+    "category": "Cocktail",
+    "glass": "Nick & Nora glass",
+    "ingredients": [
+      {
+        "name": "brandy",
+        "measure": "1 1/4 oz"
+      },
+      {
+        "name": "Fernet",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Drambuie",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "blanc vermouth",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Peychaud's bitters",
+        "measure": "1 dash"
+      },
+      {
+        "name": "saline",
+        "measure": "1 drop"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain into a chilled Nick & Nora glass (or serve over a large cube in a rocks glass).",
+    "notes": "Herbal Manhattan-adjacent, warm, bitter-edged, slow-sip closer.",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "grapefruit-moon",
+    "name": "The Grapefruit Moon",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "London dry gin",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "Suze",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "grapefruit liqueur",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Cocchi Americano",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "absinthe",
+        "measure": "rinse"
+      }
+    ],
+    "instructions": "Rinse a chilled coupe with absinthe. Shake remaining ingredients with ice. Fine strain into the prepared coupe. Express a lemon peel over the drink.",
+    "style": "sour"
+  },
+  {
+    "id": "rouge-claire-negroni",
+    "name": "Rouge Claire Negroni",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "London dry gin",
+        "measure": "1 oz"
+      },
+      {
+        "name": "rosé vermouth",
+        "measure": "2/3 oz"
+      },
+      {
+        "name": "Suze",
+        "measure": "1/6 oz"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Double strain into a tumbler with fresh ice. Garnish with a lemon twist or coin.",
+    "notes": "Rosé vermouth (e.g., Cocchi Rosa). Alternative: 1/3 oz red vermouth + 1/3 oz white vermouth.",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "salmoncito",
+    "name": "Salmoncito",
+    "category": "Highball",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "Campari",
+        "measure": "1/3 oz"
+      },
+      {
+        "name": "grapefruit juice",
+        "measure": "1/3 oz"
+      },
+      {
+        "name": "tonic water",
+        "measure": "4-5 oz"
+      }
+    ],
+    "instructions": "Build gin, Campari, and grapefruit juice in an ice-filled highball glass. Top with tonic water. Garnish with a supremed grapefruit wedge; express grapefruit peel and discard.",
+    "style": "highball"
+  },
+  {
+    "id": "snake-eyes",
+    "name": "Snake Eyes",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "mezcal",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "coconut water",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "cane syrup",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "banana liqueur",
+        "measure": "1 tsp"
+      }
+    ],
+    "instructions": "Salt the rim of a large rocks glass. Shake all ingredients with ice. Fine strain over ice in the prepared glass.",
+    "notes": "Preferably Espadín mezcal.",
+    "style": "tropical"
+  },
+  {
+    "id": "clandestine",
+    "name": "Clandestine",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "blended Scotch",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "gentian liqueur",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "bergamot liqueur",
+        "measure": "1/3 oz"
+      },
+      {
+        "name": "honey syrup",
+        "measure": "1/6 oz"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain over ice in a rocks glass or serve up.",
+    "notes": "Gentian liqueur (Suze or Salers). Bergamot liqueur (Italicus). Honey syrup (3:1 honey:water). Created by Simon Difford, 2017.",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "italicus-spritz",
+    "name": "Italicus Spritz",
+    "category": "Spritz",
+    "glass": "Wine glass",
+    "ingredients": [
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "bergamot liqueur",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "gin",
+        "measure": "1 oz"
+      },
+      {
+        "name": "flaky sea salt",
+        "measure": "pinch"
+      },
+      {
+        "name": "prosecco",
+        "measure": "3 oz (to top)"
+      }
+    ],
+    "instructions": "Build all ingredients except prosecco over ice. Top with prosecco. Stir gently.",
+    "notes": "Bergamot liqueur (Italicus).",
+    "style": "spritz"
+  },
+  {
+    "id": "negroni-bianco-bergamotto",
+    "name": "Negroni Bianco Bergamotto",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "London dry gin",
+        "measure": "1 oz"
+      },
+      {
+        "name": "bergamot liqueur",
+        "measure": "1 oz"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "1 oz"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain over fresh ice in a rocks glass.",
+    "notes": "Bergamot liqueur (Italicus).",
+    "style": "spirit-forward"
   }
 ]
