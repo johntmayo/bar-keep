@@ -355,6 +355,18 @@
       return null;
     };
     
+    // Detect base spirit from ingredients
+    const detectSpirit = (drink) => {
+      const ings = drink.ingredients?.map(i => i.name.toLowerCase()).join(' ') || '';
+      if (ings.includes('gin')) return 'Gin';
+      if (ings.includes('vodka')) return 'Vodka';
+      if (ings.match(/whiskey|whisky|bourbon|rye|scotch/)) return 'Whiskey';
+      if (ings.includes('rum')) return 'Rum';
+      if (ings.match(/tequila|mezcal/)) return 'Tequila';
+      if (ings.match(/brandy|cognac/)) return 'Brandy';
+      return 'Other';
+    };
+    
     // Extract 3-5 key modifiers from ingredients (vermouth, amaro, bitters, liqueurs)
     const extractModifiers = (drink, ingredientsDb) => {
       if (!drink.ingredients?.length || !ingredientsDb) return [];
@@ -858,17 +870,6 @@
           return b;
         });
         saveBars(updatedBars);
-      };
-
-      const detectSpirit = (drink) => {
-        const ings = drink.ingredients?.map(i => i.name.toLowerCase()).join(' ') || '';
-        if (ings.includes('gin')) return 'Gin';
-        if (ings.includes('vodka')) return 'Vodka';
-        if (ings.match(/whiskey|whisky|bourbon|rye|scotch/)) return 'Whiskey';
-        if (ings.includes('rum')) return 'Rum';
-        if (ings.match(/tequila|mezcal/)) return 'Tequila';
-        if (ings.match(/brandy|cognac/)) return 'Brandy';
-        return 'Other';
       };
 
       const canMakeDrink = (drink) => {
