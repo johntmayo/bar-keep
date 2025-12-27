@@ -1356,7 +1356,7 @@
         });
         
         return drinks;
-      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, barInventory, ingredientsDb, searchTerm, filters, sortBy, ratings, madeCounts]);
+      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, bars, activeBarId, ingredientsDb, searchTerm, filters, sortBy, ratings, madeCounts]);
       
       const toggleFilter = (category, value) => {
         setFilters(prev => {
@@ -1973,7 +1973,7 @@
     const RecipesHub = ({ 
       savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, 
       onNavigate, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
-      onSelectDrink, barInventory, ratings, savedDrinks, favorites, getMissingCount, canMakeDrink, ingredientsDb, 
+      onSelectDrink, ratings, savedDrinks, favorites, getMissingCount, canMakeDrink, ingredientsDb, 
       bars, activeBar, onSwitchBar, onCreateShoppingList
     }) => {
       // Featured collections: prefer curated, rotate by day if needed
