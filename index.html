@@ -486,6 +486,43 @@
         }
       };
 
+      const loadUserData = () => {
+        try {
+          migrateToBars();
+          
+          const custom = storage.get('custom-drinks');
+          const saved = storage.get('saved-drinks');
+          const fav = storage.get('favorites');
+          const tryList = storage.get('want-to-try');
+          const rate = storage.get('ratings');
+          const coll = storage.get('collections');
+          const made = storage.get('made-counts');
+          if (custom?.value) setCustomDrinks(JSON.parse(custom.value));
+          if (saved?.value) setSavedDrinks(new Set(JSON.parse(saved.value)));
+          if (fav?.value) setFavorites(new Set(JSON.parse(fav.value)));
+          if (tryList?.value) setWantToTry(new Set(JSON.parse(tryList.value)));
+          if (rate?.value) setRatings(JSON.parse(rate.value));
+          if (coll?.value) {
+            // Only load personal collections (curated are system-defined)
+            const loaded = JSON.parse(coll.value);
+            setCollections(loaded.filter(c => !c.collectionType || c.collectionType === 'personal'));
+          }
+          if (made?.value) setMadeCounts(JSON.parse(made.value));
+        } catch (err) {
+          console.error('Load error:', err);
+        }
+      };
+      
+      // Save filters and sort per view
+      useEffect(() => {
+        if (view && (view === 'browse' || view === 'saved' || view === 'favorites' || view === 'canMake' || view === 'almostMake' || view === 'custom')) {
+          storage.set(`filters-${view}`, JSON.stringify(filters));
+          storage.set(`sort-${view}`, sortBy);
+        }
+      }, [filters, sortBy, view]);
+
+      const saveData = (key, data) => storage.set(key, JSON.stringify(data));
+
       // Migration: Convert old single inventory to bars system
       const migrateToBars = () => {
         const oldInv = storage.get('bar-inventory');
@@ -534,43 +571,6 @@
           saveData('active-bar-id', homeBar.id);
         }
       };
-
-      const loadUserData = () => {
-        try {
-          migrateToBars();
-          
-          const custom = storage.get('custom-drinks');
-          const saved = storage.get('saved-drinks');
-          const fav = storage.get('favorites');
-          const tryList = storage.get('want-to-try');
-          const rate = storage.get('ratings');
-          const coll = storage.get('collections');
-          const made = storage.get('made-counts');
-          if (custom?.value) setCustomDrinks(JSON.parse(custom.value));
-          if (saved?.value) setSavedDrinks(new Set(JSON.parse(saved.value)));
-          if (fav?.value) setFavorites(new Set(JSON.parse(fav.value)));
-          if (tryList?.value) setWantToTry(new Set(JSON.parse(tryList.value)));
-          if (rate?.value) setRatings(JSON.parse(rate.value));
-          if (coll?.value) {
-            // Only load personal collections (curated are system-defined)
-            const loaded = JSON.parse(coll.value);
-            setCollections(loaded.filter(c => !c.collectionType || c.collectionType === 'personal'));
-          }
-          if (made?.value) setMadeCounts(JSON.parse(made.value));
-        } catch (err) {
-          console.error('Load error:', err);
-        }
-      };
-      
-      // Save filters and sort per view
-      useEffect(() => {
-        if (view && (view === 'browse' || view === 'saved' || view === 'favorites' || view === 'canMake' || view === 'almostMake' || view === 'custom')) {
-          storage.set(`filters-${view}`, JSON.stringify(filters));
-          storage.set(`sort-${view}`, sortBy);
-        }
-      }, [filters, sortBy, view]);
-
-      const saveData = (key, data) => storage.set(key, JSON.stringify(data));
 
       // Automatic daily backup
       const performAutomaticBackup = () => {
