@@ -464,8 +464,10 @@
         spirits: [],
         methods: [],
         glasses: [],
-        tags: []
+        tags: [],
+        categories: []
       });
+      const [filtersExpanded, setFiltersExpanded] = useState(false);
       const [sortBy, setSortBy] = useState('name');
       const [madeCounts, setMadeCounts] = useState({}); // Track how many times each recipe was made
       const [showConfirmDelete, setShowConfirmDelete] = useState(null);
@@ -1399,6 +1401,13 @@
           drinks = drinks.filter(d => d.glass && filters.glasses.includes(d.glass));
         }
         
+        if (filters.categories.length > 0) {
+          drinks = drinks.filter(d => {
+            const drinkCategory = d.category || d.ibaCategory;
+            return drinkCategory && filters.categories.includes(drinkCategory);
+          });
+        }
+        
         if (filters.tags.includes('canMake')) {
           drinks = drinks.filter(d => canMakeDrink(d));
         }
@@ -1425,7 +1434,7 @@
         });
         
         return drinks;
-      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, bars, activeBarId, ingredientsDb, searchTerm, filters, sortBy, ratings, madeCounts]);
+      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, bars, activeBarId, ingredientsDb, searchTerm, filters, sortBy, ratings, madeCounts, canMakeDrink, getMissingCount]);
       
       const toggleFilter = (category, value) => {
         setFilters(prev => {
@@ -1440,11 +1449,11 @@
       };
       
       const clearFilters = () => {
-        setFilters({ spirits: [], methods: [], glasses: [], tags: [] });
+        setFilters({ spirits: [], methods: [], glasses: [], tags: [], categories: [] });
         setSearchTerm('');
       };
       
-      const hasActiveFilters = filters.spirits.length > 0 || filters.methods.length > 0 || filters.glasses.length > 0 || filters.tags.length > 0 || searchTerm.trim();
+      const hasActiveFilters = filters.spirits.length > 0 || filters.methods.length > 0 || filters.glasses.length > 0 || filters.tags.length > 0 || filters.categories.length > 0 || searchTerm.trim();
       
       // Get unique glass types from all drinks
       const availableGlasses = useMemo(() => {
@@ -1454,6 +1463,17 @@
           if (drink.glass) glassesSet.add(drink.glass);
         });
         return Array.from(glassesSet).sort();
+      }, [curatedDrinks, customDrinks]);
+
+      // Get unique categories from all drinks
+      const availableCategories = useMemo(() => {
+        const categoriesSet = new Set();
+        const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
+        allDrinks.forEach(drink => {
+          if (drink.category) categoriesSet.add(drink.category);
+          if (drink.ibaCategory) categoriesSet.add(drink.ibaCategory);
+        });
+        return Array.from(categoriesSet).sort();
       }, [curatedDrinks, customDrinks]);
 
       const getAlmostMakeCount = () => {
@@ -1696,93 +1716,17 @@
                     </button>
                   </div>
                   
-                  {/* Filter Chips */}
-                  <div className="space-y-3">
-                    {/* Spirits */}
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Spirit:</span>
-                      {SPIRIT_CATEGORIES.map(spirit => (
-                        <button
-                          key={spirit}
-                          onClick={() => toggleFilter('spirits', spirit)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                            filters.spirits.includes(spirit)
-                              ? 'bg-copper/20 text-copper border border-copper/30'
-                              : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                          }`}
-                        >
-                          {spirit}
-                        </button>
-                      ))}
-                    </div>
-                    
-                    {/* Methods */}
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Method:</span>
-                      {METHOD_OPTIONS.map(method => (
-                        <button
-                          key={method}
-                          onClick={() => toggleFilter('methods', method)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                            filters.methods.includes(method)
-                              ? 'bg-copper/20 text-copper border border-copper/30'
-                              : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                          }`}
-                        >
-                          {method}
-                        </button>
-                      ))}
-                    </div>
-                    
-                    {/* Glasses */}
-                    {availableGlasses.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Glass:</span>
-                        {availableGlasses.slice(0, 8).map(glass => (
-                          <button
-                            key={glass}
-                            onClick={() => toggleFilter('glasses', glass)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                              filters.glasses.includes(glass)
-                                ? 'bg-copper/20 text-copper border border-copper/30'
-                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                            }`}
-                          >
-                            {glass}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                    
-                    {/* Tags */}
-                    {(view === 'browse' || view === 'saved' || view === 'favorites' || view === 'custom') && (
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Tags:</span>
-                        <button
-                          onClick={() => toggleFilter('tags', 'canMake')}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                            filters.tags.includes('canMake')
-                              ? 'bg-emerald-900/30 text-emerald-300 border border-emerald-900/50'
-                              : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                          }`}
-                        >
-                          Can Make
-                        </button>
-                        <button
-                          onClick={() => toggleFilter('tags', 'almostMake')}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                            filters.tags.includes('almostMake')
-                              ? 'bg-amber-900/30 text-amber-300 border border-amber-900/50'
-                              : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                          }`}
-                        >
-                          Almost Make
-                        </button>
-                      </div>
-                    )}
-                    
-                    {/* Sort & Clear */}
-                    <div className="flex items-center gap-2 flex-wrap">
+                  {/* Filter Toggle Button */}
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => setFiltersExpanded(!filtersExpanded)}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-ink-400 hover:text-cream transition-colors"
+                    >
+                      <Icon name={filtersExpanded ? "ChevronUp" : "ChevronDown"} className="w-4 h-4" />
+                      <span>Filters {hasActiveFilters && `(${filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length})`}</span>
+                    </button>
+                    {/* Sort (always visible) */}
+                    <div className="flex items-center gap-2">
                       <span className="text-2xs text-ink-600 uppercase tracking-wider">Sort:</span>
                       <select
                         value={sortBy}
@@ -1793,16 +1737,128 @@
                           <option key={opt.value} value={opt.value} className="bg-ink-900">{opt.label}</option>
                         ))}
                       </select>
-                      {hasActiveFilters && (
-                        <button
-                          onClick={clearFilters}
-                          className="px-3 py-1.5 text-xs text-copper hover:text-copper-light whitespace-nowrap"
-                        >
-                          Clear all
-                        </button>
-                      )}
                     </div>
                   </div>
+                  
+                  {/* Expandable Filter Drawer */}
+                  {filtersExpanded && (
+                    <div className="space-y-3 pt-3 border-t border-white/[0.03]">
+                      {/* Categories */}
+                      {availableCategories.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5">
+                          <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Category:</span>
+                          {availableCategories.map(category => (
+                            <button
+                              key={category}
+                              onClick={() => toggleFilter('categories', category)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                                filters.categories.includes(category)
+                                  ? 'bg-copper/20 text-copper border border-copper/30'
+                                  : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                              }`}
+                            >
+                              {category}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {/* Spirits */}
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Spirit:</span>
+                        {SPIRIT_CATEGORIES.map(spirit => (
+                          <button
+                            key={spirit}
+                            onClick={() => toggleFilter('spirits', spirit)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                              filters.spirits.includes(spirit)
+                                ? 'bg-copper/20 text-copper border border-copper/30'
+                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                            }`}
+                          >
+                            {spirit}
+                          </button>
+                        ))}
+                      </div>
+                      
+                      {/* Methods */}
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Method:</span>
+                        {METHOD_OPTIONS.map(method => (
+                          <button
+                            key={method}
+                            onClick={() => toggleFilter('methods', method)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                              filters.methods.includes(method)
+                                ? 'bg-copper/20 text-copper border border-copper/30'
+                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                            }`}
+                          >
+                            {method}
+                          </button>
+                        ))}
+                      </div>
+                      
+                      {/* Glasses */}
+                      {availableGlasses.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5">
+                          <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Glass:</span>
+                          {availableGlasses.slice(0, 8).map(glass => (
+                            <button
+                              key={glass}
+                              onClick={() => toggleFilter('glasses', glass)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                                filters.glasses.includes(glass)
+                                  ? 'bg-copper/20 text-copper border border-copper/30'
+                                  : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                              }`}
+                            >
+                              {glass}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {/* Tags */}
+                      {(view === 'browse' || view === 'saved' || view === 'favorites' || view === 'custom') && (
+                        <div className="flex flex-wrap gap-1.5">
+                          <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Tags:</span>
+                          <button
+                            onClick={() => toggleFilter('tags', 'canMake')}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                              filters.tags.includes('canMake')
+                                ? 'bg-emerald-900/30 text-emerald-300 border border-emerald-900/50'
+                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                            }`}
+                          >
+                            Can Make
+                          </button>
+                          <button
+                            onClick={() => toggleFilter('tags', 'almostMake')}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                              filters.tags.includes('almostMake')
+                                ? 'bg-amber-900/30 text-amber-300 border border-amber-900/50'
+                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                            }`}
+                          >
+                            Almost Make
+                          </button>
+                        </div>
+                      )}
+                      
+                      {/* Clear All */}
+                      {hasActiveFilters && (
+                        <div className="flex justify-end pt-2">
+                          <button
+                            onClick={clearFilters}
+                            className="px-4 py-2 text-xs text-copper hover:text-copper-light whitespace-nowrap"
+                          >
+                            Clear all filters
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Results info */}
@@ -1811,7 +1867,7 @@
                     {displayDrinks.length} {displayDrinks.length === 1 ? 'recipe' : 'recipes'}
                     {hasActiveFilters && (
                       <span className="text-copper ml-1">
-                        · {filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length} filter{filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length !== 1 ? 's' : ''}
+                        · {filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length} filter{filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length !== 1 ? 's' : ''}
                       </span>
                     )}
                   </p>
@@ -3010,15 +3066,14 @@
       const getStatusIndicator = () => {
         if (canMake) {
           return (
-            <div className="flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-ink-600" />
+            <div className="flex items-center justify-center w-5 h-5">
+              <Icon name="Check" className="w-4 h-4 text-emerald-400" />
             </div>
           );
-        } else if (missingCount > 0 && missingCount <= 2) {
+        } else if (missingCount > 0) {
           return (
-            <div className="flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-ink-600" />
-              <span className="text-ink-500 text-2xs">{missingCount}</span>
+            <div className="flex items-center justify-center w-5 h-5 border border-ink-600 rounded-full">
+              <span className="text-ink-500 text-xs font-medium">{missingCount}</span>
             </div>
           );
         }
