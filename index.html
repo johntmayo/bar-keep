@@ -3130,24 +3130,12 @@
                 </p>
               )}
               
-              {/* Tertiary line: modifiers + additional info */}
-              {(modifiers.length > 0 || drink.source === 'custom' || drink.ingredients) && (
-                <p className="text-ink-600 text-2xs font-light line-clamp-1">
-                  {modifiers.length > 0 && (
-                    <>
-                      {modifiers.slice(0, 5).join(' · ')}
-                      {modifiers.length > 5 && ' · ...'}
-                    </>
-                  )}
+              {/* Tertiary line: all ingredients + additional info */}
+              {drink.ingredients && drink.ingredients.length > 0 && (
+                <p className="text-ink-600 text-2xs font-light overflow-hidden text-ellipsis whitespace-nowrap">
+                  {drink.ingredients.map(ing => ing.name).join(' · ')}
                   {drink.source === 'custom' && (
-                    <span className={modifiers.length > 0 ? ' · ' : ''}>
-                      <span className="text-ink-700">Custom</span>
-                    </span>
-                  )}
-                  {drink.ingredients && (
-                    <span className={modifiers.length > 0 || drink.source === 'custom' ? ' · ' : ''}>
-                      {drink.ingredients.length} {drink.ingredients.length === 1 ? 'ingredient' : 'ingredients'}
-                    </span>
+                    <span className="text-ink-700"> · Custom</span>
                   )}
                 </p>
               )}
