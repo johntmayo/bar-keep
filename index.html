@@ -1997,7 +1997,7 @@
       ];
 
       // Empty state if bar is empty
-      if (getActiveBarInventory().length === 0) {
+      if (!activeBar?.inventory || activeBar.inventory.length === 0) {
         return (
           <div className="animate-fade-in">
             <div className="card rounded-xl p-8 text-center mb-6">
@@ -2062,7 +2062,7 @@
               <button
                 onClick={() => {
                   const nextBar = bars.find(b => b.id !== activeBar?.id) || bars[0];
-                  saveActiveBarId(nextBar.id);
+                  onSwitchBar(nextBar.id);
                 }}
                 className="text-xs text-copper hover:text-copper-light flex items-center gap-1"
               >
