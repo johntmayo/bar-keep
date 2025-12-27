@@ -355,6 +355,74 @@
       return null;
     };
     
+    // Extract 3-5 key modifiers from ingredients (vermouth, amaro, bitters, liqueurs)
+    const extractModifiers = (drink, ingredientsDb) => {
+      if (!drink.ingredients?.length || !ingredientsDb) return [];
+      
+      const modifiers = [];
+      const modifierKeywords = [
+        'vermouth', 'amaro', 'bitters', 'liqueur', 'chartreuse', 'campari', 'aperol',
+        'cynar', 'fernet', 'benedictine', 'maraschino', 'cointreau', 'triple sec',
+        'st germain', 'elderflower', 'domaine', 'allspice', 'peychaud', 'angostura',
+        'orange bitters', 'chocolate bitters', 'aromatic bitters'
+      ];
+      
+      // Get base spirits to exclude
+      const spiritKeywords = ['gin', 'vodka', 'whiskey', 'whisky', 'bourbon', 'rye', 'scotch', 'rum', 'tequila', 'mezcal', 'brandy', 'cognac'];
+      const citrusKeywords = ['lemon juice', 'lime juice', 'orange juice', 'grapefruit juice', 'citrus'];
+      
+      for (const ing of drink.ingredients) {
+        if (!ing || !ing.name || typeof ing.name !== 'string') continue;
+        const ingLower = ing.name.toLowerCase();
+        const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+        
+        // Skip base spirits and citrus
+        const isSpirit = spiritKeywords.some(s => ingLower.includes(s));
+        const isCitrus = citrusKeywords.some(c => ingLower.includes(c));
+        if (isSpirit || isCitrus) continue;
+        
+        // Check if it's a modifier
+        const isModifier = modifierKeywords.some(keyword => ingLower.includes(keyword));
+        if (isModifier) {
+          // Get display name from ingredients DB if available, otherwise use original
+          let displayName = ing.name;
+          if (ingredientsDb) {
+            for (const category of ingredientsDb.categories || []) {
+              for (const subcategory of category.subcategories || []) {
+                for (const item of subcategory.items || []) {
+                  const itemCanonical = normalizeIngredient(item.name, ingredientsDb);
+                  if (itemCanonical === ingCanonical || 
+                      item.aliases?.some(alias => normalizeIngredient(alias, ingredientsDb) === ingCanonical)) {
+                    displayName = item.name;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+          
+          // Avoid duplicates
+          if (!modifiers.find(m => normalizeIngredient(m, ingredientsDb) === ingCanonical)) {
+            modifiers.push(displayName);
+          }
+        }
+      }
+      
+      // Prioritize: Vermouth > Amaro > Bitters > Other liqueurs
+      const priority = (name) => {
+        const n = name.toLowerCase();
+        if (n.includes('vermouth')) return 1;
+        if (n.includes('amaro') || n.includes('cynar') || n.includes('fernet') || n.includes('campari') || n.includes('aperol')) return 2;
+        if (n.includes('bitters')) return 3;
+        return 4;
+      };
+      
+      modifiers.sort((a, b) => priority(a) - priority(b));
+      
+      // Return 3-5 items max
+      return modifiers.slice(0, 5);
+    };
+    
     const COMMON_INGREDIENTS = [
       'Gin', 'Vodka', 'Rum', 'Tequila', 'Bourbon', 'Rye Whiskey', 'Scotch', 'Cognac', 'Mezcal',
       'Sweet Vermouth', 'Dry Vermouth', 'Campari', 'Aperol', 'Cointreau', 'Green Chartreuse',
@@ -801,73 +869,6 @@
         if (ings.match(/tequila|mezcal/)) return 'Tequila';
         if (ings.match(/brandy|cognac/)) return 'Brandy';
         return 'Other';
-      };
-
-      // Extract 3-5 key modifiers from ingredients (vermouth, amaro, bitters, liqueurs)
-      const extractModifiers = (drink, ingredientsDb) => {
-        if (!drink.ingredients?.length || !ingredientsDb) return [];
-        
-        const modifiers = [];
-        const modifierKeywords = [
-          'vermouth', 'amaro', 'bitters', 'liqueur', 'chartreuse', 'campari', 'aperol',
-          'cynar', 'fernet', 'benedictine', 'maraschino', 'cointreau', 'triple sec',
-          'st germain', 'elderflower', 'domaine', 'allspice', 'peychaud', 'angostura',
-          'orange bitters', 'chocolate bitters', 'aromatic bitters'
-        ];
-        
-        // Get base spirits to exclude
-        const spiritKeywords = ['gin', 'vodka', 'whiskey', 'whisky', 'bourbon', 'rye', 'scotch', 'rum', 'tequila', 'mezcal', 'brandy', 'cognac'];
-        const citrusKeywords = ['lemon juice', 'lime juice', 'orange juice', 'grapefruit juice', 'citrus'];
-        
-        for (const ing of drink.ingredients) {
-          const ingLower = ing.name.toLowerCase();
-          const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
-          
-          // Skip base spirits and citrus
-          const isSpirit = spiritKeywords.some(s => ingLower.includes(s));
-          const isCitrus = citrusKeywords.some(c => ingLower.includes(c));
-          if (isSpirit || isCitrus) continue;
-          
-          // Check if it's a modifier
-          const isModifier = modifierKeywords.some(keyword => ingLower.includes(keyword));
-          if (isModifier) {
-            // Get display name from ingredients DB if available, otherwise use original
-            let displayName = ing.name;
-            if (ingredientsDb) {
-              for (const category of ingredientsDb.categories || []) {
-                for (const subcategory of category.subcategories || []) {
-                  for (const item of subcategory.items || []) {
-                    const itemCanonical = normalizeIngredient(item.name, ingredientsDb);
-                    if (itemCanonical === ingCanonical || 
-                        item.aliases?.some(alias => normalizeIngredient(alias, ingredientsDb) === ingCanonical)) {
-                      displayName = item.name;
-                      break;
-                    }
-                  }
-                }
-              }
-            }
-            
-            // Avoid duplicates
-            if (!modifiers.find(m => normalizeIngredient(m, ingredientsDb) === ingCanonical)) {
-              modifiers.push(displayName);
-            }
-          }
-        }
-        
-        // Prioritize: Vermouth > Amaro > Bitters > Other liqueurs
-        const priority = (name) => {
-          const n = name.toLowerCase();
-          if (n.includes('vermouth')) return 1;
-          if (n.includes('amaro') || n.includes('cynar') || n.includes('fernet') || n.includes('campari') || n.includes('aperol')) return 2;
-          if (n.includes('bitters')) return 3;
-          return 4;
-        };
-        
-        modifiers.sort((a, b) => priority(a) - priority(b));
-        
-        // Return 3-5 items max
-        return modifiers.slice(0, 5);
       };
 
       const canMakeDrink = (drink) => {
