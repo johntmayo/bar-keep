@@ -1725,10 +1725,15 @@
                     <div className="flex items-center justify-between">
                       <button
                         onClick={() => setFiltersExpanded(!filtersExpanded)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-ink-400 hover:text-cream transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-ink-400 hover:text-ink-200 transition-colors"
                       >
                         <Icon name={filtersExpanded ? "ChevronUp" : "ChevronDown"} className="w-4 h-4" />
-                        <span>Filters {hasActiveFilters && `(${filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length})`}</span>
+                        <span>Filters</span>
+                        {hasActiveFilters && (
+                          <span className="text-xs text-ink-500 ml-1">
+                            ({filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length} active)
+                          </span>
+                        )}
                       </button>
                       {/* Sort (always visible) */}
                       <div className="flex items-center gap-2">
@@ -1747,107 +1752,117 @@
                     
                     {/* Expandable Filter Drawer */}
                     {filtersExpanded && (
-                    <div className="space-y-3 pt-3 border-t border-white/[0.03]">
+                    <div className="space-y-4 pt-3 border-t border-white/[0.03]">
                       {/* Categories */}
                       {availableCategories.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5">
-                          <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Category:</span>
-                          {availableCategories.map(category => (
-                            <button
-                              key={category}
-                              onClick={() => toggleFilter('categories', category)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                                filters.categories.includes(category)
-                                  ? 'bg-copper/20 text-copper border border-copper/30'
-                                  : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                              }`}
-                            >
-                              {category}
-                            </button>
-                          ))}
+                        <div className="flex flex-wrap gap-1.5 items-baseline">
+                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Category</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {availableCategories.map(category => (
+                              <button
+                                key={category}
+                                onClick={() => toggleFilter('categories', category)}
+                                className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                  filters.categories.includes(category)
+                                    ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
+                                    : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                }`}
+                              >
+                                {category}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       )}
                       
                       {/* Spirits */}
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Spirit:</span>
-                        {SPIRIT_CATEGORIES.map(spirit => (
-                          <button
-                            key={spirit}
-                            onClick={() => toggleFilter('spirits', spirit)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                              filters.spirits.includes(spirit)
-                                ? 'bg-copper/20 text-copper border border-copper/30'
-                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                            }`}
-                          >
-                            {spirit}
-                          </button>
-                        ))}
+                      <div className="flex flex-wrap gap-1.5 items-baseline">
+                        <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Spirit</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {SPIRIT_CATEGORIES.map(spirit => (
+                            <button
+                              key={spirit}
+                              onClick={() => toggleFilter('spirits', spirit)}
+                              className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                filters.spirits.includes(spirit)
+                                  ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
+                                  : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                              }`}
+                            >
+                              {spirit}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                       
                       {/* Methods */}
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Method:</span>
-                        {METHOD_OPTIONS.map(method => (
-                          <button
-                            key={method}
-                            onClick={() => toggleFilter('methods', method)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                              filters.methods.includes(method)
-                                ? 'bg-copper/20 text-copper border border-copper/30'
-                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                            }`}
-                          >
-                            {method}
-                          </button>
-                        ))}
+                      <div className="flex flex-wrap gap-1.5 items-baseline">
+                        <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Method</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {METHOD_OPTIONS.map(method => (
+                            <button
+                              key={method}
+                              onClick={() => toggleFilter('methods', method)}
+                              className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                filters.methods.includes(method)
+                                  ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
+                                  : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                              }`}
+                            >
+                              {method}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                       
                       {/* Glasses */}
                       {availableGlasses.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5">
-                          <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Glass:</span>
-                          {availableGlasses.slice(0, 8).map(glass => (
-                            <button
-                              key={glass}
-                              onClick={() => toggleFilter('glasses', glass)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                                filters.glasses.includes(glass)
-                                  ? 'bg-copper/20 text-copper border border-copper/30'
-                                  : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                              }`}
-                            >
-                              {glass}
-                            </button>
-                          ))}
+                        <div className="flex flex-wrap gap-1.5 items-baseline">
+                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Glass</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {availableGlasses.slice(0, 8).map(glass => (
+                              <button
+                                key={glass}
+                                onClick={() => toggleFilter('glasses', glass)}
+                                className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                  filters.glasses.includes(glass)
+                                    ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
+                                    : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                }`}
+                              >
+                                {glass}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       )}
                       
                       {/* Tags */}
                       {(view === 'browse' || view === 'saved' || view === 'favorites' || view === 'custom') && (
-                        <div className="flex flex-wrap gap-1.5">
-                          <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Tags:</span>
-                          <button
-                            onClick={() => toggleFilter('tags', 'canMake')}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                              filters.tags.includes('canMake')
-                                ? 'bg-emerald-900/30 text-emerald-300 border border-emerald-900/50'
-                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                            }`}
-                          >
-                            Can Make
-                          </button>
-                          <button
-                            onClick={() => toggleFilter('tags', 'almostMake')}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
-                              filters.tags.includes('almostMake')
-                                ? 'bg-amber-900/30 text-amber-300 border border-amber-900/50'
-                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
-                            }`}
-                          >
-                            Almost Make
-                          </button>
+                        <div className="flex flex-wrap gap-1.5 items-baseline">
+                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Tags</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            <button
+                              onClick={() => toggleFilter('tags', 'canMake')}
+                              className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                filters.tags.includes('canMake')
+                                  ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
+                                  : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                              }`}
+                            >
+                              Can Make
+                            </button>
+                            <button
+                              onClick={() => toggleFilter('tags', 'almostMake')}
+                              className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                filters.tags.includes('almostMake')
+                                  ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
+                                  : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                              }`}
+                            >
+                              Almost Make
+                            </button>
+                          </div>
                         </div>
                       )}
                       
@@ -1924,10 +1939,10 @@
 
                 {/* Recipe List */}
                 {loading ? (
-                  <div className="card rounded-xl overflow-hidden">
+                  <div className="bg-transparent border border-white/[0.02] rounded">
                     {[...Array(6)].map((_, i) => (
-                      <div key={i} className="py-3 px-4 border-b border-white/[0.03] animate-pulse">
-                        <div className="h-5 bg-ink-800 rounded w-1/3 mb-2" />
+                      <div key={i} className="py-2.5 px-4 border-b border-white/[0.02] animate-pulse last:border-0">
+                        <div className="h-5 bg-ink-800 rounded w-1/3 mb-1.5" />
                         <div className="h-3 bg-ink-800 rounded w-1/4 mb-1" />
                         <div className="h-2.5 bg-ink-800 rounded w-1/2" />
                       </div>
@@ -1936,7 +1951,7 @@
                 ) : displayDrinks.length === 0 ? (
                   <EmptyState view={view} onAction={() => view === 'canMake' ? setView('inventory') : setShowAddDrink(true)} />
                 ) : (
-                  <div className="card rounded-xl overflow-hidden">
+                  <div className="bg-transparent border border-white/[0.02] rounded overflow-hidden">
                     {displayDrinks.map((drink, i) => (
                       <RecipeRow
                         key={drink.id}
@@ -2224,7 +2239,7 @@
                   <Icon name="ArrowRight" className="w-4 h-4" />
                 </button>
               </div>
-              <div className="card rounded-xl overflow-hidden">
+              <div className="bg-transparent border border-white/[0.02] rounded overflow-hidden">
                 {canMakeRecipes.map(drink => (
                   <RecipeRow
                     key={drink.id}
@@ -2278,7 +2293,7 @@
                   </button>
                 </div>
               </div>
-              <div className="card rounded-xl overflow-hidden">
+              <div className="bg-transparent border border-white/[0.02] rounded overflow-hidden">
                 {almostMakeRecipes.map(drink => {
                   const missing = getMissingCount(drink);
                   return (
@@ -2825,7 +2840,7 @@
               )}
             </div>
           ) : (
-            <div className="card rounded-xl overflow-hidden">
+            <div className="bg-transparent border border-white/[0.02] rounded overflow-hidden">
               {recipes.map(drink => (
                 <div key={drink.id} className="relative group">
                   <RecipeRow
@@ -3070,19 +3085,17 @@
       const modifiers = extractModifiers(drink, ingredientsDb);
       const category = drink.category || drink.ibaCategory;
       
-      // Status indicator - smaller and more subtle
+      // Status indicator - neutral margin language (no color emphasis)
       const getStatusIndicator = () => {
         if (canMake) {
+          // Ready: show nothing OR tiny neutral dot (no checkmark, no green)
+          return null;
+        } else if (missingCount > 0 && missingCount <= 2) {
+          // Missing 1-2: show tiny neutral number
           return (
-            <div className="flex items-center justify-center w-3 h-3">
-              <Icon name="Check" className="w-2.5 h-2.5 text-ink-500" />
-            </div>
-          );
-        } else if (missingCount > 0) {
-          return (
-            <div className="flex items-center justify-center w-3.5 h-3.5 border border-ink-700 rounded-full">
-              <span className="text-ink-600 text-[10px] font-medium leading-none">{missingCount}</span>
-            </div>
+            <span className="text-ink-600 text-[10px] font-medium leading-none tabular-nums">
+              {missingCount}
+            </span>
           );
         }
         return null;
@@ -3097,7 +3110,7 @@
       
       return (
         <div 
-          className="w-full py-3 px-4 border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors cursor-pointer group last:border-0"
+          className="w-full py-2.5 px-4 border-b border-white/[0.02] hover:bg-white/[0.015] transition-colors cursor-pointer group last:border-0"
           onClick={onClick}
         >
           <div className="flex items-start gap-3">
@@ -3112,66 +3125,40 @@
             )}
             
             <div className="flex-1 min-w-0">
-              {/* Primary line: Recipe name */}
-              <div className="flex items-start justify-between gap-3 mb-1">
-                <h3 className="font-display text-base text-cream font-medium group-hover:text-copper-light transition-colors line-clamp-1">
+              {/* Primary line: Recipe name with status indicator in margin */}
+              <div className="flex items-start gap-3">
+                <h3 className="font-display text-base text-ink-100 font-medium group-hover:text-ink-50 transition-colors line-clamp-1 flex-1">
                   {drink.name}
                 </h3>
-                {getStatusIndicator()}
+                {/* Status indicator in right margin - neutral and small */}
+                <div className="flex-shrink-0 w-4 text-right">
+                  {getStatusIndicator()}
+                </div>
               </div>
               
               {/* Category (if available) */}
               {category && (
-                <div className="mb-1">
-                  <span className="text-ink-500 text-xs font-medium">{category}</span>
+                <div className="mt-0.5 mb-0.5">
+                  <span className="text-ink-600 text-xs font-medium">{category}</span>
                 </div>
               )}
               
               {/* Secondary line: spirit · method · glass */}
               {secondaryLine && (
-                <p className="text-ink-500 text-xs font-light mb-0.5 line-clamp-1">
+                <p className="text-ink-500 text-xs font-light mt-0.5 line-clamp-1">
                   {secondaryLine}
                 </p>
               )}
               
               {/* Tertiary line: all ingredients + additional info */}
               {drink.ingredients && drink.ingredients.length > 0 && (
-                <p className="text-ink-600 text-2xs font-light overflow-hidden text-ellipsis whitespace-nowrap">
+                <p className="text-ink-600/80 text-2xs font-light overflow-hidden text-ellipsis whitespace-nowrap mt-0.5">
                   {drink.ingredients.map(ing => ing.name).join(' · ')}
                   {drink.source === 'custom' && (
                     <span className="text-ink-700"> · Custom</span>
                   )}
                 </p>
               )}
-            </div>
-            
-            {/* Right side: rating and quick actions */}
-            <div className="flex items-center gap-2 flex-shrink-0">
-              {rating > 0 && (
-                <StarRating rating={rating} readonly size="text-2xs" />
-              )}
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
-                  className={`p-1.5 rounded transition-colors ${isFavorite ? 'text-copper' : 'text-ink-500 hover:text-copper'}`}
-                >
-                  <Icon name="Heart" className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); onToggleSaved(); }}
-                  className={`p-1.5 rounded transition-colors ${isSaved ? 'text-copper' : 'text-ink-500 hover:text-copper'}`}
-                >
-                  <Icon name="Bookmark" className="w-3.5 h-3.5" />
-                </button>
-                {onToggleWantToTry && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onToggleWantToTry(); }}
-                    className={`p-1.5 rounded transition-colors ${isWantToTry ? 'text-copper' : 'text-ink-500 hover:text-copper'}`}
-                  >
-                    <Icon name="Star" className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
             </div>
           </div>
         </div>
