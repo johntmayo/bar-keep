@@ -4485,12 +4485,7 @@
     "source": "https://punchdrink.com/recipes/alpine-negroni-2/",
     "style": "spirit-forward"
   },
-  {
-    "id": "alpine-negroni",
-    "name": "Alpine Negroni",
-    "category": "Cocktail",
-    "style": "spirit-forward"
-  },
+ 
   {
     "id": "eeyores-requiem",
     "name": "Eeyore's Requiem",
