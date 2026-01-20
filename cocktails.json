@@ -4723,6 +4723,22 @@
     "id": "cardinale",
     "name": "Cardinale",
     "category": "Cocktail",
+    "glass": "Old-fashioned glass",
+    "ingredients": [
+      {
+        "name": "Gin",
+        "measure": "30 ml"
+      },
+      {
+        "name": "Red bitter liqueur",
+        "measure": "30 ml"
+      },
+      {
+        "name": "Dry vermouth",
+        "measure": "30 ml"
+      }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of orange slice wheel or wedge. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably over a large cube or chunk of block ice).",
     "style": "classic"
   },
   {
