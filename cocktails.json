@@ -4338,7 +4338,7 @@
         "measure": "3/4 ounce"
       },
       {
-        "name": "Lilletperitif",
+        "name": "Lilletperitif, (see Editor's Note)",
         "measure": "1/2 ounce"
       },
       {
@@ -4355,6 +4355,7 @@
       }
     ],
     "instructions": "Combine all ingredients in a mixing tin and shake with ice. Strain into a chilled coupe or cocktail glass. Garnish with a lemon twist.",
+    "notes": "Lilletperitif: 1 ounce Lillet, 1/2 ounce Cynar, 1/4 ounce Campari. Combine all ingredients in a mixing glass and stir to combine.",
     "source": "https://punchdrink.com/recipes/fairbanks-loan-2/",
     "style": "classic"
   },
@@ -4422,7 +4423,7 @@
       },
       {
         "name": "orange bitters, such as Angostura",
-        "measure": "3 dashes"
+        "measure": "3 dash"
       }
     ],
     "instructions": "Combine all ingredients in a mixing glass with ice and stir to chill. Strain into a coupe over a large ice cube. Express a lemon twist over the drink, then discard.",
@@ -4475,11 +4476,11 @@
         "measure": "3/4 ounce"
       },
       {
-        "name": "acid-adjusted orange juice",
+        "name": "acid-adjusted orange juice (see Editor's Note)",
         "measure": "3/8 ounce"
       },
       {
-        "name": "acid-adjusted pineapple juice",
+        "name": "acid-adjusted pineapple juice (see Editor's Note)",
         "measure": "3/8 ounce"
       },
       {
@@ -4492,6 +4493,7 @@
       }
     ],
     "instructions": "Combine all ingredients in a shaker. Add ice (preferably one large shaking cube and two Kold-Draft cubes), seal, and shake until well-chilled. Strain into a chilled Nick & Nora glass. Garnish with a disco ball keychain.",
+    "notes": "Acid-Adjusted Pineapple Juice: 100 milliliters pineapple juice, strained, 3.2 grams citric acid, 2 grams malic acid. In a container, stir all ingredients to combine. Acid-Adjusted Orange Juice: 100 milliliters orange juice, strained, 3.2 grams citric acid, 2 grams malic acid. In a container, stir all ingredients to combine.",
     "source": "https://punchdrink.com/recipes/multiverse/",
     "style": "experimental"
   },
@@ -4645,11 +4647,12 @@
         "measure": "1/2 ounce"
       },
       {
-        "name": "pineapple gum syrup",
+        "name": "pineapple gum syrup (see Editor's Note)",
         "measure": "1/2 ounce"
       }
     ],
     "instructions": "Combine all ingredients in a shaker. Add ice and shake until chilled. Double-strain into a chilled coupe.",
+    "notes": "Pineapple Gum Syrup: 340 grams sugar, 17 grams gum arabic, 400 milliliters pineapple juice. Sift the gum arabic into the sugar. Heat the pineapple juice to 180°F, and slowly add the sugar mixture, stirring continuously until fully dissolved. Strain the mixture through cheesecloth and let it sit overnight in the refrigerator. Skim off the white film that forms on the top, then bottle. Keeps, refrigerated, for about 1 month.",
     "source": "https://punchdrink.com/recipes/hawaiian-cocktail/",
     "style": "tropical"
   },
@@ -4703,7 +4706,7 @@
         "measure": "1 ounce"
       },
       {
-        "name": "cranberry shrub",
+        "name": "cranberry shrub (see Editor's Note)",
         "measure": "1 1/2 ounces"
       },
       {
@@ -4712,6 +4715,7 @@
       }
     ],
     "instructions": "In a Collins glass, combine tequila and shrub. Add club soda. Add cube ice and stir gently. Garnish with a mint sprig.",
+    "notes": "Combine equal parts (by volume) 100 percent cranberry juice, water, distilled white vinegar and white sugar. Whisk all ingredients together until the sugar has dissolved completely.",
     "source": "https://punchdrink.com/recipes/dauphines-roffignac/",
     "style": "classic"
   },
@@ -4822,7 +4826,7 @@
     "glass": "Rocks glass",
     "ingredients": [
       {
-        "name": "strawberry-infused Campari",
+        "name": "strawberry-infused Campari (see Editor's Note)",
         "measure": "1 ounce"
       },
       {
@@ -4835,6 +4839,7 @@
       }
     ],
     "instructions": "Combine all ingredients in a mixing glass over ice and stir until chilled. Strain into a rocks glass over a large ice cube. Garnish with a half strawberry.",
+    "notes": "Strawberry-Infused Campari: 1 quart sliced strawberries, 750mL Campari. Combine ingredients in a nonreactive container and allow them to infuse for three to four days. Strain out the solids and rebottle.",
     "style": "tropical"
   },
   {
