@@ -92,7 +92,8 @@
               "name": "Fireball Cinnamon Whiskey",
               "aliases": [
                 "fireball"
-              ]
+              ],
+              "description": "A whiskey-based liqueur infused with sweet and fiery cinnamon flavor, bottled at a low 33% ABV. More of a party shooter than a craft cocktail ingredient, its candy-like spice can add a fun kick to simple mixed drinks or seasonal punches when used in moderation."
             }
           ]
         },
@@ -107,20 +108,17 @@
                 "gin",
                 "dry gin"
               ],
-              "description": "Crisp, juniper-forward classic gin style with no added sweeteners after distillation.",
-              "usage": "Its dry, botanical profile makes it the versatile base for staples like the Martini and Gin & Tonic."
+              "description": "Crisp, juniper-forward classic gin style with no added sweeteners after distillation. Its dry, botanical profile makes it the versatile base for staples like the Martini and Gin & Tonic."
             },
             {
               "id": "old-tom-gin",
               "name": "Old Tom Gin",
-              "description": "A lightly sweetened 18th-century gin style, softer and less juniper-intense than London Dry.",
-              "usage": "Bridging malty genever and dry gin, it's ideal for historic cocktails like the Tom Collins that benefit from its subtle sweetness."
+              "description": "A lightly sweetened 18th-century gin style, softer and less juniper-intense than London Dry. Bridging malty genever and dry gin, it's ideal for historic cocktails like the Tom Collins that benefit from its subtle sweetness."
             },
             {
               "id": "plymouth-gin",
               "name": "Plymouth Gin",
-              "description": "A historic style from Plymouth, England, known for a balanced, earthy botanical mix and a slightly softer juniper profile.",
-              "usage": "Smoother and more citrus-forward than a London Dry, it works well in martinis and adds a rounded character to any gin cocktail."
+              "description": "A historic style from Plymouth, England, known for a balanced, earthy botanical mix and a slightly softer juniper profile. Smoother and more citrus-forward than a London Dry, it works well in martinis and adds a rounded character to any gin cocktail."
             },
             {
               "id": "genever",
@@ -128,29 +126,34 @@
               "aliases": [
                 "jenever",
                 "dutch gin"
-              ]
+              ],
+              "description": "The Dutch predecessor to modern gin, distilled from a malted grain mash with juniper and other botanicals. It has a fuller, malty body with a touch of sweetness, often enjoyed neat or in classic cocktails where its whiskey-like richness shines."
             },
             {
               "id": "navy-strength-gin",
-              "name": "Navy Strength Gin"
+              "name": "Navy Strength Gin",
+              "description": "Overproof gin (around 57% ABV) originally made for British naval officers, packing intense botanical concentration. Its higher alcohol amplifies bold juniper and spice flavors, holding up in punchy cocktails and adding a robust kick to classics."
             },
             {
               "id": "sloe-gin",
-              "name": "Sloe Gin"
+              "name": "Sloe Gin",
+              "description": "A ruby-red liqueur made by infusing gin with sloe berries (wild plums) and sugar, yielding tart berry and almond notes. Lower in alcohol and sweet-tart in flavor, it's used as a fruity modifier in drinks like the Sloe Gin Fizz for a crimson twist."
             },
             {
               "id": "contemporary-gin",
               "name": "Contemporary Gin",
               "aliases": [
                 "new western gin"
-              ]
+              ],
+              "description": "Modern gin styles that de-emphasize juniper, showcasing citrus, floral, or herbal botanicals more prominently. These 'New Western' gins offer unique flavor profiles, lending creative twists to cocktails and appealing to those less fond of the traditional juniper punch."
             },
             {
               "id": "barrel-aged-gin",
               "name": "Barrel-Aged Gin",
               "aliases": [
                 "oak-aged gin"
-              ]
+              ],
+              "description": "Gin that's rested in wood casks, picking up a touch of color and whiskey-like complexity from the oak. The aging smooths the gin's edges and imparts vanilla or spice notes, creating a hybrid spirit great for sipping or adding depth to classic gin cocktails like the Negroni."
             }
           ]
         },
@@ -182,70 +185,83 @@
             },
             {
               "id": "aged-rum",
-              "name": "Aged Rum"
+              "name": "Aged Rum",
+              "description": "Rum matured for several years in oak barrels, developing complexity akin to a fine whiskey. Expect smooth notes of oak, vanilla, and dried fruit; premium aged rums are great for sipping neat or elevating classic rum cocktails (like a Rum Old Fashioned) with their depth."
             },
             {
               "id": "overproof-rum",
               "name": "Overproof Rum",
               "aliases": [
                 "151 rum"
-              ]
+              ],
+              "description": "Potent rum bottled at higher-than-normal strength (often 50-75% ABV), far stronger than standard 40% rums. It packs a boozy punch and concentrated flavor, so it's used sparingly in Tiki drinks like the Zombie or as a float/garnish, adding fiery intensity beyond what normal rum provides."
             },
             {
               "id": "jamaican-rum",
               "name": "Jamaican Rum",
               "aliases": [
                 "funky rum"
-              ]
+              ],
+              "description": "Pot-still rum from Jamaica famous for its heavy 'funk' (high esters) that gives off overripe banana, pineapple, and other intensely funky aromas. This intensely flavorful style (a little goes a long way) adds exotic depth to tropical cocktails and is the cornerstone of many Tiki recipes like Planter's Punch."
             },
             {
               "id": "demerara-rum",
-              "name": "Demerara Rum"
+              "name": "Demerara Rum",
+              "description": "Rum from Guyana's Demerara region, known for a dark, smoky-sweet profile with notes of burnt sugar, toffee, and wood spice. Heavy-bodied and rich (e.g., El Dorado rums), it provides a lush, caramelized backbone to tropical libations and stands up well in full-flavored cocktails."
             },
             {
               "id": "rhum-agricole",
-              "name": "Rhum Agricole"
+              "name": "Rhum Agricole",
+              "description": "French Caribbean rum distilled from fresh sugarcane juice (not molasses), typically from Martinique. It has a grassy, earthy brightness with vegetal and floral hints—a vibrant departure from molasses rums that shines in cocktails like the Ti' Punch or a distinctive Daiquiri."
             },
             {
               "id": "cachaca",
               "name": "Cachaça",
               "aliases": [
                 "cachaca"
-              ]
+              ],
+              "description": "Brazil's national spirit, also made from fresh sugarcane juice, with a rustic, earthy edge. Generally unaged or lightly aged, it has grassy and fruity notes with a funkier bite than most rum, and is the essential base for a Caipirinha (Brazil's signature cocktail)."
             },
             {
               "id": "cuban-style-white-rum",
-              "name": "Cuban-Style White Rum"
+              "name": "Cuban-Style White Rum",
+              "description": "A smooth, light-bodied rum in the Cuban tradition (think Havana Club or Bacardi), often column-distilled and charcoal-filtered. Clean in taste with subtle hints of cane and citrus, it's perfect for Cuban classics like the Daiquiri and Mojito where a delicate rum lets other flavors shine."
             },
             {
               "id": "barbados-rum",
-              "name": "Barbados Rum"
+              "name": "Barbados Rum",
+              "description": "Balanced rum from Barbados, typically a blend of pot and column still distillates aged without heavy additives. Renowned for a mellow harmony of vanilla, toasted sugar, and tropical fruit notes, it's versatile—smooth enough to sip straight and flavorful enough to uplift any rum cocktail."
             },
             {
               "id": "demerara-overproof-rum",
-              "name": "Demerara Overproof Rum"
+              "name": "Demerara Overproof Rum",
+              "description": "A high-proof rum from Guyana combining Demerara's signature smoky, toffee-rich flavor with intense strength (often ~151 proof). It's an essential component in powerful Tiki drinks, delivering deep caramel smoke and an extra kick, though used sparingly due to its potency."
             },
             {
               "id": "rhum-agricole-blanc",
               "name": "Rhum Agricole Blanc",
               "aliases": [
                 "agricole blanc"
-              ]
+              ],
+              "description": "Unaged white rum distilled from fresh sugarcane juice and bottled straight off the still, keeping its full grassy, pungent character intact. Bursting with herbal and tropical fruit notes, it's traditional in the Ti' Punch and adds an unmistakable earthy kick to cocktails calling for raw sugarcane spirit."
             },
             {
               "id": "rhum-agricole-vieux",
               "name": "Rhum Agricole Vieux",
               "aliases": [
                 "agricole vieux"
-              ]
+              ],
+              "description": "Aged rhum agricole ('vieux' meaning old) mellowed in oak barrels for years, which tames its grassy bite and adds vanilla, spice, and woody notes. The result is a refined spirit blending earthy cane character with Cognac-like smoothness, excellent for sipping or adding layered complexity to premium cocktails."
             },
             {
               "id": "blackstrap-rum",
-              "name": "Blackstrap Rum"
+              "name": "Blackstrap Rum",
+              "description": "An extremely dark, heavy rum made from the final molasses (blackstrap) of sugar refining, loaded with deep molasses and licorice flavors. Thick and a bit bitter-sweet, it's usually used in small doses in cocktails to impart rich color and a robust treacle-like sweetness (for example, as a float in Tiki drinks)."
             },
             {
               "id": "spiced-rum",
-              "name": "Spiced Rum"
+              "name": "Spiced Rum",
+              "description": "Rum infused with spices (vanilla, cinnamon, clove, etc.) and often a hint of added sweetness. Its warming spice and smooth sweetness make it popular for mixing with cola, ginger beer, or in easy tropical drinks, though it's rarely called for in classic cocktails."
             }
           ]
         },
@@ -270,35 +286,43 @@
             },
             {
               "id": "tequila-anejo",
-              "name": "Tequila Añejo"
-            },
-            {
-              "id": "mezcal",
-              "name": "Mezcal"
-            },
-            {
-              "id": "mezcal-joven",
-              "name": "Mezcal Joven"
-            },
-            {
-              "id": "sotol",
-              "name": "Sotol"
-            },
-            {
-              "id": "raicilla",
-              "name": "Raicilla"
+              "name": "Tequila Añejo",
+              "description": "Tequila aged 1-3 years in small oak barrels; amber-colored with smooth, rich notes of vanilla, caramel, spice, and dried fruit. Often sipped neat for its complexity, but also a bold substitute for whiskey in Old Fashioned-style cocktails."
             },
             {
               "id": "tequila-extra-anejo",
-              "name": "Tequila Extra Añejo"
+              "name": "Tequila Extra Añejo",
+              "description": "Ultra-aged tequila (minimum 3 years in oak); deep mahogany spirit with intensely layered oak, caramel, and spice flavors. Luxuriously smooth and complex—usually reserved for sipping like a fine cognac rather than used in mixed drinks."
+            },
+            {
+              "id": "mezcal",
+              "name": "Mezcal",
+              "description": "Traditional Mexican agave spirit (from 40+ agave species), typically pit-roasted for a signature smoky, earthy flavor. Rustic and complex; brings smoky depth to Margaritas and other cocktails, or enjoyed neat for its rich, earthy character."
+            },
+            {
+              "id": "mezcal-joven",
+              "name": "Mezcal Joven",
+              "description": "Unaged mezcal ('joven' meaning young), bottled straight after distillation for a bold, authentic agave profile. Clear and intense, showcasing raw smoky agave; the standard mezcal style and ideal for cocktails requiring pure agave flavor."
             },
             {
               "id": "mezcal-espadin",
-              "name": "Mezcal Espadín"
+              "name": "Mezcal Espadín",
+              "description": "Mezcal distilled from the Espadín agave (Angustifolia), the workhorse varietal behind up to 90% of all mezcal. Balanced smoke and gentle agave sweetness; an approachable, versatile choice that integrates smoothly into mezcal cocktails."
             },
             {
               "id": "mezcal-other-agaves",
-              "name": "Mezcal (Other Agaves)"
+              "name": "Mezcal (Other Agaves)",
+              "description": "Artisanal mezcals made from wild or rare agave species (Tobalá, Tepeztate, Arroqueño, etc.), often slow-growing with limited yields. Expect bold, exotic flavors—from earthy and mineral to spicy and floral—reflecting each species' terroir. Usually sipped to appreciate their complexity, though a splash can add unique depth to cocktails."
+            },
+            {
+              "id": "sotol",
+              "name": "Sotol",
+              "description": "Earthy northern Mexican spirit distilled from the desert spoon plant (not a true agave), using mezcal-like roasting methods. Offers a smoky, earthy flavor with a bright, grassy twist; used as a unique herbal alternative to tequila or mezcal in cocktails."
+            },
+            {
+              "id": "raicilla",
+              "name": "Raicilla",
+              "description": "Funky, rustic agave spirit from Jalisco (western Mexico), often dubbed 'Mexican moonshine' for its outlaw origins. More aromatic than tequila, with notes of wet earth, pepper, and tropical fruit—yet typically less smoky than mezcal; a daring swap for an adventurous agave cocktail."
             }
           ]
         },
@@ -317,27 +341,33 @@
               "aliases": [
                 "vodka citron",
                 "lemon vodka"
-              ]
+              ],
+              "description": "Vodka infused with lemon or citrus peel. Bright and zesty; often used in sours and spritzes."
             },
             {
               "id": "vanilla-vodka",
-              "name": "Vanilla Vodka"
+              "name": "Vanilla Vodka",
+              "description": "Flavored vodka with sweet vanilla notes. Adds warmth to creamy or dessert-style cocktails."
             },
             {
               "id": "pepper-vodka",
-              "name": "Pepper Vodka"
+              "name": "Pepper Vodka",
+              "description": "Vodka infused with black or chili pepper. Spicy kick for Bloody Marys and savory drinks."
             },
             {
               "id": "potato-vodka",
-              "name": "Potato Vodka"
+              "name": "Potato Vodka",
+              "description": "Vodka distilled from potatoes. Creamy texture with subtle earthy notes."
             },
             {
               "id": "wheat-vodka",
-              "name": "Wheat Vodka"
+              "name": "Wheat Vodka",
+              "description": "Vodka made from wheat; smooth and soft. Common in crisp, balanced vodka cocktails."
             },
             {
               "id": "rye-vodka",
-              "name": "Rye Vodka"
+              "name": "Rye Vodka",
+              "description": "Vodka distilled from rye grain. Dry and slightly spicy; good in bold builds."
             }
           ]
         },
@@ -350,54 +380,66 @@
               "name": "Cognac",
               "aliases": [
                 "brandy"
-              ]
+              ],
+              "description": "French brandy from the Cognac region. Smooth, elegant; used in Sidecars and sips."
             },
             {
               "id": "armagnac",
-              "name": "Armagnac"
+              "name": "Armagnac",
+              "description": "Rustic French brandy from Gascony. Earthier and bolder than Cognac; often sipped."
             },
             {
               "id": "calvados",
               "name": "Calvados",
               "aliases": [
                 "apple brandy"
-              ]
+              ],
+              "description": "Apple brandy from Normandy, France. Fruity and dry; works in fall cocktails or sipped neat."
             },
             {
               "id": "pisco",
-              "name": "Pisco"
+              "name": "Pisco",
+              "description": "Unaged grape brandy from Peru or Chile. Floral and bright; base of the Pisco Sour."
             },
             {
               "id": "grappa",
-              "name": "Grappa"
+              "name": "Grappa",
+              "description": "Italian pomace brandy from grape skins. Sharp and herbal; mostly sipped, sometimes mixed."
             },
             {
               "id": "brandy-vs",
-              "name": "VS Brandy"
+              "name": "VS Brandy",
+              "description": "'Very Special' — aged at least 2 years. Lightest style; ideal for mixed drinks."
             },
             {
               "id": "brandy-vsop",
-              "name": "VSOP Brandy"
+              "name": "VSOP Brandy",
+              "description": "'Very Superior Old Pale' — aged 4+ years. Smoother and richer; bridges sipping and mixing."
             },
             {
               "id": "eau-de-vie",
-              "name": "Eau de Vie"
+              "name": "Eau de Vie",
+              "description": "Clear, unaged fruit brandy. Pure fruit flavor; used in delicate cocktails."
             },
             {
               "id": "american-brandy",
-              "name": "American Brandy"
+              "name": "American Brandy",
+              "description": "Domestic brandy, often grape-based. Versatile style; mixes well or sips neat."
             },
             {
               "id": "spanish-brandy",
-              "name": "Spanish Brandy"
+              "name": "Spanish Brandy",
+              "description": "Brandy from Spain, often sherry cask-aged. Rich, nutty, and smooth; good neat or stirred."
             },
             {
               "id": "applejack",
-              "name": "Applejack"
+              "name": "Applejack",
+              "description": "American apple brandy or blend. Rustic fruit notes; stars in a Jack Rose."
             },
             {
               "id": "marc",
-              "name": "Marc"
+              "name": "Marc",
+              "description": "French pomace brandy (like grappa). Rustic and dry; rarely mixed, often sipped."
             }
           ]
         },
@@ -407,35 +449,43 @@
           "items": [
             {
               "id": "absinthe",
-              "name": "Absinthe"
+              "name": "Absinthe",
+              "description": "High-proof anise spirit with wormwood. Used in dashes or rinses; classic in Sazeracs."
             },
             {
               "id": "aquavit",
-              "name": "Aquavit"
+              "name": "Aquavit",
+              "description": "Scandinavian spirit flavored with caraway and dill. Savory and herbal; used in Nordic-inspired cocktails."
             },
             {
               "id": "aguardiente",
-              "name": "Aguardiente"
+              "name": "Aguardiente",
+              "description": "Latin American anise-flavored spirit. Strong and sweet; typically shot or sipped."
             },
             {
               "id": "baijiu",
-              "name": "Baijiu"
+              "name": "Baijiu",
+              "description": "Chinese grain spirit with complex, funky flavors. Traditionally sipped; emerging in cocktails."
             },
             {
               "id": "soju",
-              "name": "Soju"
+              "name": "Soju",
+              "description": "Korean spirit, mild and slightly sweet. Low proof; popular for casual drinking and simple mixes."
             },
             {
               "id": "shochu",
-              "name": "Shochu"
+              "name": "Shochu",
+              "description": "Japanese distilled spirit from rice, barley, or sweet potato. Clean and versatile; mixed or on the rocks."
             },
             {
               "id": "pastis",
-              "name": "Pastis"
+              "name": "Pastis",
+              "description": "French anise-flavored aperitif. Turns cloudy with water; refreshing and licorice-forward."
             },
             {
               "id": "sambuca",
-              "name": "Sambuca"
+              "name": "Sambuca",
+              "description": "Italian anise liqueur, sweet and aromatic. Often served with coffee beans or as a shot."
             }
           ]
         }
@@ -456,7 +506,8 @@
             },
             {
               "id": "grand-marnier",
-              "name": "Grand Marnier"
+              "name": "Grand Marnier",
+              "description": "Orange liqueur blended with Cognac. Richer, deeper flavor; used in Sidecars and sips."
             },
             {
               "id": "triple-sec",
@@ -468,15 +519,18 @@
               "name": "Orange Curaçao",
               "aliases": [
                 "curacao"
-              ]
+              ],
+              "description": "Dutch-style orange liqueur, often sweeter. Classic in Mai Tais and tiki recipes."
             },
             {
               "id": "blue-curacao",
-              "name": "Blue Curaçao"
+              "name": "Blue Curaçao",
+              "description": "Artificially colored orange liqueur. Tropical visual flair; similar flavor to triple sec."
             },
             {
               "id": "dry-curacao",
-              "name": "Dry Curaçao"
+              "name": "Dry Curaçao",
+              "description": "Orange liqueur with drier, spiced profile. Elegant citrus note in classics and riffs."
             }
           ]
         },
@@ -486,63 +540,75 @@
           "items": [
             {
               "id": "green-chartreuse",
-              "name": "Green Chartreuse"
+              "name": "Green Chartreuse",
+              "description": "Potent herbal liqueur made by Carthusian monks. Intensely complex; key in Last Words and Bijous."
             },
             {
               "id": "yellow-chartreuse",
-              "name": "Yellow Chartreuse"
+              "name": "Yellow Chartreuse",
+              "description": "Milder, sweeter sibling to Green Chartreuse. Floral and spiced; used in softer riffs and sips."
             },
             {
               "id": "benedictine",
-              "name": "Bénédictine"
+              "name": "Bénédictine",
+              "description": "French herbal liqueur with honey and spice. Smooth and warming; in classics like the Vieux Carré."
             },
             {
               "id": "galliano",
-              "name": "Galliano"
+              "name": "Galliano",
+              "description": "Tall, vanilla-forward Italian herbal liqueur. Used in Harvey Wallbangers and dessert drinks."
             },
             {
               "id": "strega",
-              "name": "Strega"
+              "name": "Strega",
+              "description": "Saffron-tinted Italian liqueur; herbal and aniseed. Sweet and spiced; used in unique stirred builds."
             },
             {
               "id": "genepy",
-              "name": "Génépy"
+              "name": "Génépy",
+              "description": "Alpine herbal liqueur related to Chartreuse. Light, floral bitterness; adds alpine lift to cocktails."
             },
             {
               "id": "becherovka",
-              "name": "Becherovka"
+              "name": "Becherovka",
+              "description": "Czech herbal bitters with cinnamon and clove. Spicy and warming; sipped or mixed like amaro."
             },
             {
               "id": "jagermeister",
-              "name": "Jägermeister"
+              "name": "Jägermeister",
+              "description": "German herbal liqueur; sweet, dark, and spiced. Used in shots or to add depth to modern drinks."
             },
             {
               "id": "absinthe-verte",
               "name": "Absinthe Verte",
               "aliases": [
                 "absinthe"
-              ]
+              ],
+              "description": "High-proof anise liqueur with wormwood. Used in dashes or rinses; classic in Sazeracs."
             },
             {
               "id": "ancho-chile-liqueur",
               "name": "Ancho Chile Liqueur",
               "aliases": [
                 "ancho reyes"
-              ]
+              ],
+              "description": "Mexican chile liqueur made from dried poblanos. Smoky heat; adds depth to spicy or savory drinks."
             },
             {
               "id": "zirbenz",
               "name": "Zirbenz Stone Pine Liqueur",
               "aliases": [
                 "zirbenz stone pine"
-              ]
+              ],
+              "description": "Stone pine liqueur from the Alps. Forest-y and resinous; great in wintery riffs."
             },
             {
               "id": "kummel",
               "name": "Kümmel",
               "aliases": [
                 "kummel"
-              ]
+              ],
+              "description": "Caraway, cumin, and fennel-flavored liqueur. Savory and spiced; appears in vintage classics."
             }
           ]
         },
@@ -562,133 +628,161 @@
             },
             {
               "id": "fernet-branca",
-              "name": "Fernet Branca"
+              "name": "Fernet Branca",
+              "description": "Bold, bitter amaro with mint and herbal intensity. Sipped, shot, or mixed in rich stirred drinks."
             },
             {
               "id": "amaro-nonino",
-              "name": "Amaro Nonino"
+              "name": "Amaro Nonino",
+              "description": "Elegant amaro with citrus peel and soft spice. Core of the Paper Plane; bittersweet and smooth."
             },
             {
               "id": "amaro-montenegro",
-              "name": "Amaro Montenegro"
+              "name": "Amaro Montenegro",
+              "description": "Gentle amaro with orange blossom and vanilla. Approachable; used in low-ABV builds or sipped."
             },
             {
               "id": "amaro-averna",
-              "name": "Amaro Averna"
+              "name": "Amaro Averna",
+              "description": "Dark, syrupy Sicilian amaro. Rich with cola and spice; great in Black Manhattans."
             },
             {
               "id": "cynar",
-              "name": "Cynar"
+              "name": "Cynar",
+              "description": "Artichoke-based amaro with vegetal bitterness. Earthy and herbal; used in spritzes and Negroni riffs."
             },
             {
               "id": "amaro-lucano",
-              "name": "Amaro Lucano"
+              "name": "Amaro Lucano",
+              "description": "Medium-weight amaro with citrus and baking spice. Balanced and versatile in both sips and mixes."
             },
             {
               "id": "amaro-meletti",
-              "name": "Amaro Meletti"
+              "name": "Amaro Meletti",
+              "description": "Sweet-forward amaro with floral and cola notes. Great after dinner or in mellow stirred cocktails."
             },
             {
               "id": "amer-picon",
-              "name": "Amer Picon"
+              "name": "Amer Picon",
+              "description": "Bitter French orange liqueur with gentian. Traditional in the Picon Bière and Brooklyn."
             },
             {
               "id": "suze",
-              "name": "Suze"
+              "name": "Suze",
+              "description": "Pale yellow gentian liqueur; earthy and bitter. Bright bitterness for French aperitifs and highballs."
             },
             {
               "id": "select-aperitivo",
-              "name": "Select Aperitivo"
+              "name": "Select Aperitivo",
+              "description": "Venetian aperitivo with bitter orange and herbs. Campari alternative; core of the original Spritz."
             },
             {
               "id": "cynar-70",
-              "name": "Cynar 70"
+              "name": "Cynar 70",
+              "description": "High-proof version of Cynar. Bolder bitterness; stands up in boozier builds."
             },
             {
               "id": "fernet-menta",
               "name": "Fernet Menta",
               "aliases": [
                 "fernet branca menta"
-              ]
+              ],
+              "description": "Fernet Branca with added mint and sweetness. Cooling and bold; used in shots or chocolatey drinks."
             },
             {
               "id": "amaro-ramazzotti",
-              "name": "Amaro Ramazzotti"
+              "name": "Amaro Ramazzotti",
+              "description": "Balanced, cola-like amaro from Milan. Smooth and round; friendly in simple stirred drinks."
             },
             {
               "id": "amaro-nardini",
-              "name": "Amaro Nardini"
+              "name": "Amaro Nardini",
+              "description": "Dry, alpine-style amaro with licorice and herbs. Lean and bitter; used in complex stirred drinks."
             },
             {
               "id": "amaro-braulio",
-              "name": "Amaro Braulio"
+              "name": "Amaro Braulio",
+              "description": "Mountain amaro from the Italian Alps. Dry, piney, and herbal; great after dinner."
             },
             {
               "id": "amaro-dell-etna",
-              "name": "Amaro Dell’Etna",
+              "name": "Amaro Dell'Etna",
               "aliases": [
                 "amaro dell'etna"
-              ]
+              ],
+              "description": "Sicilian amaro with baking spice and citrus. Bold and bittersweet; versatile in bitter builds."
             },
             {
               "id": "amaro-sibilla",
-              "name": "Amaro Sibilla"
+              "name": "Amaro Sibilla",
+              "description": "Rustic, intense amaro with honey and bitter roots. Dense and earthy; more for sipping than mixing."
             },
             {
               "id": "amaro-tosolini",
-              "name": "Amaro Tosolini"
+              "name": "Amaro Tosolini",
+              "description": "Modern amaro with orange peel and cocoa. Smooth and rounded; great neat or in a flip."
             },
             {
               "id": "amaro-zucca",
-              "name": "Amaro Zucca"
+              "name": "Amaro Zucca",
+              "description": "Rhubarb-based amaro with smoky, herbal notes. Lighter body; used in aperitivo-style cocktails."
             },
             {
               "id": "cardamaro",
-              "name": "Cardamaro"
+              "name": "Cardamaro",
+              "description": "Wine-based amaro with cardoon and blessed thistle. Bittersweet and soft; pairs well with whiskey."
             },
             {
               "id": "bonal-gentiane-quina",
               "name": "Bonal Gentiane-Quina",
               "aliases": [
                 "bonal"
-              ]
+              ],
+              "description": "Aromatized wine with gentian and quinine. Floral and bitter; great in aperitif-style drinks."
             },
             {
               "id": "cappelletti-aperitivo",
-              "name": "Cappelletti Aperitivo"
+              "name": "Cappelletti Aperitivo",
+              "description": "Red bitter liqueur made with wine base. Lighter than Campari; smooth in spritzes."
             },
             {
               "id": "contratto-bitter",
-              "name": "Contratto Bitter"
+              "name": "Contratto Bitter",
+              "description": "All-natural red bitter liqueur from Italy. Vibrant and herbal; high-end Campari substitute."
             },
             {
               "id": "italicus",
               "name": "Italicus",
               "aliases": [
                 "italicus rosolio di bergamotto"
-              ]
+              ],
+              "description": "Rosolio made with bergamot and florals. Bright, elegant citrus; modern aperitivo."
             },
             {
               "id": "china-china",
               "name": "China-China",
               "aliases": [
                 "china china"
-              ]
+              ],
+              "description": "Rich, dark French amaro with orange and spice. Thick and bittersweet; used in spirit-forward builds."
             },
             {
               "id": "pelinkovac",
-              "name": "Pelinkovac"
+              "name": "Pelinkovac",
+              "description": "Balkan wormwood-based bitter liqueur. Intensely herbal and dry; often sipped or shot."
             },
             {
               "id": "byrrh",
-              "name": "Byrrh"
+              "name": "Byrrh",
+              "description": "Red wine quinquina with fruit and spice. Low-proof and earthy; used like sweet vermouth."
             },
             {
               "id": "select-bitter",
               "name": "Select Bitter",
               "aliases": [
                 "select aperitivo"
-              ]
+              ],
+              "description": "Venetian aperitivo used in original Spritz. Alternative name for Select Aperitivo."
             }
           ]
         },
@@ -701,30 +795,36 @@
               "name": "Amaretto",
               "aliases": [
                 "disaronno"
-              ]
+              ],
+              "description": "Almond-flavored liqueur, often from apricot pits. Sweet and nutty; used in Sours and dessert drinks."
             },
             {
               "id": "frangelico",
-              "name": "Frangelico"
+              "name": "Frangelico",
+              "description": "Italian hazelnut liqueur with hints of vanilla. Rich and smooth; common in creamy builds."
             },
             {
               "id": "nocino",
-              "name": "Nocino"
+              "name": "Nocino",
+              "description": "Dark walnut liqueur from green walnuts. Bittersweet and spiced; used in fall/winter cocktails."
             },
             {
               "id": "hazelnut-liqueur",
-              "name": "Hazelnut Liqueur"
+              "name": "Hazelnut Liqueur",
+              "description": "Sweet, roasted hazelnut-flavored liqueur. Lighter than Frangelico; pairs well with chocolate."
             },
             {
               "id": "walnut-liqueur",
               "name": "Walnut Liqueur",
               "aliases": [
                 "nocino"
-              ]
+              ],
+              "description": "Nutty, tannic liqueur made from green walnuts. Similar to nocino; earthy and complex."
             },
             {
               "id": "pistachio-liqueur",
-              "name": "Pistachio Liqueur"
+              "name": "Pistachio Liqueur",
+              "description": "Creamy liqueur with pistachio flavor. Rare; used in dessert-style or novelty builds."
             }
           ]
         },
@@ -738,106 +838,133 @@
               "aliases": [
                 "luxardo",
                 "maraschino"
-              ]
+              ],
+              "description": "Clear cherry liqueur with nutty, dry finish. Essential in classics like the Aviation and Last Word."
             },
             {
               "id": "creme-de-cassis",
-              "name": "Crème de Cassis"
+              "name": "Crème de Cassis",
+              "description": "Sweet blackcurrant liqueur from France. Used in Kir or to add berry depth to cocktails."
             },
             {
               "id": "creme-de-mure",
               "name": "Crème de Mûre",
               "aliases": [
                 "blackberry liqueur"
-              ]
+              ],
+              "description": "Blackberry liqueur; rich and sweet. Stars in the Bramble and other berry builds."
             },
             {
               "id": "chambord",
-              "name": "Chambord"
+              "name": "Chambord",
+              "description": "French black raspberry liqueur with vanilla. Elegant and sweet; used in sours and bubbles."
             },
             {
               "id": "cherry-heering",
-              "name": "Cherry Heering"
+              "name": "Cherry Heering",
+              "description": "Danish cherry liqueur with spice and depth. Key in the Singapore Sling; darker than maraschino."
             },
             {
               "id": "kirsch",
               "name": "Kirsch",
               "aliases": [
                 "kirschwasser"
-              ]
+              ],
+              "description": "Dry, clear cherry brandy (eau de vie). Not sweet; used in punches or alpine drinks."
             },
             {
               "id": "apricot-brandy",
               "name": "Apricot Brandy",
               "aliases": [
                 "apricot liqueur"
-              ]
+              ],
+              "description": "Apricot liqueur or brandy base with stone fruit flavor. Adds fruity warmth to classics and tiki."
             },
             {
               "id": "peach-schnapps",
-              "name": "Peach Schnapps"
+              "name": "Peach Schnapps",
+              "description": "Intensely sweet, low-proof peach liqueur. Used in 80s/90s drinks like the Sex on the Beach."
             },
             {
               "id": "passoa",
-              "name": "Passoa"
+              "name": "Passoa",
+              "description": "Bright red passion fruit liqueur from France. Tropical and tart; used in Pornstar Martinis."
             },
             {
               "id": "midori",
               "name": "Midori",
               "aliases": [
                 "melon liqueur"
-              ]
+              ],
+              "description": "Neon green Japanese melon liqueur. Sweet and fruity; iconic in 80s/90s cocktails."
             },
             {
               "id": "limoncello",
-              "name": "Limoncello"
+              "name": "Limoncello",
+              "description": "Italian lemon liqueur; sweet and citrusy. Typically served chilled; also used in sours."
             },
             {
               "id": "poire-william",
-              "name": "Poire William"
+              "name": "Poire William",
+              "description": "Pear eau de vie; dry and aromatic. Used in elegant stirred or Champagne cocktails."
             },
             {
               "id": "peach-liqueur",
               "name": "Peach Liqueur",
               "aliases": [
                 "creme de peche"
-              ]
+              ],
+              "description": "Sweeter peach option; often labeled crème de pêche. Lighter alternative to schnapps in classic builds."
             },
             {
               "id": "pear-liqueur",
-              "name": "Pear Liqueur"
+              "name": "Pear Liqueur",
+              "description": "Sweetened liqueur with ripe pear flavor. Soft and floral; pairs well with gin or whiskey."
             },
             {
               "id": "raspberry-liqueur",
-              "name": "Raspberry Liqueur"
+              "name": "Raspberry Liqueur",
+              "description": "Bright red and sweet; ripe berry character. Used in Clover Clubs or sparkling drinks."
             },
             {
               "id": "blackberry-liqueur",
-              "name": "Blackberry Liqueur"
+              "name": "Blackberry Liqueur",
+              "description": "Deep, jammy liqueur with ripe berry notes. Used in Brambles, cobblers, and fruity riffs."
             },
             {
               "id": "strawberry-liqueur",
-              "name": "Strawberry Liqueur"
+              "name": "Strawberry Liqueur",
+              "description": "Sweet and red-fruited; often syrupy. Used in dessert-style or novelty cocktails."
             },
             {
               "id": "banana-liqueur",
-              "name": "Banana Liqueur"
+              "name": "Banana Liqueur",
+              "description": "Bright yellow liqueur with ripe banana flavor. Classic in tiki and tropical builds."
             },
             {
               "id": "passion-fruit-liqueur",
-              "name": "Passion Fruit Liqueur"
+              "name": "Passion Fruit Liqueur",
+              "description": "Tart and tropical with citrusy acidity. Adds zing to modern sours and spritzes."
             },
             {
               "id": "blood-orange-liqueur",
-              "name": "Blood Orange Liqueur"
+              "name": "Blood Orange Liqueur",
+              "description": "Rich, slightly bitter orange liqueur. Deeper than triple sec; great in riffs."
             },
             {
               "id": "lemon-liqueur",
-              "name": "Lemon Liqueur"
+              "name": "Lemon Liqueur",
+              "description": "Sweet lemon liqueur, similar to limoncello. Used in citrus-forward or dessert drinks."
             },
             {
               "id": "lime-liqueur",
-              "name": "Lime Liqueur"
+              "name": "Lime Liqueur",
+              "description": "Zesty, sweet-tart lime flavor. Rarely used alone; supports tropical builds."
+            },
+            {
+              "id": "apricot-liqueur",
+              "name": "Apricot Liqueur",
+              "description": "Stone fruit liqueur; sweet and jammy. Richer and more syrupy than apricot brandy."
             }
           ]
         },
@@ -850,30 +977,36 @@
               "name": "Crème de Cacao (Dark)",
               "aliases": [
                 "creme de cacao"
-              ]
+              ],
+              "description": "Rich, sweet chocolate liqueur with dark cocoa flavor. Used in dessert cocktails and classics like the Alexander."
             },
             {
               "id": "creme-de-cacao-white",
-              "name": "Crème de Cacao (White)"
+              "name": "Crème de Cacao (White)",
+              "description": "Clear version of chocolate liqueur. Same flavor as dark; keeps drinks light in color."
             },
             {
               "id": "creme-de-menthe-green",
               "name": "Crème de Menthe (Green)",
               "aliases": [
                 "creme de menthe"
-              ]
+              ],
+              "description": "Bright green mint liqueur; sweet and cooling. Used in Grasshoppers and vintage drinks."
             },
             {
               "id": "creme-de-menthe-white",
-              "name": "Crème de Menthe (White)"
+              "name": "Crème de Menthe (White)",
+              "description": "Clear mint liqueur; same flavor as green. Keeps color neutral in cocktails."
             },
             {
               "id": "baileys",
-              "name": "Baileys Irish Cream"
+              "name": "Baileys Irish Cream",
+              "description": "Cream liqueur with Irish whiskey and chocolate. Popular in coffee drinks and dessert-style cocktails."
             },
             {
               "id": "mozart",
-              "name": "Mozart Chocolate Liqueur"
+              "name": "Mozart Chocolate Liqueur",
+              "description": "Austrian liqueur line focused on chocolate. Creamy and rich; used in decadent drinks."
             }
           ]
         },
@@ -887,19 +1020,23 @@
               "aliases": [
                 "kahlua",
                 "kahlúa"
-              ]
+              ],
+              "description": "Sweet coffee-flavored liqueur; often rum-based. Classic in Espresso Martinis and White Russians."
             },
             {
               "id": "tia-maria",
-              "name": "Tia Maria"
+              "name": "Tia Maria",
+              "description": "Jamaican coffee liqueur with vanilla notes. Lighter than Kahlúa; great in iced or creamy builds."
             },
             {
               "id": "mr-black",
-              "name": "Mr Black"
+              "name": "Mr Black",
+              "description": "Australian cold brew coffee liqueur. Less sweet, more robust; a modern favorite."
             },
             {
               "id": "espresso-liqueur",
-              "name": "Espresso Liqueur"
+              "name": "Espresso Liqueur",
+              "description": "Concentrated coffee liqueur with bold espresso flavor. Intense; for coffee-forward cocktails."
             }
           ]
         },
@@ -913,31 +1050,38 @@
               "aliases": [
                 "st germain",
                 "st-germain"
-              ]
+              ],
+              "description": "Delicate liqueur with floral and lychee notes. Best known in the St-Germain Spritz."
             },
             {
               "id": "creme-de-violette",
-              "name": "Crème de Violette"
+              "name": "Crème de Violette",
+              "description": "Sweet violet liqueur; floral and perfumed. Core of the Aviation cocktail."
             },
             {
               "id": "parfait-amour",
-              "name": "Parfait Amour"
+              "name": "Parfait Amour",
+              "description": "Floral liqueur with citrus and vanilla. Purple-hued; used in vintage and novelty drinks."
             },
             {
               "id": "creme-yvette",
-              "name": "Crème Yvette"
+              "name": "Crème Yvette",
+              "description": "Violet-based liqueur with berries and spice. Richer than violette; also used in Aviations."
             },
             {
               "id": "rose-liqueur",
-              "name": "Rose Liqueur"
+              "name": "Rose Liqueur",
+              "description": "Fragrant liqueur with sweet rose flavor. Used sparingly to add floral nuance."
             },
             {
               "id": "lavender-liqueur",
-              "name": "Lavender Liqueur"
+              "name": "Lavender Liqueur",
+              "description": "Herbal-floral liqueur with bright lavender notes. Pairs well with gin, honey, or citrus."
             },
             {
               "id": "orange-blossom-liqueur",
-              "name": "Orange Blossom Liqueur"
+              "name": "Orange Blossom Liqueur",
+              "description": "Floral citrus liqueur from orange tree blossoms. Delicate and aromatic; ideal for perfumed builds."
             }
           ]
         },
@@ -947,52 +1091,62 @@
           "items": [
             {
               "id": "drambuie",
-              "name": "Drambuie"
+              "name": "Drambuie",
+              "description": "Scotch-based liqueur with honey and herbs. Key in the Rusty Nail; rich and smooth."
             },
             {
               "id": "falernum",
-              "name": "Falernum"
+              "name": "Falernum",
+              "description": "Caribbean liqueur with lime, almond, and spice. Tiki essential; used in Mai Tais and Zombies."
             },
             {
               "id": "allspice-dram",
               "name": "Allspice Dram",
               "aliases": [
                 "pimento dram"
-              ]
+              ],
+              "description": "Pimento berry liqueur; warm and spiced. Adds depth to tiki and winter cocktails."
             },
             {
               "id": "licor-43",
-              "name": "Licor 43"
+              "name": "Licor 43",
+              "description": "Vanilla and citrus Spanish liqueur. Used in coffee drinks and creamy builds."
             },
             {
               "id": "domaine-de-canton",
               "name": "Domaine de Canton",
               "aliases": [
                 "ginger liqueur"
-              ]
+              ],
+              "description": "Ginger liqueur with honey and citrus. Bright and spicy; pairs well with whiskey or rum."
             },
             {
               "id": "ancho-reyes",
-              "name": "Ancho Reyes"
+              "name": "Ancho Reyes",
+              "description": "Smoky chile liqueur made from ancho chiles. Adds heat and depth to bold cocktails."
             },
             {
               "id": "velvet-falernum",
-              "name": "Velvet Falernum"
+              "name": "Velvet Falernum",
+              "description": "Bottled falernum liqueur; softer and sweet. Classic in tiki and Caribbean drinks."
             },
             {
               "id": "sloe-liqueur",
-              "name": "Sloe Liqueur"
+              "name": "Sloe Liqueur",
+              "description": "Sweet liqueur made from sloe berries. Fruitier than sloe gin; used in spritzes and fizzes."
             },
             {
               "id": "anisette",
-              "name": "Anisette"
+              "name": "Anisette",
+              "description": "Sweet anise-flavored liqueur. Used in Mediterranean and old-school builds."
             },
             {
               "id": "pimento-dram",
               "name": "Pimento Dram",
               "aliases": [
                 "allspice dram"
-              ]
+              ],
+              "description": "Another name for Allspice Dram. Spiced and warming; key in tropical spice notes."
             }
           ]
         }
@@ -1029,15 +1183,18 @@
               "name": "Blanc Vermouth",
               "aliases": [
                 "bianco vermouth"
-              ]
+              ],
+              "description": "White vermouth; sweeter than dry, lighter than red. Floral and citrusy; great in aperitifs and spritzes."
             },
             {
               "id": "punt-e-mes",
-              "name": "Punt e Mes"
+              "name": "Punt e Mes",
+              "description": "Bitter Italian vermouth with a dark, spicy profile. Bolder than standard sweet vermouth."
             },
             {
               "id": "rose-vermouth",
-              "name": "Rosé Vermouth"
+              "name": "Rosé Vermouth",
+              "description": "Rosé-based vermouth; light and floral. Delicate aperitif; often served with soda or tonic."
             }
           ]
         },
@@ -1047,59 +1204,70 @@
           "items": [
             {
               "id": "lillet-blanc",
-              "name": "Lillet Blanc"
+              "name": "Lillet Blanc",
+              "description": "French aperitif wine with citrus and floral notes. Used in Vespers and light spritzes."
             },
             {
               "id": "lillet-rose",
-              "name": "Lillet Rosé"
+              "name": "Lillet Rosé",
+              "description": "Rosé-based version of Lillet. Fruity and refreshing; great with tonic."
             },
             {
               "id": "lillet-rouge",
-              "name": "Lillet Rouge"
+              "name": "Lillet Rouge",
+              "description": "Red wine aperitif with spice and berry notes. Richer than Blanc; sipped or used in low-ABV builds."
             },
             {
               "id": "cocchi-americano",
-              "name": "Cocchi Americano"
+              "name": "Cocchi Americano",
+              "description": "Bittered white aperitif wine with gentian. Lillet Blanc alternative; crisp and complex."
             },
             {
               "id": "cocchi-rosa",
-              "name": "Cocchi Rosa"
+              "name": "Cocchi Rosa",
+              "description": "Rosé aperitif wine with fruit and spice. Bittersweet and vibrant; ideal in spritzes."
             },
             {
               "id": "dubonnet",
-              "name": "Dubonnet"
+              "name": "Dubonnet",
+              "description": "Sweet red quinquina with spice and fruit. Favored in classic aperitif cocktails."
             },
             {
               "id": "pineau-des-charentes",
-              "name": "Pineau des Charentes"
+              "name": "Pineau des Charentes",
+              "description": "French fortified wine with Cognac and grape juice. Sweet and nutty; usually sipped chilled."
             },
             {
               "id": "dubonnet-rouge",
               "name": "Dubonnet Rouge",
               "aliases": [
                 "dubonnet rouge"
-              ]
+              ],
+              "description": "Red Dubonnet; rich and spiced. Used in aperitifs and classic French cocktails."
             },
             {
               "id": "dubonnet-blanc",
               "name": "Dubonnet Blanc",
               "aliases": [
                 "dubonnet blanc"
-              ]
+              ],
+              "description": "White Dubonnet; lighter and herbal. A softer take on the rouge; aperitif-style."
             },
             {
               "id": "byrrh-grande-quinquina",
               "name": "Byrrh (Quinquina)",
               "aliases": [
                 "byrrh"
-              ]
+              ],
+              "description": "Red wine-based quinquina with quinine and herbs. Bittersweet and earthy; served chilled or mixed."
             },
             {
               "id": "bonal",
               "name": "Bonal Gentiane-Quina",
               "aliases": [
                 "bonal gentiane quina"
-              ]
+              ],
+              "description": "Aromatized wine with gentian and quinine. Bitter and herbal; bridges vermouth and amaro."
             }
           ]
         },
@@ -1109,34 +1277,41 @@
           "items": [
             {
               "id": "fino-sherry",
-              "name": "Fino Sherry"
+              "name": "Fino Sherry",
+              "description": "Dry, pale sherry with salty, almondy character. Great in lighter aperitif-style cocktails."
             },
             {
               "id": "manzanilla-sherry",
-              "name": "Manzanilla Sherry"
+              "name": "Manzanilla Sherry",
+              "description": "Fino-style from Sanlúcar; slightly brinier. Crisp and delicate; ideal in coastal or savory builds."
             },
             {
               "id": "amontillado-sherry",
-              "name": "Amontillado Sherry"
+              "name": "Amontillado Sherry",
+              "description": "Medium-dry sherry; nutty with oxidative notes. Adds depth to stirred and savory cocktails."
             },
             {
               "id": "oloroso-sherry",
-              "name": "Oloroso Sherry"
+              "name": "Oloroso Sherry",
+              "description": "Rich, dark, and dry sherry with bold flavor. Used in heavier stirred or whiskey-based drinks."
             },
             {
               "id": "px-sherry",
               "name": "Pedro Ximénez Sherry",
               "aliases": [
                 "PX sherry"
-              ]
+              ],
+              "description": "Extremely sweet, raisiny dessert sherry. Used in dessert drinks or small touches for richness."
             },
             {
               "id": "cream-sherry",
-              "name": "Cream Sherry"
+              "name": "Cream Sherry",
+              "description": "Blended sweet sherry; soft and smooth. Used in flips or dessert-style builds."
             },
             {
               "id": "palo-cortado",
-              "name": "Palo Cortado Sherry"
+              "name": "Palo Cortado Sherry",
+              "description": "Rare style; combines finesse of Amontillado with body of Oloroso. Dry and complex; used in high-end stirred builds."
             }
           ]
         },
@@ -1146,27 +1321,33 @@
           "items": [
             {
               "id": "ruby-port",
-              "name": "Ruby Port"
+              "name": "Ruby Port",
+              "description": "Young, sweet red port; bright fruit flavor. Used in punches or rich, fruity cocktails."
             },
             {
               "id": "tawny-port",
-              "name": "Tawny Port"
+              "name": "Tawny Port",
+              "description": "Aged port with nutty, oxidative character. Smooth and mellow; used in stirred or dessert drinks."
             },
             {
               "id": "white-port",
-              "name": "White Port"
+              "name": "White Port",
+              "description": "Made from white grapes; lightly sweet and crisp. Used in spritzes or Port & Tonics."
             },
             {
               "id": "madeira",
-              "name": "Madeira"
+              "name": "Madeira",
+              "description": "Fortified wine from Portugal; tangy and oxidized. Complex and long-lasting; great in flips and sours."
             },
             {
               "id": "marsala-dry",
-              "name": "Marsala (Dry)"
+              "name": "Marsala (Dry)",
+              "description": "Sicilian fortified wine with nutty dryness. Used in savory cocktails or culinary riffs."
             },
             {
               "id": "marsala-sweet",
-              "name": "Marsala (Sweet)"
+              "name": "Marsala (Sweet)",
+              "description": "Sweet version of Marsala; raisiny and rich. Occasionally used in dessert-style cocktails."
             }
           ]
         }
@@ -1182,23 +1363,28 @@
           "items": [
             {
               "id": "champagne",
-              "name": "Champagne"
+              "name": "Champagne",
+              "description": "French sparkling wine from Champagne region. Dry, toasty, and crisp; used in classic bubbly cocktails."
             },
             {
               "id": "prosecco",
-              "name": "Prosecco"
+              "name": "Prosecco",
+              "description": "Italian sparkling wine; fruitier and softer than Champagne. Popular in Spritzes and light brunch drinks."
             },
             {
               "id": "cava",
-              "name": "Cava"
+              "name": "Cava",
+              "description": "Spanish sparkling wine; dry and zesty. Affordable alternative to Champagne in cocktails."
             },
             {
               "id": "sparkling-wine",
-              "name": "Sparkling Wine"
+              "name": "Sparkling Wine",
+              "description": "General term for carbonated wines. Adds effervescence to spritzes and festive builds."
             },
             {
               "id": "sparkling-rose",
-              "name": "Sparkling Rosé"
+              "name": "Sparkling Rosé",
+              "description": "Rosé-based sparkling wine. Bright, fruity, and pink; used in vibrant cocktails."
             }
           ]
         },
@@ -1208,15 +1394,18 @@
           "items": [
             {
               "id": "dry-white-wine",
-              "name": "Dry White Wine"
+              "name": "Dry White Wine",
+              "description": "Crisp white wine with little to no residual sugar. Used in spritzes or cooking-style builds."
             },
             {
               "id": "red-wine",
-              "name": "Red Wine"
+              "name": "Red Wine",
+              "description": "Varied in body and flavor; tannic and bold. Floated on drinks or used in punches and sangrias."
             },
             {
               "id": "rose-wine",
-              "name": "Rosé Wine"
+              "name": "Rosé Wine",
+              "description": "Light pink wine with floral and berry notes. Served chilled; sometimes used in spritz or sangria riffs."
             }
           ]
         }
@@ -1235,62 +1424,76 @@
               "name": "Angostura Bitters",
               "aliases": [
                 "angostura"
-              ]
+              ],
+              "description": "Classic aromatic bitters from Trinidad. Spiced and herbal; foundational in countless classics."
             },
             {
               "id": "peychauds-bitters",
               "name": "Peychaud's Bitters",
               "aliases": [
                 "peychauds"
-              ]
+              ],
+              "description": "Bright red bitters with anise and floral notes. Signature of the Sazerac cocktail."
             },
             {
               "id": "orange-bitters",
-              "name": "Orange Bitters"
+              "name": "Orange Bitters",
+              "description": "Bitters with orange peel and spice. Brightens up Martinis and whiskey drinks."
             },
             {
               "id": "chocolate-bitters",
-              "name": "Chocolate Bitters"
+              "name": "Chocolate Bitters",
+              "description": "Bitters with dark cocoa notes. Used in dessert-style and aged-spirit cocktails."
             },
             {
               "id": "celery-bitters",
-              "name": "Celery Bitters"
+              "name": "Celery Bitters",
+              "description": "Savory bitters with herbal vegetal character. Adds depth to savory or Bloody Mary-style drinks."
             },
             {
               "id": "aromatic-bitters",
-              "name": "Aromatic Bitters"
+              "name": "Aromatic Bitters",
+              "description": "Catchall for spiced, herbal bitters. Used in spirit-forward classics and riffs."
             },
             {
               "id": "grapefruit-bitters",
-              "name": "Grapefruit Bitters"
+              "name": "Grapefruit Bitters",
+              "description": "Bright and zesty bitters with grapefruit peel. Adds citrus lift to tropical and gin drinks."
             },
             {
               "id": "lavender-bitters",
-              "name": "Lavender Bitters"
+              "name": "Lavender Bitters",
+              "description": "Floral bitters with light herbal notes. Great in gin and vodka cocktails."
             },
             {
               "id": "mole-bitters",
-              "name": "Mole Bitters"
+              "name": "Mole Bitters",
+              "description": "Mexican spice and cocoa profile. Used in tequila or whiskey cocktails."
             },
             {
               "id": "cherry-bitters",
-              "name": "Cherry Bitters"
+              "name": "Cherry Bitters",
+              "description": "Bitters with cherry and spice notes. Subtle fruit lift for stirred or aged builds."
             },
             {
               "id": "lemon-bitters",
-              "name": "Lemon Bitters"
+              "name": "Lemon Bitters",
+              "description": "Bright lemon-peel bitters. Used to sharpen citrus-forward drinks."
             },
             {
               "id": "coffee-bitters",
-              "name": "Coffee Bitters"
+              "name": "Coffee Bitters",
+              "description": "Bitter with roasted coffee notes. Pairs with dark spirits or creamy builds."
             },
             {
               "id": "cardamom-bitters",
-              "name": "Cardamom Bitters"
+              "name": "Cardamom Bitters",
+              "description": "Spiced bitters with warm, herbal depth. Used in exotic or seasonal cocktails."
             },
             {
               "id": "cherry-bark-bitters",
-              "name": "Cherry Bark Bitters"
+              "name": "Cherry Bark Bitters",
+              "description": "Bitters made with cherry bark and spice. Adds woodsy complexity to whiskey drinks."
             }
           ]
         }
@@ -1310,23 +1513,28 @@
               "aliases": [
                 "soda water",
                 "sparkling water"
-              ]
+              ],
+              "description": "Carbonated water with added minerals for texture. Neutral flavor; adds lift without sweetness — key in highballs and spirit-forward spritzes."
             },
             {
               "id": "tonic-water",
-              "name": "Tonic Water"
+              "name": "Tonic Water",
+              "description": "Bitter-sweet soda flavored with quinine and citrus. Essential in G&Ts; enhances botanical or dry spirits with bite and brightness."
             },
             {
               "id": "ginger-beer",
-              "name": "Ginger Beer"
+              "name": "Ginger Beer",
+              "description": "Bold, spicy soda made from ginger root and sugar. Used in Mules and tropical builds to add warmth, kick, and body."
             },
             {
               "id": "ginger-ale",
-              "name": "Ginger Ale"
+              "name": "Ginger Ale",
+              "description": "Milder, sweeter ginger soda. Softer than ginger beer; common in highballs and easy mixes."
             },
             {
               "id": "cola",
-              "name": "Cola"
+              "name": "Cola",
+              "description": "Sweet, caramelized soda with spice notes. Classic mixer for rum, whiskey, and simple highballs."
             },
             {
               "id": "lemon-lime-soda",
@@ -1334,11 +1542,13 @@
               "aliases": [
                 "sprite",
                 "7up"
-              ]
+              ],
+              "description": "Sweet citrus soda with lemon and lime flavors. Used in casual mixed drinks and punches."
             },
             {
               "id": "sparkling-mineral-water",
-              "name": "Sparkling Mineral Water"
+              "name": "Sparkling Mineral Water",
+              "description": "Naturally carbonated water with mineral content. Adds subtle complexity to highballs and spritzes."
             }
           ]
         },
@@ -1351,54 +1561,66 @@
               "name": "Lemon Juice",
               "aliases": [
                 "fresh lemon"
-              ]
+              ],
+              "description": "Tart, high-acid citrus juice with clean sharpness. Used in sours, fizzes, and shaken builds to cut sweetness and add structure."
             },
             {
               "id": "lime-juice",
               "name": "Lime Juice",
               "aliases": [
                 "fresh lime"
-              ]
+              ],
+              "description": "Zesty and sharper than lemon; drier acidity. Backbone of Margarita, Daiquiri, and tiki formulas; often paired with rum or agave."
             },
             {
               "id": "orange-juice",
-              "name": "Orange Juice"
+              "name": "Orange Juice",
+              "description": "Sweet, mild citrus juice with low acidity. Used in brunch drinks and simple mixers."
             },
             {
               "id": "grapefruit-juice",
-              "name": "Grapefruit Juice"
+              "name": "Grapefruit Juice",
+              "description": "Tart and slightly bitter citrus juice. Adds bright, refreshing acidity to cocktails like the Paloma."
             },
             {
               "id": "pineapple-juice",
-              "name": "Pineapple Juice"
+              "name": "Pineapple Juice",
+              "description": "Sweet, fruity juice with natural froth and tropical depth. Common in shaken and tiki drinks for both flavor and mouthfeel."
             },
             {
               "id": "cranberry-juice",
-              "name": "Cranberry Juice"
+              "name": "Cranberry Juice",
+              "description": "Tart, ruby-red juice with astringent finish. Used in Cosmopolitans and vodka mixers."
             },
             {
               "id": "tomato-juice",
-              "name": "Tomato Juice"
+              "name": "Tomato Juice",
+              "description": "Savory, thick juice from tomatoes. Base of Bloody Marys and savory cocktails."
             },
             {
               "id": "apple-juice",
-              "name": "Apple Juice"
+              "name": "Apple Juice",
+              "description": "Sweet, mild fruit juice. Used in fall cocktails and punches."
             },
             {
               "id": "passion-fruit-puree",
-              "name": "Passion Fruit Purée"
+              "name": "Passion Fruit Purée",
+              "description": "Thick, intensely tropical fruit purée. Adds bold flavor and texture to sours and tiki drinks."
             },
             {
               "id": "peach-puree",
-              "name": "Peach Purée"
+              "name": "Peach Purée",
+              "description": "Smooth stone fruit purée. Classic in Bellinis and summer cocktails."
             },
             {
               "id": "pomegranate-juice",
-              "name": "Pomegranate Juice"
+              "name": "Pomegranate Juice",
+              "description": "Deep red juice with tart, fruity flavor. Adds color and depth to punches and modern cocktails."
             },
             {
               "id": "coconut-water",
-              "name": "Coconut Water"
+              "name": "Coconut Water",
+              "description": "Light, slightly sweet water from coconuts. Refreshing base for tropical and hydrating drinks."
             }
           ]
         },
@@ -1412,27 +1634,33 @@
               "aliases": [
                 "cream",
                 "double cream"
-              ]
+              ],
+              "description": "High-fat dairy that adds richness and weight. Used in dessert-style drinks like the Brandy Alexander or White Russian for body and texture."
             },
             {
               "id": "half-and-half",
-              "name": "Half & Half"
+              "name": "Half & Half",
+              "description": "Blend of milk and cream. Lighter than heavy cream; used in creamy cocktails and coffee drinks."
             },
             {
               "id": "whole-milk",
-              "name": "Whole Milk"
+              "name": "Whole Milk",
+              "description": "Full-fat milk with mild richness. Used in flips, nogs, and coffee cocktails."
             },
             {
               "id": "coconut-cream",
-              "name": "Coconut Cream"
+              "name": "Coconut Cream",
+              "description": "Thick, sweet extract of coconut flesh. Key to Piña Coladas; lends tropical richness and creamy texture with subtle coconut flavor."
             },
             {
               "id": "coconut-milk",
-              "name": "Coconut Milk"
+              "name": "Coconut Milk",
+              "description": "Thinner than coconut cream; mild coconut flavor. Used in tropical and dairy-free builds."
             },
             {
               "id": "oat-milk",
-              "name": "Oat Milk"
+              "name": "Oat Milk",
+              "description": "Non-dairy milk with mild sweetness and creamy consistency. Popular vegan substitute in coffee and dessert drinks; plays well with spice and spirits."
             }
           ]
         },
@@ -1442,19 +1670,23 @@
           "items": [
             {
               "id": "egg-white",
-              "name": "Egg White"
+              "name": "Egg White",
+              "description": "Used for silky texture and foam in shaken drinks. Adds body and visual flair without flavor; core of Sours and Fizzes."
             },
             {
               "id": "egg-yolk",
-              "name": "Egg Yolk"
+              "name": "Egg Yolk",
+              "description": "Rich, fatty component used in flips and nogs. Contributes luxurious texture and depth; pairs well with spice and aged spirits."
             },
             {
               "id": "whole-egg",
-              "name": "Whole Egg"
+              "name": "Whole Egg",
+              "description": "Combines yolk and white for full, creamy effect. Classic in flips and dessert drinks; adds weight and froth in one."
             },
             {
               "id": "aquafaba",
-              "name": "Aquafaba"
+              "name": "Aquafaba",
+              "description": "Vegan alternative to egg white made from chickpea brine. Replicates foam and texture without flavor or allergens."
             }
           ]
         }
@@ -1473,77 +1705,94 @@
               "name": "Simple Syrup",
               "aliases": [
                 "sugar syrup"
-              ]
+              ],
+              "description": "1:1 sugar-to-water syrup; neutral sweetener. Used in nearly every shaken or stirred build."
             },
             {
               "id": "rich-simple-syrup",
               "name": "Rich Simple Syrup",
               "aliases": [
                 "2:1 syrup"
-              ]
+              ],
+              "description": "2:1 sugar-to-water syrup; thicker and more stable. Adds more weight and longevity; often used in bars."
             },
             {
               "id": "demerara-syrup",
-              "name": "Demerara Syrup"
+              "name": "Demerara Syrup",
+              "description": "Syrup made from raw demerara sugar. Richer and more molasses-like; common in tiki and whiskey drinks."
             },
             {
               "id": "honey-syrup",
-              "name": "Honey Syrup"
+              "name": "Honey Syrup",
+              "description": "Diluted honey (usually 2:1 or 3:1 with water). Adds floral sweetness; easier to mix than raw honey."
             },
             {
               "id": "honey-ginger-syrup",
-              "name": "Honey-Ginger Syrup"
+              "name": "Honey-Ginger Syrup",
+              "description": "Honey syrup infused with fresh ginger. Spicy and bright; used in seasonal and bourbon-based builds."
             },
             {
               "id": "agave-syrup",
               "name": "Agave Syrup",
               "aliases": [
                 "agave nectar"
-              ]
+              ],
+              "description": "Sweetener made from blue agave plant. Earthy and mild; pairs naturally with tequila and mezcal."
             },
             {
               "id": "maple-syrup",
-              "name": "Maple Syrup"
+              "name": "Maple Syrup",
+              "description": "Unrefined sap-based syrup; sweet and earthy. Used in fall cocktails and whiskey builds for depth."
             },
             {
               "id": "orgeat",
-              "name": "Orgeat"
+              "name": "Orgeat",
+              "description": "Almond syrup with orange blossom water. Milky and aromatic; essential in Mai Tais and tiki."
             },
             {
               "id": "grenadine",
-              "name": "Grenadine"
+              "name": "Grenadine",
+              "description": "Pomegranate syrup (often artificially flavored). Adds red color and tart-sweet fruit; common in classics."
             },
             {
               "id": "raspberry-syrup",
-              "name": "Raspberry Syrup"
+              "name": "Raspberry Syrup",
+              "description": "Bright berry syrup with tart sweetness. Used in Clover Clubs and other shaken builds."
             },
             {
               "id": "passion-fruit-syrup",
-              "name": "Passion Fruit Syrup"
+              "name": "Passion Fruit Syrup",
+              "description": "Tart tropical syrup with vivid acidity. Stars in tiki and sour-style cocktails."
             },
             {
               "id": "ginger-syrup",
-              "name": "Ginger Syrup"
+              "name": "Ginger Syrup",
+              "description": "Spicy syrup from fresh ginger and sugar. Used in Mules and to add kick to citrus drinks."
             },
             {
               "id": "cinnamon-syrup",
-              "name": "Cinnamon Syrup"
+              "name": "Cinnamon Syrup",
+              "description": "Warm, spiced syrup used in fall/winter builds. Pairs well with whiskey, rum, and apple flavors."
             },
             {
               "id": "vanilla-syrup",
-              "name": "Vanilla Syrup"
+              "name": "Vanilla Syrup",
+              "description": "Sweet syrup flavored with vanilla bean. Used in dessert drinks, coffee builds, or to round bitterness."
             },
             {
               "id": "lavender-syrup",
-              "name": "Lavender Syrup"
+              "name": "Lavender Syrup",
+              "description": "Floral syrup with soft herbal aroma. Used in gin, vodka, or Champagne cocktails."
             },
             {
               "id": "chamomile-cordial",
-              "name": "Chamomile Cordial"
+              "name": "Chamomile Cordial",
+              "description": "Tea-based syrup with floral and apple-like notes. Delicate and mellow; used in lighter seasonal builds."
             },
             {
               "id": "turbinado-syrup",
-              "name": "Turbinado Syrup"
+              "name": "Turbinado Syrup",
+              "description": "Syrup made from coarse raw sugar. Similar to demerara; adds rustic sweetness and body."
             }
           ]
         },
@@ -1556,30 +1805,36 @@
               "name": "White Sugar",
               "aliases": [
                 "sugar"
-              ]
+              ],
+              "description": "Refined cane sugar; standard sweetener. Used in syrups or muddled in Old Fashioneds."
             },
             {
               "id": "sugar-cube",
-              "name": "Sugar Cube"
+              "name": "Sugar Cube",
+              "description": "Pressed white sugar; used in Champagne and stirred builds. Crushed with bitters in traditional cocktails."
             },
             {
               "id": "brown-sugar",
-              "name": "Brown Sugar"
+              "name": "Brown Sugar",
+              "description": "Moist sugar with molasses content. Adds richness to fall and dark spirit builds."
             },
             {
               "id": "demerara-sugar",
-              "name": "Demerara Sugar"
+              "name": "Demerara Sugar",
+              "description": "Coarse raw sugar with toffee flavor. Used in muddles or syrup for tiki and whiskey drinks."
             },
             {
               "id": "raw-honey",
               "name": "Raw Honey",
               "aliases": [
                 "honey"
-              ]
+              ],
+              "description": "Unprocessed honey; floral and intense. Used in syrups or directly when warmed; complements citrus and whiskey."
             },
             {
               "id": "powdered-sugar",
-              "name": "Powdered Sugar"
+              "name": "Powdered Sugar",
+              "description": "Finely milled sugar with cornstarch. Rare in cocktails; sometimes used for dusting or foam stabilization."
             }
           ]
         }
@@ -1595,27 +1850,33 @@
           "items": [
             {
               "id": "lemon",
-              "name": "Lemon"
+              "name": "Lemon",
+              "description": "Bright yellow citrus with high acidity and floral zest. Used for juice, peels, and twists in sours, highballs, and garnish."
             },
             {
               "id": "lime",
-              "name": "Lime"
+              "name": "Lime",
+              "description": "Smaller, sharper cousin to lemon with tropical tang. Essential in tiki and Latin spirits; used for juice and zest."
             },
             {
               "id": "orange",
-              "name": "Orange"
+              "name": "Orange",
+              "description": "Sweet and aromatic with low acidity. Used as juice, peel, or twist; common garnish in stirred and sparkling drinks."
             },
             {
               "id": "grapefruit",
-              "name": "Grapefruit"
+              "name": "Grapefruit",
+              "description": "Large citrus with tart, bitter-sweet juice. Used for bold juice builds or zesty garnishes; pairs well with tequila and gin."
             },
             {
               "id": "blood-orange",
-              "name": "Blood Orange"
+              "name": "Blood Orange",
+              "description": "Dark-fleshed orange with berry undertones. Adds color and richness; used in seasonal or citrus-forward riffs."
             },
             {
               "id": "yuzu",
-              "name": "Yuzu"
+              "name": "Yuzu",
+              "description": "Small Japanese citrus with intense floral aroma. Used sparingly for exotic citrus brightness; great in spritzes or riffs."
             }
           ]
         },
@@ -1629,31 +1890,38 @@
               "aliases": [
                 "fresh mint",
                 "mint leaves"
-              ]
+              ],
+              "description": "Bright, cooling herb used in muddled or garnished form. Essential in Juleps and Mojitos; aromatically lifts citrus and crushed ice drinks."
             },
             {
               "id": "basil",
-              "name": "Basil"
+              "name": "Basil",
+              "description": "Sweet, peppery herb often paired with strawberry, tomato, or citrus. Adds savory complexity and garden freshness to modern builds."
             },
             {
               "id": "rosemary",
-              "name": "Rosemary"
+              "name": "Rosemary",
+              "description": "Piney, assertive herb with woody aroma. Used as a smoked or flame-kissed garnish; pairs well with gin, citrus, and savory notes."
             },
             {
               "id": "thyme",
-              "name": "Thyme"
+              "name": "Thyme",
+              "description": "Delicate, earthy herb with citrusy undertone. Used in infused syrups or as garnish; complements stone fruit and gin."
             },
             {
               "id": "sage",
-              "name": "Sage"
+              "name": "Sage",
+              "description": "Soft, savory leaf with subtle bitterness. Works in fall or whiskey drinks; best paired with apple, brown spirits, or maple."
             },
             {
               "id": "cilantro",
-              "name": "Cilantro"
+              "name": "Cilantro",
+              "description": "Bright and polarizing herb; grassy and sharp. Rare but striking in tequila and tropical drinks; often muddled or infused."
             },
             {
               "id": "dill",
-              "name": "Dill"
+              "name": "Dill",
+              "description": "Fragrant, herbal green with vegetal snap. Used sparingly in savory builds; complements aquavit, cucumber, or tomato."
             }
           ]
         },
@@ -1663,51 +1931,63 @@
           "items": [
             {
               "id": "strawberry",
-              "name": "Strawberry"
+              "name": "Strawberry",
+              "description": "Sweet, soft berry; muddled or puréed in drinks. Pairs beautifully with balsamic, basil, or sparkling wine."
             },
             {
               "id": "raspberry",
-              "name": "Raspberry"
+              "name": "Raspberry",
+              "description": "Tart and fragrant; used whole or as syrup. Punchy flavor that brightens sours or Champagne drinks."
             },
             {
               "id": "blackberry",
-              "name": "Blackberry"
+              "name": "Blackberry",
+              "description": "Deep, jammy berry with rich sweetness. Common in Brambles and fall-style cocktails; muddled or puréed."
             },
             {
               "id": "blueberry",
-              "name": "Blueberry"
+              "name": "Blueberry",
+              "description": "Mildly sweet with gentle acidity. Often muddled or cooked into syrup; pairs well with lemon or gin."
             },
             {
               "id": "cucumber",
-              "name": "Cucumber"
+              "name": "Cucumber",
+              "description": "Cool, clean, and crisp; usually muddled or sliced. Adds refreshing snap; ideal with gin, vodka, or Pimm's."
             },
             {
               "id": "watermelon",
-              "name": "Watermelon"
+              "name": "Watermelon",
+              "description": "Juicy and sweet with subtle vegetal notes. Blended or juiced for summer drinks; mixes well with lime or mint."
             },
             {
               "id": "pineapple",
-              "name": "Fresh Pineapple"
+              "name": "Fresh Pineapple",
+              "description": "Fibrous and intensely tropical; juiced or muddled. Adds texture, foam, and tang; tiki essential."
             },
             {
               "id": "banana",
-              "name": "Banana"
+              "name": "Banana",
+              "description": "Soft, starchy fruit; usually puréed or used in syrup. Brings creamy body and tropical weight to tiki or dessert builds."
             },
             {
               "id": "apple",
-              "name": "Apple"
+              "name": "Apple",
+              "description": "Crisp and tart to sweet depending on type. Juiced, muddled, or sliced; works with whiskey, brandy, or spice."
             },
             {
               "id": "pear",
-              "name": "Pear"
+              "name": "Pear",
+              "description": "Soft, floral fruit with mellow sweetness. Used in purées or garnishes; complements gin, sparkling wine, and amari."
             },
             {
               "id": "fig",
-              "name": "Fig"
+              "name": "Fig",
+              "description": "Rich, jammy, and subtly earthy. Used in syrups or muddles; adds depth to fall and whiskey builds."
             },
             {
               "id": "passion-fruit",
-              "name": "Passion Fruit"
+              "name": "Passion Fruit",
+              "description": "Tart, tropical fruit with bright aroma and seedy pulp. Used as purée or syrup; lifts sours and tiki drinks with high-tone acidity."
             }
           ]
         },
@@ -1717,27 +1997,33 @@
           "items": [
             {
               "id": "jalapeno",
-              "name": "Jalapeño"
+              "name": "Jalapeño",
+              "description": "Medium-heat green chili with grassy, fresh bite. Muddled or infused to add spice to tequila or mezcal builds."
             },
             {
               "id": "red-chili",
-              "name": "Red Chili"
+              "name": "Red Chili",
+              "description": "Hotter than jalapeño, with sharper heat and color. Used sparingly in syrups or infusions for bold spicy contrast."
             },
             {
               "id": "habanero",
-              "name": "Habanero"
+              "name": "Habanero",
+              "description": "High-heat pepper with fruity, floral character. Used in tinctures or small dashes; pairs well with tropical fruit and agave."
             },
             {
               "id": "ginger",
-              "name": "Fresh Ginger"
+              "name": "Fresh Ginger",
+              "description": "Pungent root with heat and brightness. Muddled, juiced, or steeped; brings zip to sours, mules, and tea-based drinks."
             },
             {
               "id": "celery",
-              "name": "Celery"
+              "name": "Celery",
+              "description": "Crisp, vegetal stalk with subtle salinity. Used in Bloody Marys and savory builds; adds crunch and herbal lift."
             },
             {
               "id": "horseradish",
-              "name": "Horseradish"
+              "name": "Horseradish",
+              "description": "Spicy root with sinus-clearing heat. Used in small amounts for Bloody Marys or clarified savory cocktails."
             }
           ]
         }
@@ -1753,18 +2039,21 @@
           "items": [
             {
               "id": "worcestershire-sauce",
-              "name": "Worcestershire Sauce"
+              "name": "Worcestershire Sauce",
+              "description": "Umami-rich fermented sauce with anchovy and spice. Core Bloody Mary ingredient; adds savory depth and complexity."
             },
             {
               "id": "tabasco",
               "name": "Tabasco",
               "aliases": [
                 "hot sauce"
-              ]
+              ],
+              "description": "Vinegary red chili hot sauce with sharp heat. Used to spike savory or spicy cocktails like Micheladas and Bloody Marys."
             },
             {
               "id": "sriracha",
-              "name": "Sriracha"
+              "name": "Sriracha",
+              "description": "Thicker chili-garlic sauce with a hint of sweetness. Used in modern spicy builds; balances heat and flavor."
             }
           ]
         },
@@ -1774,34 +2063,41 @@
           "items": [
             {
               "id": "salt",
-              "name": "Salt"
+              "name": "Salt",
+              "description": "Universal flavor enhancer; intensifies and balances. Used in rims, infusions, or small pinches to brighten flavors."
             },
             {
               "id": "black-pepper",
               "name": "Black Pepper",
               "aliases": [
                 "pepper"
-              ]
+              ],
+              "description": "Pungent, earthy spice used ground or in tincture. Adds warmth and structure to savory or spice-driven builds."
             },
             {
               "id": "celery-salt",
-              "name": "Celery Salt"
+              "name": "Celery Salt",
+              "description": "Savory, aromatic salt blend. Classic in Bloody Mary rims; adds vegetal umami."
             },
             {
               "id": "nutmeg",
-              "name": "Nutmeg"
+              "name": "Nutmeg",
+              "description": "Warm, sweet spice often grated fresh. Used in flips, nogs, and dessert drinks; best when freshly grated over the top."
             },
             {
               "id": "cinnamon",
-              "name": "Cinnamon"
+              "name": "Cinnamon",
+              "description": "Sweet, woody spice; used ground or as stick garnish. Adds warmth to fall and winter cocktails or tiki builds."
             },
             {
               "id": "cayenne",
-              "name": "Cayenne Pepper"
+              "name": "Cayenne Pepper",
+              "description": "Hot red chili powder with quick, clean heat. Used to rim glasses or add kick to savory or tropical drinks."
             },
             {
               "id": "brine",
-              "name": "Brine"
+              "name": "Brine",
+              "description": "Pickling liquid from olives or vegetables. Adds salt, acidity, and umami; key in Dirty Martinis and picklebacks."
             }
           ]
         }
@@ -1821,23 +2117,28 @@
               "aliases": [
                 "maraschino cherry",
                 "luxardo cherry"
-              ]
+              ],
+              "description": "Syrupy preserved cherry; often Luxardo or maraschino. Adds richness and visual polish; classic in Manhattans and Old Fashioneds."
             },
             {
               "id": "olives",
-              "name": "Olives"
+              "name": "Olives",
+              "description": "Briny, oily garnish—typically green or stuffed. Essential in Martinis; adds savory note and visual weight."
             },
             {
               "id": "cocktail-onion",
-              "name": "Cocktail Onion"
+              "name": "Cocktail Onion",
+              "description": "Sweet-sour pearl onion in brine. Defines the Gibson cocktail; adds vegetal salinity."
             },
             {
               "id": "pickled-vegetables",
-              "name": "Pickled Vegetables"
+              "name": "Pickled Vegetables",
+              "description": "Assorted brined veg—okra, beans, carrots, etc. Savory garnish for Bloody Marys or brunch drinks."
             },
             {
               "id": "candied-ginger",
-              "name": "Candied Ginger"
+              "name": "Candied Ginger",
+              "description": "Sugar-coated preserved ginger slices. Adds spicy-sweet bite to tropical, tea, or whiskey builds."
             }
           ]
         },
@@ -1847,19 +2148,23 @@
           "items": [
             {
               "id": "coffee-beans",
-              "name": "Coffee Beans"
+              "name": "Coffee Beans",
+              "description": "Whole roasted beans used as garnish. Floated on creamy or espresso drinks for aroma and visual cue."
             },
             {
               "id": "cocoa-powder",
-              "name": "Cocoa Powder"
+              "name": "Cocoa Powder",
+              "description": "Finely ground chocolate powder, unsweetened. Dusted on dessert drinks for aroma and garnish."
             },
             {
               "id": "edible-flowers",
-              "name": "Edible Flowers"
+              "name": "Edible Flowers",
+              "description": "Petals or whole blooms safe for consumption. Used for visual flair; complements light, floral, or gin-based builds."
             },
             {
               "id": "dehydrated-citrus",
-              "name": "Dehydrated Citrus"
+              "name": "Dehydrated Citrus",
+              "description": "Dried citrus wheels or slices. Adds color and long-lasting aroma; used in modern garnish-forward builds."
             }
           ]
         }
@@ -1875,15 +2180,18 @@
           "items": [
             {
               "id": "espresso",
-              "name": "Espresso"
+              "name": "Espresso",
+              "description": "Strong, concentrated coffee brewed under pressure. Used in Espresso Martinis and bold, bitter-sweet builds."
             },
             {
               "id": "hot-coffee",
-              "name": "Hot Coffee"
+              "name": "Hot Coffee",
+              "description": "Fresh-brewed drip or pour-over coffee. Adds warmth, roast, and richness to hot cocktails like Irish Coffee."
             },
             {
               "id": "cold-brew",
-              "name": "Cold Brew Coffee"
+              "name": "Cold Brew Coffee",
+              "description": "Slow-steeped coffee; smooth and low in acidity. Used in chilled builds for mild bitterness and body."
             }
           ]
         },
@@ -1893,19 +2201,23 @@
           "items": [
             {
               "id": "black-tea",
-              "name": "Black Tea"
+              "name": "Black Tea",
+              "description": "Bold, tannic tea from oxidized leaves. Used in punches or syrup infusions; pairs well with citrus and spice."
             },
             {
               "id": "green-tea",
-              "name": "Green Tea"
+              "name": "Green Tea",
+              "description": "Fresh, grassy tea with light bitterness. Used in lighter, floral cocktails or infused syrups."
             },
             {
               "id": "chamomile-tea",
-              "name": "Chamomile Tea"
+              "name": "Chamomile Tea",
+              "description": "Mild herbal tea with floral, apple-like notes. Calming and aromatic; often used in hot or gin-based drinks."
             },
             {
               "id": "earl-grey",
-              "name": "Earl Grey Tea"
+              "name": "Earl Grey Tea",
+              "description": "Black tea flavored with bergamot citrus. Elegant and aromatic; pairs well with gin, honey, or lavender."
             }
           ]
         }

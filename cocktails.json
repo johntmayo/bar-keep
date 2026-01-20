@@ -5965,5 +5965,979 @@
       }
     ],
     "instructions": "Add the first four ingredients to a shaker and shake with ice. Strain over a large ice cube into a rocks glass. Slowly pour the Cherry Heering over the ice so that it sinks to the bottom of the drink."
+  },
+  {
+    "id": "oaza",
+    "name": "Oaza",
+    "category": "Cocktail",
+    "glass": "Old-fashioned glass",
+    "ingredients": [
+      {
+        "name": "Becherovka liqueur",
+        "measure": "2 oz"
+      },
+      {
+        "name": "Lime juice (freshly squeezed)",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "Sugar syrup 'rich' (2 sugar to 1 water, 65.0°Brix)",
+        "measure": "1/4 oz"
+      }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of lime wedge. SHAKE all ingredients with ice. FINE STRAIN into ice-filled glass. Garnish with lime wedge."
+  },
+  {
+    "id": "lux-capacitor",
+    "name": "Lux-Capacitor",
+    "category": "Cocktail",
+    "glass": "Coupe glass",
+    "ingredients": [
+      {
+        "name": "Reposado tequila",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "Amaro Nonino Quintessentia",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Amaro (e.g. Braulio)",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Oloroso sherry",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Grapefruit bitters",
+        "measure": "6 drops"
+      }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of grapefruit zest twist. STIR all ingredients with ice. STRAIN into chilled glass. EXPRESS grapefruit zest twist over cocktail and use as garnish."
+  },
+  {
+    "id": "winter-waltz",
+    "name": "Winter Waltz",
+    "category": "Cocktail",
+    "glass": "Coupe glass",
+    "ingredients": [
+      {
+        "name": "Straight rye whiskey (100 proof /50% alc./vol.)",
+        "measure": "1 oz"
+      },
+      {
+        "name": "Calvados / apple brandy / straight applejack",
+        "measure": "1 oz"
+      },
+      {
+        "name": "Amaro (e.g. Averna)",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "St. Elizabeth Allspice Dram liqueur",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "Dale DeGroff's Pimento bitters",
+        "measure": "2 dashes"
+      }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of star anise. STIR all ingredients with ice. STRAIN into chilled glass. Garnish with star anise floated on surface."
+  },
+  {
+    "id": "swiss-kiss",
+    "name": "Swiss Kiss",
+    "category": "Cocktail",
+    "glass": "Old-fashioned glass",
+    "ingredients": [
+      {
+        "name": "Hayman's London Dry Gin",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "Bigallet Genepi Grand Tetras",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "Lemon juice (freshly squeezed)",
+        "measure": "2/3 oz"
+      },
+      {
+        "name": "Sugar syrup 'rich' (2 sugar to 1 water, 65.0°Brix)",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "Peychaud's or other Creole-style bitters",
+        "measure": "1 dash"
+      },
+      {
+        "name": "La Fée Parisienne absinthe",
+        "measure": "1/24 oz"
+      }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of mint sprig tip. SHAKE first 5 ingredients with ice. STRAIN into ice-filled glass. FLOAT absinthe. Garnish with mint sprig tip floated in the centre of the cocktail."
+  },
+  {
+    "id": "golden-toddy",
+    "name": "Golden Toddy",
+    "category": "Cocktail",
+    "glass": "Toddy glass",
+    "ingredients": [
+      {
+        "name": "Beesou Bitter Honey Aperitif",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "Licor 43 Original liqueur",
+        "measure": "1/3 oz"
+      },
+      {
+        "name": "Boiling water",
+        "measure": "3 1/2 oz"
+      }
+    ],
+    "instructions": "Select and pre-heat a TODDY GLASS. Prepare garnish of lemon zest twist. POUR all ingredients into pre-warmed glass. Briefly STIR. EXPRESS lemon zest twist over the cocktail and use as garnish."
+  },
+  {
+    "id": "strange-stirrings",
+    "name": "Strange Stirrings",
+    "category": "Cocktail",
+    "glass": "Coupe glass",
+    "ingredients": [
+      {
+        "name": "Amaro (e.g. Nonino)",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "Batavia arrack",
+        "measure": "15 ml"
+      },
+      {
+        "name": "Poire William",
+        "measure": "15 ml"
+      },
+      {
+        "name": "Dry vermouth",
+        "measure": "15 ml"
+      },
+      {
+        "name": "Rosso/sweet vermouth",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "Creole bitters",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of pear wedge. STIR all ingredients with ice. STRAIN into chilled glass. Garnish with pear wedge on rim."
+  },
+  {
+    "id": "sydenham-sunset",
+    "name": "Sydenham Sunset",
+    "category": "Cocktail",
+    "glass": "Coupe glass",
+    "ingredients": [
+      {
+        "name": "Speyside single malt",
+        "measure": "30 ml"
+      },
+      {
+        "name": "Sloe gin liqueur",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "Rosso/sweet vermouth",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "Orange juice",
+        "measure": "22.5 ml"
+      }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of orange zest twist. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS orange zest twist over the cocktail and use as garnish."
+  },
+  {
+    "id": "loop-tonic",
+    "name": "Loop Tonic",
+    "category": "Cocktail",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "Blanco tequila",
+        "measure": "60 ml"
+      },
+      {
+        "name": "Dry vermouth",
+        "measure": "30 ml"
+      },
+      {
+        "name": "Lime juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "Chartreuse Green",
+        "measure": "15 ml"
+      },
+      {
+        "name": "Sugar syrup (2:1)",
+        "measure": "10 ml"
+      },
+      {
+        "name": "Celery bitters",
+        "measure": "1 dash"
+      },
+      {
+        "name": "Saline solution 4:1",
+        "measure": "2 drops"
+      }
+    ],
+    "instructions": "Select and pre-chill a HIGHBALL (MAX 10OZ/300ML) GLASS. Prepare garnish of celery stick. SHAKE all ingredients with ice. STRAIN into ice-filled glass. Garnish with celery stalk."
+  },
+  {
+    "id": "negus-hot",
+    "name": "Negus (Hot)",
+    "category": "Cocktail",
+    "glass": "Toddy glass",
+    "ingredients": [
+      {
+        "name": "Ruby port",
+        "measure": "50 ml"
+      },
+      {
+        "name": "Lemon juice",
+        "measure": "10 ml"
+      },
+      {
+        "name": "Sugar syrup (2:1)",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "Boiling water",
+        "measure": "105 ml"
+      }
+    ],
+    "instructions": "Select and pre-heat a TODDY GLASS. Prepare garnish of grated nutmeg (and optional cinnamon stick). Place bar spoon in pre-warmed glass. POUR all ingredients into glass. Briefly STIR. Dust with grated nutmeg (and optionally garnish with cinnamon stick)."
+  },
+  {
+    "id": "pineapple-mojito-no-2",
+    "name": "Pineapple Mojito No. 2",
+    "category": "Cocktail",
+    "glass": "Collins glass",
+    "ingredients": [
+      {
+        "name": "fresh Mint leaves",
+        "measure": "14"
+      },
+      {
+        "name": "Light white rum",
+        "measure": "50 ml"
+      },
+      {
+        "name": "Pineapple juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "Pineapple liqueur",
+        "measure": "15 ml"
+      },
+      {
+        "name": "Lime juice",
+        "measure": "15 ml"
+      },
+      {
+        "name": "Soda (club soda) water",
+        "measure": "15 ml"
+      }
+    ],
+    "instructions": "Select and pre-chill a COLLINS GLASS. Prepare garnish of pineapple wedge and mint sprigs bouquet. ADD first 4 ingredients to chilled glass and two-thirds fill with crushed ice. CHURN and the fill glass with more crushed ice. TOP with soda. Garnish with mint sprigs bouquet and pineapple wedge on rim. Serve with a straw."
+  },
+  {
+    "id": "slynx",
+    "name": "Slynx",
+    "category": "Cocktail",
+    "glass": "Old-fashioned glass",
+    "ingredients": [
+      {
+        "name": "Mezcal",
+        "measure": "2.5 ml"
+      },
+      {
+        "name": "Reposado tequila",
+        "measure": "45 ml"
+      },
+      {
+        "name": "Applejack brandy",
+        "measure": "15 ml"
+      },
+      {
+        "name": "Pear liqueur",
+        "measure": "15 ml"
+      },
+      {
+        "name": "Barrel-aged bitters",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of pear wedge. RINSE chilled glass with mezcal (swirl around to coat and discard excess) and set to one side. STIR other ingredients with ice. STRAIN into mezcal-rinsed glass. FILL glass with ice. Garnish with pear wedge."
+  },
+  {
+    "id": "bushwick",
+    "name": "Bushwick",
+    "category": "Cocktail",
+    "glass": "Cocktail glass",
+    "ingredients": [
+      {
+        "name": "rye, preferably Rittenhouse",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "sweet vermouth, preferably Carpano Antica",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "maraschino liqueur, preferably Luxardo",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "Amer Picon",
+        "measure": "1/4 ounce"
+      }
+    ],
+    "instructions": "Stir ingredients with ice and strain into a chilled cocktail glass."
+  },
+  {
+    "id": "greenpoint",
+    "name": "The Greenpoint",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "rye whiskey",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "yellow Chartreuse",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "Angostura bitters",
+        "measure": "1 dash"
+      },
+      {
+        "name": "orange bitters",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Add all ingredients to a mixing glass. Add ice and stir until chilled. Strain into a coupe. Garnish with a lemon twist."
+  },
+  {
+    "id": "brooklyn",
+    "name": "Brooklyn",
+    "category": "Cocktail",
+    "glass": "Coupe glass",
+    "ingredients": [
+      {
+        "name": "rye whiskey",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "Amer Picon, or Amaro CioCiaro if unavailable",
+        "measure": "1/4 ounce"
+      }
+    ],
+    "instructions": "Add all ingredients to a mixing glass. Add ice, and stir until chilled. Strain into a coupe glass."
+  },
+  {
+    "id": "carroll-gardens",
+    "name": "Carroll Gardens",
+    "category": "Cocktail",
+    "glass": "Coupe or cocktail glass",
+    "ingredients": [
+      {
+        "name": "rye (preferably Rittenhouse)",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "sweet vermouth (preferably Punt e Mes)",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "Nardini amaro",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "maraschino liqueur (preferably Luxardo)",
+        "measure": "1 scant teaspoon"
+      }
+    ],
+    "instructions": "Add all ingredients to a mixing glass. Add ice and stir until chilled. Strain into a chilled coupe or cocktail glass. Express a lemon peel over top and discard."
+  },
+  {
+    "id": "the-slope",
+    "name": "The Slope",
+    "category": "Cocktail",
+    "glass": "Cocktail glass",
+    "ingredients": [
+      {
+        "name": "rye",
+        "measure": "2 1/2 ounces"
+      },
+      {
+        "name": "Punt e Mes",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "apricot liqueur, preferably Rothman & Winter Orchard Apricot",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "Angostura bitters",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass with ice and stir until chilled. Strain into a cocktail glass."
+  },
+  {
+    "id": "red-hook",
+    "name": "Red Hook",
+    "category": "Cocktail",
+    "glass": "Coupe glass",
+    "ingredients": [
+      {
+        "name": "rye whiskey",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "sweet vermouth, Punt e Mes",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "maraschino liqueur, to taste",
+        "measure": "1/4 - 1/2 ounce"
+      }
+    ],
+    "instructions": "Add all ingredients to a mixing glass. Add ice, and stir. Strain into a coupe glass."
+  }
+]
+    "name": "Yellow Bird",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "white rum, such as Street Pumas Panamanian Rum or Plantation 3 Star Rum",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "Galliano L'Autentico",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "Cointreau",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "acid lime cordial",
+        "measure": "1 teaspoon"
+      },
+      {
+        "name": "saline",
+        "measure": "5 drops"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing tin and shake with one large ice cube and two small ice cubes. Strain into a chilled coupe. Garnish with lime twist."
+  },
+  {
+    "id": "golden-horseshoe",
+    "name": "Golden Horseshoe",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "blanco tequila",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "gin",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "bianco vermouth",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "thyme liqueur",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "Galliano L'Autentico liqueur",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "Bittermens Boston Bittahs",
+        "measure": "1 dropper"
+      },
+      {
+        "name": "Miracle Mile Castilian Bitters",
+        "measure": "1 dash"
+      },
+      {
+        "name": "saline solution (1:4, salt:water)",
+        "measure": "5 drops"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass over ice and stir until chilled. Strain into a chilled coupe. Garnish with a flamed orange peel."
+  },
+  {
+    "id": "greta-garbo",
+    "name": "Greta Garbo",
+    "category": "Cocktail",
+    "glass": "Coupe glass",
+    "ingredients": [
+      {
+        "name": "white rum",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "absinthe",
+        "measure": "3 dashes"
+      },
+      {
+        "name": "fresh lime juice",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "white granulated sugar",
+        "measure": "1/2 tablespoon"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice for 15 seconds. Strain into a 5 1/2-ounce coupe glass."
+  },
+  {
+    "id": "gibsons-pauline",
+    "name": "The Gibson's Pauline",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "unaged rum, preferably San Zanj Haitian rum",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "absinthe, preferably Kübler Original",
+        "measure": "4 dashes"
+      },
+      {
+        "name": "orange bitters, preferably Regans' or Fee Brothers",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Combine all ingredients in a cocktail shaker. Add ice, seal and shake to chill. Strain into a chilled coupe. Garnish with nutmeg."
+  },
+  {
+    "id": "fairbanks-loan-no-2",
+    "name": "Fairbanks Loan No. 2",
+    "category": "Cocktail",
+    "glass": "Coupe or cocktail glass",
+    "ingredients": [
+      {
+        "name": "gin, preferably Beefeater",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "Stiggins' Fancy Plantation Pineapple Rum",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "Lilletperitif",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "honey syrup, (1:1, honey:water)",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/4 ounce"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing tin and shake with ice. Strain into a chilled coupe or cocktail glass. Garnish with a lemon twist."
+  },
+  {
+    "id": "rolls-royce",
+    "name": "Rolls Royce",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "barrel-aged gin",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "London dry gin",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "moscato chinato, such as Maura Vergano Luli",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "Bénédictine",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "saffron liqueur",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "orange bitters, such as Angostura",
+        "measure": "3 dashes"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass with ice and stir to chill. Strain into a coupe over a large ice cube. Express a lemon twist over the drink, then discard."
+  },
+  {
+    "id": "floradora",
+    "name": "Floradora",
+    "category": "Cocktail",
+    "glass": "Collins glass",
+    "ingredients": [
+      {
+        "name": "dry gin, such as Condesa",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "raspberry syrup, such as Zergut",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "ginger beer, such as Q Mixers, to top",
+        "measure": ""
+      }
+    ],
+    "instructions": "Combine all but the ginger beer in a cocktail shaker. Add ice and shake until well-chilled. Strain into a Collins glass and top with ginger beer. Garnish with a lime wheel and raspberry on a pick."
+  },
+  {
+    "id": "multiverse",
+    "name": "Multiverse",
+    "category": "Cocktail",
+    "glass": "Nick & Nora glass",
+    "ingredients": [
+      {
+        "name": "Kevin Kos' melon liqueur",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "white rum, preferably Hamilton White 'Stache",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "aged aquavit, preferably Linie",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "acid-adjusted orange juice",
+        "measure": "3/8 ounce"
+      },
+      {
+        "name": "acid-adjusted pineapple juice",
+        "measure": "3/8 ounce"
+      },
+      {
+        "name": "pistachio orgeat, preferably Orgeat Works",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "saline solution (4:1, water to salt)",
+        "measure": "5 drops"
+      }
+    ],
+    "instructions": "Combine all ingredients in a shaker. Add ice (preferably one large shaking cube and two Kold-Draft cubes), seal, and shake until well-chilled. Strain into a chilled Nick & Nora glass. Garnish with a disco ball keychain."
+  },
+  {
+    "id": "tunnel",
+    "name": "Tunnel",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "Campari",
+        "measure": "2/3 ounce"
+      },
+      {
+        "name": "Italian vermouth, preferably Punt e Mes",
+        "measure": "1/3 ounce"
+      }
+    ],
+    "instructions": "Stir all ingredients until chilled in a mixing glass filled with ice. Strain into a coupe."
+  },
+  {
+    "id": "mauresque",
+    "name": "Mauresque",
+    "category": "Cocktail",
+    "glass": "Tall glass",
+    "ingredients": [
+      {
+        "name": "pastis",
+        "measure": "2/3 ounce"
+      },
+      {
+        "name": "orgeat",
+        "measure": "1/3 ounce"
+      },
+      {
+        "name": "water",
+        "measure": "3 1/2 ounce"
+      }
+    ],
+    "instructions": "Combine pastis and orgeat in a tall glass. Add ice and top with water."
+  },
+  {
+    "id": "rum-cow",
+    "name": "Rum Cow",
+    "category": "Cocktail",
+    "glass": "Wine glass, milkshake glass or coupe",
+    "ingredients": [
+      {
+        "name": "best-quality whole milk",
+        "measure": "3 ounces"
+      },
+      {
+        "name": "aged Jamaican rum, such as Denizen Merchant's Reserve",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "Angostura bitters",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Combine all ingredients in a cocktail shaker. Add ice and shake well. Strain into a wine glass, milkshake glass or coupe. Grate fresh nutmeg on top. If serving in a wine glass or milkshake glass, top with whipped cream if desired."
+  },
+  {
+    "id": "obituary",
+    "name": "Obituary",
+    "category": "Cocktail",
+    "glass": "Martini glass",
+    "ingredients": [
+      {
+        "name": "gin, such as Hayman's London dry or Thomas Dakin Red Cole",
+        "measure": "2 3/4 ounces"
+      },
+      {
+        "name": "dry vermouth, such as Bordiga Extra Dry",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "absinthe, such as La Muse Verte",
+        "measure": "6 dashes"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass. Add ice and stir to chill. Strain into a chilled Martini glass. Express and discard the lemon twist."
+  },
+  {
+    "id": "hawaiian-cocktail",
+    "name": "Hawaiian Cocktail",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "Calvados, preferably Lemorton Reserve",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "yellow Chartreuse",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "pineapple gum syrup",
+        "measure": "1/2 ounce"
+      }
+    ],
+    "instructions": "Combine all ingredients in a shaker. Add ice and shake until chilled. Double-strain into a chilled coupe."
+  },
+  {
+    "id": "pancho-villa",
+    "name": "Pancho Villa",
+    "category": "Cocktail",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "aged rum, preferably Santa Teresa 1796",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "gin, preferably Bombay Sapphire",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "apricot liqueur",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "cherry liqueur, preferably Cherry Heering",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "soda water, to top",
+        "measure": ""
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing tin and shake with ice. Strain into a chilled highball glass over ice. Top with soda water. Garnish with pineapple leaf, lime zest and lime wheels."
+  },
+  {
+    "id": "dauphines-roffignac",
+    "name": "Dauphine's Roffignac",
+    "category": "Cocktail",
+    "glass": "Collins glass",
+    "ingredients": [
+      {
+        "name": "blanco tequila",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "cranberry shrub",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "club soda, preferably Fever-Tree, chilled",
+        "measure": "2 ounces"
+      }
+    ],
+    "instructions": "In a Collins glass, combine tequila and shrub. Add club soda. Add cube ice and stir gently. Garnish with a mint sprig."
+  },
+  {
+    "id": "eeyores-requiem",
+    "name": "Eeyore's Requiem",
+    "category": "Cocktail",
+    "glass": "Coupe glass",
+    "ingredients": [
+      {
+        "name": "Campari",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "blanc vermouth, such as Dolin",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "gin, such as Tanqueray",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "Cynar",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "Fernet-Branca",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "orange bitters",
+        "measure": "2 dashes"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass with ice and stir until chilled. Strain into a chilled coupe glass. Express three orange twists over the surface of the drink, discarding the first two and saving the third for garnish."
+  },
+  {
+    "id": "polka-dot-negroni",
+    "name": "Polka Dot Negroni",
+    "category": "Cocktail",
+    "glass": "Coupe or cocktail glass",
+    "ingredients": [
+      {
+        "name": "gin (preferably Junipero)",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "Salers Gentiane Aperitif",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "bianco vermouth (preferably Dolin Blanc)",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "grapefruit bitters",
+        "measure": "3 dashes"
+      }
+    ],
+    "instructions": "Add all ingredients to a mixing glass. Add ice and stir until chilled. Strain into a chilled coupe or cocktail glass. Express a lemon twist over top, discard and garnish with a brandied cherry."
+  },
+  {
+    "id": "kula-negroni",
+    "name": "Kula Negroni",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "strawberry-infused Campari",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "bianco vermouth",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "gin, preferably Tanqueray",
+        "measure": "1 ounce"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass over ice and stir until chilled. Strain into a rocks glass over a large ice cube. Garnish with a half strawberry."
   }
 ]
