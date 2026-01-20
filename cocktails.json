@@ -4325,8 +4325,36 @@
   },
   {
     "id": "fairbanks-loan-2",
-    "name": "Fairbanks Loan 2",
+    "name": "Fairbanks Loan No. 2",
     "category": "Cocktail",
+    "glass": "Coupe or cocktail glass",
+    "ingredients": [
+      {
+        "name": "gin, preferably Beefeater",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "Stiggins' Fancy Plantation Pineapple Rum",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "Lilletperitif",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "honey syrup, (1:1, honey:water)",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/4 ounce"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing tin and shake with ice. Strain into a chilled coupe or cocktail glass. Garnish with a lemon twist.",
     "source": "https://punchdrink.com/recipes/fairbanks-loan-2/",
     "style": "classic"
   },
@@ -4370,6 +4398,34 @@
     "id": "rolls-royce",
     "name": "Rolls Royce",
     "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "barrel-aged gin",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "London dry gin",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "moscato chinato, such as Maura Vergano Luli",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "Bénédictine",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "saffron liqueur",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "orange bitters, such as Angostura",
+        "measure": "3 dashes"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass with ice and stir to chill. Strain into a coupe over a large ice cube. Express a lemon twist over the drink, then discard.",
     "source": "https://punchdrink.com/recipes/rolls-royce/",
     "style": "classic"
   },
@@ -4377,6 +4433,26 @@
     "id": "floradora",
     "name": "Floradora",
     "category": "Cocktail",
+    "glass": "Collins glass",
+    "ingredients": [
+      {
+        "name": "dry gin, such as Condesa",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "raspberry syrup, such as Zergut",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "ginger beer, such as Q Mixers, to top",
+        "measure": ""
+      }
+    ],
+    "instructions": "Combine all but the ginger beer in a cocktail shaker. Add ice and shake until well-chilled. Strain into a Collins glass and top with ginger beer. Garnish with a lime wheel and raspberry on a pick.",
     "source": "https://punchdrink.com/recipes/floradora/",
     "style": "classic"
   },
@@ -4384,6 +4460,38 @@
     "id": "multiverse",
     "name": "Multiverse",
     "category": "Cocktail",
+    "glass": "Nick & Nora glass",
+    "ingredients": [
+      {
+        "name": "Kevin Kos' melon liqueur",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "white rum, preferably Hamilton White 'Stache",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "aged aquavit, preferably Linie",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "acid-adjusted orange juice",
+        "measure": "3/8 ounce"
+      },
+      {
+        "name": "acid-adjusted pineapple juice",
+        "measure": "3/8 ounce"
+      },
+      {
+        "name": "pistachio orgeat, preferably Orgeat Works",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "saline solution (4:1, water to salt)",
+        "measure": "5 drops"
+      }
+    ],
+    "instructions": "Combine all ingredients in a shaker. Add ice (preferably one large shaking cube and two Kold-Draft cubes), seal, and shake until well-chilled. Strain into a chilled Nick & Nora glass. Garnish with a disco ball keychain.",
     "source": "https://punchdrink.com/recipes/multiverse/",
     "style": "experimental"
   },
@@ -4391,6 +4499,26 @@
     "id": "tunnel",
     "name": "Tunnel",
     "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "Campari",
+        "measure": "2/3 ounce"
+      },
+      {
+        "name": "Italian vermouth, preferably Punt e Mes",
+        "measure": "1/3 ounce"
+      }
+    ],
+    "instructions": "Stir all ingredients until chilled in a mixing glass filled with ice. Strain into a coupe.",
     "source": "https://punchdrink.com/recipes/tunnel/",
     "style": "experimental"
   },
@@ -4398,6 +4526,22 @@
     "id": "mauresque",
     "name": "Mauresque",
     "category": "Cocktail",
+    "glass": "Tall glass",
+    "ingredients": [
+      {
+        "name": "pastis",
+        "measure": "2/3 ounce"
+      },
+      {
+        "name": "orgeat",
+        "measure": "1/3 ounce"
+      },
+      {
+        "name": "water",
+        "measure": "3 1/2 ounce"
+      }
+    ],
+    "instructions": "Combine pastis and orgeat in a tall glass. Add ice and top with water.",
     "source": "https://punchdrink.com/recipes/mauresque/",
     "style": "classic"
   },
@@ -4405,13 +4549,57 @@
     "id": "rum-cow",
     "name": "Rum Cow",
     "category": "Cocktail",
+    "glass": "Wine glass, milkshake glass or coupe",
+    "ingredients": [
+      {
+        "name": "best-quality whole milk",
+        "measure": "3 ounces"
+      },
+      {
+        "name": "aged Jamaican rum, such as Denizen Merchant's Reserve",
+        "measure": "2 ounces"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "Angostura bitters",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Combine all ingredients in a cocktail shaker. Add ice and shake well. Strain into a wine glass, milkshake glass or coupe. Grate fresh nutmeg on top. If serving in a wine glass or milkshake glass, top with whipped cream if desired.",
     "source": "https://punchdrink.com/recipes/rum-cow/",
     "style": "tropical"
   },
   {
     "id": "gibsons-pauline",
-    "name": "Gibson's Pauline",
+    "name": "The Gibson's Pauline",
     "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "unaged rum, preferably San Zanj Haitian rum",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "absinthe, preferably Kübler Original",
+        "measure": "4 dashes"
+      },
+      {
+        "name": "orange bitters, preferably Regans' or Fee Brothers",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Combine all ingredients in a cocktail shaker. Add ice, seal and shake to chill. Strain into a chilled coupe. Garnish with nutmeg.",
     "source": "https://punchdrink.com/recipes/gibsons-pauline/",
     "style": "spirit-forward"
   },
@@ -4419,6 +4607,22 @@
     "id": "obituary",
     "name": "Obituary",
     "category": "Cocktail",
+    "glass": "Martini glass",
+    "ingredients": [
+      {
+        "name": "gin, such as Hayman's London dry or Thomas Dakin Red Cole",
+        "measure": "2 3/4 ounces"
+      },
+      {
+        "name": "dry vermouth, such as Bordiga Extra Dry",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "absinthe, such as La Muse Verte",
+        "measure": "6 dashes"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass. Add ice and stir to chill. Strain into a chilled Martini glass. Express and discard the lemon twist.",
     "source": "https://punchdrink.com/recipes/obituary/",
     "style": "experimental"
   },
@@ -4426,6 +4630,26 @@
     "id": "hawaiian-cocktail",
     "name": "Hawaiian Cocktail",
     "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "Calvados, preferably Lemorton Reserve",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "yellow Chartreuse",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "pineapple gum syrup",
+        "measure": "1/2 ounce"
+      }
+    ],
+    "instructions": "Combine all ingredients in a shaker. Add ice and shake until chilled. Double-strain into a chilled coupe.",
     "source": "https://punchdrink.com/recipes/hawaiian-cocktail/",
     "style": "tropical"
   },
@@ -4433,6 +4657,38 @@
     "id": "pancho-villa",
     "name": "Pancho Villa",
     "category": "Cocktail",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "aged rum, preferably Santa Teresa 1796",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "gin, preferably Bombay Sapphire",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "apricot liqueur",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "cherry liqueur, preferably Cherry Heering",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "3/4 ounce"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "soda water, to top",
+        "measure": ""
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing tin and shake with ice. Strain into a chilled highball glass over ice. Top with soda water. Garnish with pineapple leaf, lime zest and lime wheels.",
     "source": "https://punchdrink.com/recipes/pancho-villa/",
     "style": "classic"
   },
@@ -4440,6 +4696,22 @@
     "id": "dauphines-roffignac",
     "name": "Dauphine's Roffignac",
     "category": "Cocktail",
+    "glass": "Collins glass",
+    "ingredients": [
+      {
+        "name": "blanco tequila",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "cranberry shrub",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "club soda, preferably Fever-Tree, chilled",
+        "measure": "2 ounces"
+      }
+    ],
+    "instructions": "In a Collins glass, combine tequila and shrub. Add club soda. Add cube ice and stir gently. Garnish with a mint sprig.",
     "source": "https://punchdrink.com/recipes/dauphines-roffignac/",
     "style": "classic"
   },
@@ -4490,6 +4762,34 @@
     "id": "eeyores-requiem",
     "name": "Eeyore's Requiem",
     "category": "Cocktail",
+    "glass": "Coupe glass",
+    "ingredients": [
+      {
+        "name": "Campari",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "blanc vermouth, such as Dolin",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "gin, such as Tanqueray",
+        "measure": "1/2 ounce"
+      },
+      {
+        "name": "Cynar",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "Fernet-Branca",
+        "measure": "1/4 ounce"
+      },
+      {
+        "name": "orange bitters",
+        "measure": "2 dashes"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass with ice and stir until chilled. Strain into a chilled coupe glass. Express three orange twists over the surface of the drink, discarding the first two and saving the third for garnish.",
     "style": "experimental"
   },
   {
@@ -4519,12 +4819,48 @@
     "id": "kula-negroni",
     "name": "Kula Negroni",
     "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "strawberry-infused Campari",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "bianco vermouth",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "gin, preferably Tanqueray",
+        "measure": "1 ounce"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass over ice and stir until chilled. Strain into a rocks glass over a large ice cube. Garnish with a half strawberry.",
     "style": "tropical"
   },
   {
     "id": "polka-dot-negroni",
     "name": "Polka Dot Negroni",
     "category": "Cocktail",
+    "glass": "Coupe or cocktail glass",
+    "ingredients": [
+      {
+        "name": "gin (preferably Junipero)",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "Salers Gentiane Aperitif",
+        "measure": "1 1/2 ounces"
+      },
+      {
+        "name": "bianco vermouth (preferably Dolin Blanc)",
+        "measure": "1 ounce"
+      },
+      {
+        "name": "grapefruit bitters",
+        "measure": "3 dashes"
+      }
+    ],
+    "instructions": "Add all ingredients to a mixing glass. Add ice and stir until chilled. Strain into a chilled coupe or cocktail glass. Express a lemon twist over top, discard and garnish with a brandied cherry.",
     "style": "experimental"
   },
   {
