@@ -375,6 +375,66 @@
       // Only return match if score is high enough (avoid false positives)
       return bestMatchScore >= 60 ? bestMatch : null;
     };
+
+    // Get multiple ingredient suggestions for a scanned name (returns array sorted by relevance)
+    const getIngredientSuggestions = (scannedName, ingredientsDb, maxSuggestions = 5) => {
+      if (!scannedName || !ingredientsDb) return [];
+      
+      const normalizedScanned = normalizeIngredient(scannedName, ingredientsDb);
+      const suggestions = [];
+      
+      ingredientsDb.categories?.forEach(cat => {
+        cat.subcategories?.forEach(sub => {
+          sub.items?.forEach(item => {
+            const itemCanonical = normalizeIngredient(item.name, ingredientsDb);
+            let score = 0;
+            
+            // Exact match
+            if (itemCanonical === normalizedScanned) {
+              score = 100;
+            }
+            // Check aliases
+            else if (item.aliases) {
+              const aliasMatch = item.aliases.some(alias => 
+                normalizeIngredient(alias, ingredientsDb) === normalizedScanned
+              );
+              if (aliasMatch) {
+                score = 95;
+              }
+            }
+            // Partial match: scanned name contains canonical name
+            else if (normalizedScanned.includes(itemCanonical) && itemCanonical.length >= 3) {
+              score = (itemCanonical.length / normalizedScanned.length) * 80;
+            }
+            // Reverse partial match: canonical name contains scanned name
+            else if (itemCanonical.includes(normalizedScanned) && normalizedScanned.length >= 3) {
+              score = (normalizedScanned.length / itemCanonical.length) * 70;
+            }
+            // Fuzzy match: check if words overlap
+            else {
+              const scannedWords = normalizedScanned.split(/\s+/);
+              const itemWords = itemCanonical.split(/\s+/);
+              const matchingWords = scannedWords.filter(word => 
+                word.length >= 3 && itemWords.some(iw => iw.includes(word) || word.includes(iw))
+              );
+              if (matchingWords.length > 0) {
+                score = (matchingWords.length / Math.max(scannedWords.length, itemWords.length)) * 50;
+              }
+            }
+            
+            if (score >= 40) {
+              suggestions.push({ name: item.name, score });
+            }
+          });
+        });
+      });
+      
+      // Sort by score descending and return top suggestions
+      return suggestions
+        .sort((a, b) => b.score - a.score)
+        .slice(0, maxSuggestions)
+        .map(s => s.name);
+    };
     
     // Get substitution group for a base spirit ingredient
     // Returns null if not eligible for substitution
@@ -1513,6 +1573,51 @@
         return toTry?.recipeIds?.includes(recipeId) || false;
       };
 
+      // Toggle ingredient in ingredients_to_try collection
+      const toggleIngredientToTry = (ingredientCanonical) => {
+        if (!collections || !Array.isArray(collections)) return;
+        let ingredientsToTry = collections.find(c => c.id === 'ingredients_to_try');
+        let currentCollections = [...collections];
+        
+        // Create ingredients_to_try collection if it doesn't exist
+        if (!ingredientsToTry) {
+          ingredientsToTry = {
+            id: 'ingredients_to_try',
+            name: 'Want to Try',
+            description: 'Ingredients you want to try',
+            collectionType: 'personal',
+            ingredientCanonicals: []
+          };
+          currentCollections.push(ingredientsToTry);
+        }
+        
+        const ingredientCanonicals = new Set(ingredientsToTry.ingredientCanonicals || []);
+        const wasAdded = !ingredientCanonicals.has(ingredientCanonical);
+        
+        if (wasAdded) {
+          ingredientCanonicals.add(ingredientCanonical);
+        } else {
+          ingredientCanonicals.delete(ingredientCanonical);
+        }
+        
+        const updatedCollections = currentCollections.map(c => 
+          c.id === 'ingredients_to_try'
+            ? { ...c, ingredientCanonicals: Array.from(ingredientCanonicals) }
+            : c
+        );
+        
+        setCollections(updatedCollections);
+        saveData('collections', updatedCollections);
+        toast(wasAdded ? 'Added to Want to Try' : 'Removed from Want to Try', 'success');
+      };
+
+      // Check if ingredient is in ingredients_to_try collection
+      const isIngredientInToTry = (ingredientCanonical) => {
+        if (!collections || !Array.isArray(collections)) return false;
+        const ingredientsToTry = collections.find(c => c.id === 'ingredients_to_try');
+        return ingredientsToTry?.ingredientCanonicals?.includes(ingredientCanonical) || false;
+      };
+
       const addCustomDrink = (drink) => {
         const newDrink = { id: `custom-${Date.now()}`, ...drink, dateAdded: new Date().toISOString() };
         const updated = [...customDrinks, newDrink];
@@ -1819,7 +1924,14 @@
           collectionType: 'personal',
           recipeIds: []
         };
-        return [toTry];
+        const ingredientsToTry = collections.find(c => c.id === 'ingredients_to_try') || {
+          id: 'ingredients_to_try',
+          name: 'Want to Try',
+          description: 'Ingredients you want to try',
+          collectionType: 'personal',
+          ingredientCanonicals: []
+        };
+        return [toTry, ingredientsToTry];
       };
 
       // Get recipes for a collection (rule-based for curated, recipeIds for personal)
@@ -2204,7 +2316,7 @@
               ) : (
                 <button onClick={() => {
                   // Go back to Home for personalized views, Library for browse
-                  if (view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view?.startsWith('collection-')) {
+                  if (view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view === 'ingredients_to_try' || view?.startsWith('collection-')) {
                     setView('home');
                   } else if (view === 'browse') {
                     setView('library');
@@ -2212,7 +2324,7 @@
                     setView('library');
                   }
                 }} className="flex items-center gap-2 text-ink-100">
-                  <span className="text-2xl">←</span> <span className="text-xl font-bold uppercase">{view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view?.startsWith('collection-') ? 'Home' : 'Library'}</span>
+                  <span className="text-2xl">←</span> <span className="text-xl font-bold uppercase">{view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view === 'ingredients_to_try' || view?.startsWith('collection-') ? 'Home' : 'Library'}</span>
                 </button>
               )}
               <div className="flex items-center gap-1">
@@ -2360,6 +2472,17 @@
                 }}
                 onNavigateToRecipe={(drink) => setSelectedDrink(drink)}
                 keepers={keepers}
+              />
+            ) : view === 'ingredients_to_try' ? (
+              <IngredientsToTryView
+                collections={collections}
+                ingredientsDb={ingredientsDb}
+                allDrinks={getAllDrinks()}
+                normalizeIngredient={normalizeIngredient}
+                onNavigateBack={() => setView('collections')}
+                onSelectIngredient={(ingredient) => setSelectedIngredient(ingredient)}
+                isIngredientInToTry={isIngredientInToTry}
+                toggleIngredientToTry={toggleIngredientToTry}
               />
             ) : view?.startsWith('collection-') ? (
               <CollectionDetailView
@@ -2602,6 +2725,7 @@
                     normalizeIngredient={normalizeIngredient}
                     searchTerm={searchTerm}
                     onSelectIngredient={(ingredient) => setSelectedIngredient(ingredient)}
+                    isIngredientInToTry={isIngredientInToTry}
                   />
                 ) : (
                   <>
@@ -2763,6 +2887,8 @@
               normalizeIngredient={normalizeIngredient}
               onNavigateToRecipe={(drink) => setSelectedDrink(drink)}
               onClose={() => setSelectedIngredient(null)}
+              isInToTry={isIngredientInToTry(selectedIngredient)}
+              onToggleToTry={() => toggleIngredientToTry(selectedIngredient)}
             />
           )}
 
@@ -3022,6 +3148,7 @@
         return Object.values(ingredientImpact)
           .map(item => ({
             name: item.name,
+            canonical: item.canonical,
             count: item.recipes.length,
             recipes: item.recipes
           }))
@@ -3210,7 +3337,7 @@
               <p className="text-ink-600 text-sm mt-1">You can make all available recipes</p>
             </div>
           ) : (
-            <div className="border border-ink-700 overflow-hidden">
+            <div className="bg-transparent border border-ink-700 overflow-hidden">
               {gatewayBottles.map((item) => (
                 <div
                   key={item.name}
@@ -3731,10 +3858,17 @@
         collectionType: 'personal',
         recipeIds: []
       };
-      const systemCollections = [toTryCollection];
+      const ingredientsToTryCollection = personalCollections.find(c => c.id === 'ingredients_to_try') || {
+        id: 'ingredients_to_try',
+        name: 'Want to Try',
+        description: 'Ingredients you want to try',
+        collectionType: 'personal',
+        ingredientCanonicals: []
+      };
+      const systemCollections = [toTryCollection, ingredientsToTryCollection];
       
       // Keepers is a view, not a collection - we'll handle it specially
-      const otherPersonalCollections = personalCollections.filter(c => c.id !== 'to_try');
+      const otherPersonalCollections = personalCollections.filter(c => c.id !== 'to_try' && c.id !== 'ingredients_to_try');
       
       return (
         <div className="">
@@ -3833,6 +3967,19 @@
                       >
                         <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">{toTryCollection.name}</h3>
                         <p className="text-ink-500 text-sm">{(toTryCollection.recipeIds || []).length} {(toTryCollection.recipeIds || []).length === 1 ? 'recipe' : 'recipes'}</p>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Ingredients To Try Collection */}
+                  {ingredientsToTryCollection && (
+                    <div className="pb-3 border-b border-ink-700 last:border-0">
+                      <button
+                        onClick={() => onNavigate(ingredientsToTryCollection.id)}
+                        className="text-left hover:text-ink-300 transition-colors"
+                      >
+                        <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">{ingredientsToTryCollection.name}</h3>
+                        <p className="text-ink-500 text-sm">{(ingredientsToTryCollection.ingredientCanonicals || []).length} {(ingredientsToTryCollection.ingredientCanonicals || []).length === 1 ? 'ingredient' : 'ingredients'}</p>
                       </button>
                     </div>
                   )}
@@ -4698,7 +4845,7 @@
       );
     };
 
-    const IngredientsBrowseView = ({ ingredientsDb, allDrinks, normalizeIngredient, searchTerm, onSelectIngredient }) => {
+    const IngredientsBrowseView = ({ ingredientsDb, allDrinks, normalizeIngredient, searchTerm, onSelectIngredient, isIngredientInToTry }) => {
       // Flatten all ingredients from the database
       const allIngredients = useMemo(() => {
         if (!ingredientsDb?.categories) return [];
@@ -4777,13 +4924,18 @@
                 <button
                   key={ingredient.id || `${ingredient.category}-${ingredient.subcategory}-${i}`}
                   onClick={() => onSelectIngredient(ingredient.canonicalName)}
-                  className="w-full text-left py-3 px-4 border-b border-ink-700 last:border-0 hover:bg-ink-800 transition-colors cursor-pointer group"
+                  className="w-full text-left py-3 px-4 border-b border-ink-700 last:border-0 bg-transparent hover:bg-ink-800 transition-colors cursor-pointer group"
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">
-                        {ingredient.name}
-                      </h3>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-base font-bold text-ink-100 uppercase">
+                          {ingredient.name}
+                        </h3>
+                        {isIngredientInToTry && isIngredientInToTry(ingredient.canonicalName) && (
+                          <Icon name="Bookmark" className="w-4 h-4 text-copper flex-shrink-0" />
+                        )}
+                      </div>
                       <div className="text-xs text-ink-500">
                         {ingredient.category}
                         {ingredient.subcategory && ` · ${ingredient.subcategory}`}
@@ -4806,7 +4958,7 @@
       );
     };
 
-    const IngredientDetailView = ({ ingredient, allDrinks, ingredientsDb, normalizeIngredient, onNavigateToRecipe, onClose }) => {
+    const IngredientDetailView = ({ ingredient, allDrinks, ingredientsDb, normalizeIngredient, onNavigateToRecipe, onClose, isInToTry, onToggleToTry }) => {
       // Find ingredient details from ingredientsDb
       let ingredientDetails = null;
       let category = '';
@@ -4855,7 +5007,18 @@
               <div className="space-y-6">
                 {/* Ingredient Info */}
                 <div>
-                  <h2 className="text-2xl font-bold text-ink-100 mb-2 uppercase">{ingredientDetails?.name || ingredient}</h2>
+                  <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-2xl font-bold text-ink-100 uppercase">{ingredientDetails?.name || ingredient}</h2>
+                    {onToggleToTry && (
+                      <button
+                        onClick={onToggleToTry}
+                        className={`p-2 transition-colors ${isInToTry ? 'text-copper' : 'text-ink-500 hover:text-copper'}`}
+                        title={isInToTry ? 'Remove from Want to Try' : 'Add to Want to Try'}
+                      >
+                        <Icon name="Bookmark" className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
                   <hr className="border-ink-700 mb-4" />
                 </div>
 
@@ -4897,6 +5060,265 @@
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const IngredientsToTryView = ({ collections, ingredientsDb, allDrinks, normalizeIngredient, onNavigateBack, onSelectIngredient, isIngredientInToTry, toggleIngredientToTry }) => {
+      // Get ingredients_to_try collection
+      const ingredientsToTryCollection = collections?.find(c => c.id === 'ingredients_to_try') || {
+        id: 'ingredients_to_try',
+        name: 'Want to Try',
+        description: 'Ingredients you want to try',
+        collectionType: 'personal',
+        ingredientCanonicals: []
+      };
+
+      // Get all ingredients from the database
+      const allIngredients = useMemo(() => {
+        if (!ingredientsDb?.categories) return [];
+        const flat = [];
+        ingredientsDb.categories.forEach(cat => {
+          cat.subcategories?.forEach(sub => {
+            sub.items?.forEach(item => {
+              flat.push({
+                ...item,
+                category: cat.name,
+                subcategory: sub.name,
+                canonicalName: normalizeIngredient(item.name, ingredientsDb)
+              });
+            });
+          });
+        });
+        return flat;
+      }, [ingredientsDb, normalizeIngredient]);
+
+      // Filter to only ingredients in the collection
+      const ingredientsToTry = useMemo(() => {
+        const canonicalSet = new Set(ingredientsToTryCollection.ingredientCanonicals || []);
+        return allIngredients
+          .filter(ing => canonicalSet.has(ing.canonicalName))
+          .map(ing => {
+            // Count recipes using this ingredient
+            const count = allDrinks.filter(drink => {
+              return drink.ingredients?.some(drinkIng => {
+                const drinkIngCanonical = normalizeIngredient(drinkIng.name, ingredientsDb);
+                return drinkIngCanonical === ing.canonicalName;
+              });
+            }).length;
+            return { ...ing, recipeCount: count };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name));
+      }, [allIngredients, ingredientsToTryCollection, allDrinks, ingredientsDb, normalizeIngredient]);
+
+      return (
+        <div className="">
+          <div className="flex items-center gap-4 mb-6">
+            <button onClick={onNavigateBack} className="p-2 text-ink-400 hover:text-ink-100">
+              <Icon name="ArrowLeft" className="w-5 h-5" />
+            </button>
+            <div className="flex-1">
+              <h2 className="font-display text-2xl text-ink-100 font-light">{ingredientsToTryCollection.name}</h2>
+              {ingredientsToTryCollection.description && (
+                <p className="text-sm text-ink-500 mt-1">{ingredientsToTryCollection.description}</p>
+              )}
+              <p className="text-xs text-ink-600 mt-1">{ingredientsToTry.length} {ingredientsToTry.length === 1 ? 'ingredient' : 'ingredients'}</p>
+            </div>
+          </div>
+
+          {ingredientsToTry.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-ink-400 font-light">No ingredients in your want to try list</p>
+              <p className="text-ink-600 text-sm mt-1">Mark ingredients as "want to try" from ingredient detail pages</p>
+            </div>
+          ) : (
+            <div className="bg-transparent overflow-hidden">
+              {ingredientsToTry.map((ingredient, i) => (
+                <button
+                  key={ingredient.id || `${ingredient.category}-${ingredient.subcategory}-${i}`}
+                  onClick={() => onSelectIngredient(ingredient.canonicalName)}
+                  className="w-full text-left py-3 px-4 border-b border-ink-700 last:border-0 bg-transparent hover:bg-ink-800 transition-colors cursor-pointer group"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-base font-bold text-ink-100 uppercase">
+                          {ingredient.name}
+                        </h3>
+                        <Icon name="Bookmark" className="w-4 h-4 text-copper flex-shrink-0" />
+                      </div>
+                      <div className="text-xs text-ink-500">
+                        {ingredient.category}
+                        {ingredient.subcategory && ` · ${ingredient.subcategory}`}
+                      </div>
+                    </div>
+                    <div className="ml-4 text-right flex-shrink-0">
+                      <div className="text-sm font-medium text-ink-300">
+                        {ingredient.recipeCount}
+                      </div>
+                      <div className="text-xs text-ink-600">
+                        {ingredient.recipeCount === 1 ? 'recipe' : 'recipes'}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const IngredientMatchingModal = ({ currentIngredient, currentIndex, totalCount, suggestions, onSelect, onSkip, onPrevious, onCustomInput, ingredientsDb, allIngredients }) => {
+      const [customInput, setCustomInput] = useState('');
+      const [showCustomInput, setShowCustomInput] = useState(false);
+      const [customSuggestions, setCustomSuggestions] = useState([]);
+
+      useEffect(() => {
+        if (customInput.length >= 2) {
+          const filtered = allIngredients
+            .filter(ing => {
+              const nameMatch = ing.name.toLowerCase().includes(customInput.toLowerCase());
+              const aliasMatch = ing.aliases?.some(a => a.toLowerCase().includes(customInput.toLowerCase()));
+              return (nameMatch || aliasMatch) && !ing.isAlias;
+            })
+            .slice(0, 8)
+            .map(ing => ing.name);
+          setCustomSuggestions(filtered);
+        } else {
+          setCustomSuggestions([]);
+        }
+      }, [customInput, allIngredients]);
+
+      const handleCustomSubmit = () => {
+        if (customInput.trim()) {
+          onCustomInput(customInput.trim());
+          setCustomInput('');
+          setShowCustomInput(false);
+        }
+      };
+
+      if (!currentIngredient) return null;
+
+      return (
+        <div className="fixed inset-0 z-[70] bg-ink-950/95 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+          <div className="max-w-lg w-full bg-ink-900 border border-ink-700 p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-display text-xl text-ink-100 font-light">Match Ingredient</h3>
+                <span className="text-sm text-ink-500">{currentIndex + 1} of {totalCount}</span>
+              </div>
+              <p className="text-sm text-ink-400 mb-4">Extracted: <span className="text-ink-200 font-medium">{currentIngredient.originalName}</span></p>
+              {currentIngredient.amount && (
+                <p className="text-xs text-ink-500">Measure: {currentIngredient.amount} {currentIngredient.unit}</p>
+              )}
+            </div>
+
+            {!showCustomInput ? (
+              <>
+                {suggestions.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-xs text-ink-500 uppercase tracking-widest mb-2">Suggestions</p>
+                    <div className="space-y-2">
+                      {suggestions.map((suggestion, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => onSelect(suggestion)}
+                          className="w-full text-left px-4 py-3 bg-ink-800 hover:bg-ink-700 border border-ink-700 hover:border-copper/50 transition-colors"
+                        >
+                          <span className="text-ink-100">{suggestion}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={() => setShowCustomInput(true)}
+                    className="flex-1 px-4 py-3 bg-transparent border border-ink-700 hover:border-ink-600 text-ink-300 hover:text-ink-100 transition-colors"
+                  >
+                    Type Custom
+                  </button>
+                  <button
+                    onClick={onSkip}
+                    className="px-4 py-3 bg-transparent border border-ink-700 hover:border-ink-600 text-ink-400 hover:text-ink-300 transition-colors"
+                  >
+                    Use Original
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="mb-4">
+                <p className="text-xs text-ink-500 uppercase tracking-widest mb-2">Custom Ingredient</p>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={customInput}
+                    onChange={(e) => setCustomInput(e.target.value)}
+                    placeholder="Type ingredient name..."
+                    className="w-full px-4 py-3 bg-ink-800 border border-ink-700 text-ink-100 focus:border-copper focus:outline-none"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && customInput.trim()) {
+                        handleCustomSubmit();
+                      } else if (e.key === 'Escape') {
+                        setShowCustomInput(false);
+                        setCustomInput('');
+                      }
+                    }}
+                  />
+                  {customSuggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-ink-800 border border-ink-700 z-50 max-h-48 overflow-y-auto">
+                      {customSuggestions.map((suggestion, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            onCustomInput(suggestion);
+                            setCustomInput('');
+                            setShowCustomInput(false);
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-ink-700 text-ink-100"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2 mt-2">
+                  <button
+                    onClick={handleCustomSubmit}
+                    disabled={!customInput.trim()}
+                    className="flex-1 px-4 py-2 bg-copper/20 border border-copper/30 text-copper hover:bg-copper/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Use This
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowCustomInput(false);
+                      setCustomInput('');
+                    }}
+                    className="px-4 py-2 bg-transparent border border-ink-700 text-ink-400 hover:text-ink-300 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              {currentIndex > 0 && (
+                <button
+                  onClick={onPrevious}
+                  className="px-4 py-2 bg-transparent border border-ink-700 text-ink-400 hover:text-ink-300 transition-colors"
+                >
+                  Previous
+                </button>
+              )}
+              <div className="flex-1" />
             </div>
           </div>
         </div>
@@ -4949,6 +5371,10 @@
       const [imagePreview, setImagePreview] = useState(null);
       const fileInputRef = useRef(null);
       const toast = useToast();
+      const [showIngredientMatching, setShowIngredientMatching] = useState(false);
+      const [extractedIngredientsToMatch, setExtractedIngredientsToMatch] = useState([]);
+      const [currentMatchingIndex, setCurrentMatchingIndex] = useState(0);
+      const [matchedIngredients, setMatchedIngredients] = useState([]);
 
       // Flatten all ingredients for search (including aliases)
       const allIngredients = useMemo(() => {
@@ -5058,6 +5484,53 @@
 
       const removeIngredient = (i) => setIngredients(ingredients.filter((_, idx) => idx !== i));
 
+      // Handle ingredient matching
+      const handleMatchIngredient = (selectedName) => {
+        const updated = [...matchedIngredients];
+        updated[currentMatchingIndex] = selectedName;
+        setMatchedIngredients(updated);
+        
+        // Move to next ingredient
+        if (currentMatchingIndex < extractedIngredientsToMatch.length - 1) {
+          setCurrentMatchingIndex(currentMatchingIndex + 1);
+        } else {
+          // All ingredients matched, apply to form
+          applyMatchedIngredients(updated);
+        }
+      };
+
+      const handleSkipIngredient = () => {
+        // Skip this ingredient (leave as original name)
+        const updated = [...matchedIngredients];
+        updated[currentMatchingIndex] = extractedIngredientsToMatch[currentMatchingIndex].originalName;
+        setMatchedIngredients(updated);
+        
+        if (currentMatchingIndex < extractedIngredientsToMatch.length - 1) {
+          setCurrentMatchingIndex(currentMatchingIndex + 1);
+        } else {
+          applyMatchedIngredients(updated);
+        }
+      };
+
+      const applyMatchedIngredients = (matched) => {
+        const formatted = extractedIngredientsToMatch.map((ing, i) => ({
+          name: matched[i] || ing.originalName,
+          amount: ing.amount,
+          unit: ing.unit
+        }));
+        setIngredients(formatted);
+        setShowIngredientMatching(false);
+        setExtractedIngredientsToMatch([]);
+        setMatchedIngredients([]);
+        setCurrentMatchingIndex(0);
+      };
+
+      const handlePreviousIngredient = () => {
+        if (currentMatchingIndex > 0) {
+          setCurrentMatchingIndex(currentMatchingIndex - 1);
+        }
+      };
+
       const handleImageScan = async (file) => {
         if (!file) return;
         
@@ -5096,12 +5569,10 @@
               if (data.recipeSource) setRecipeSource(data.recipeSource);
               
               if (data.ingredients && Array.isArray(data.ingredients)) {
-                const formattedIngredients = data.ingredients.map(ing => {
+                // Store extracted ingredients for matching instead of auto-matching
+                const ingredientsToMatch = data.ingredients.map(ing => {
                   // Parse ingredient - could be string or object
                   const rawName = typeof ing === 'string' ? ing : (ing.name || '');
-                  
-                  // Try to auto-match to canonical ingredient (handles brand names)
-                  const matchedName = findBestIngredientMatch(rawName, ingredientsDb) || rawName;
                   
                   // Parse measure
                   let amount = '';
@@ -5124,13 +5595,18 @@
                   }
                   
                   return { 
-                    name: matchedName, 
+                    originalName: rawName,
                     amount, 
                     unit,
-                    originalName: rawName !== matchedName ? rawName : undefined // Store original if matched
+                    matchedName: null // Will be set during matching
                   };
                 });
-                setIngredients(formattedIngredients);
+                
+                // Show matching modal
+                setExtractedIngredientsToMatch(ingredientsToMatch);
+                setMatchedIngredients(new Array(ingredientsToMatch.length).fill(null));
+                setCurrentMatchingIndex(0);
+                setShowIngredientMatching(true);
               }
               
               setScanningImage(false);
@@ -5892,6 +6368,7 @@
         return Object.values(ingredientImpact)
           .map(item => ({
             name: item.name,
+            canonical: item.canonical,
             count: item.recipes.length,
             recipes: item.recipes
           }))
@@ -6380,9 +6857,26 @@
               </div>
             </div>
           )}
+
+          {/* Ingredient Matching Modal */}
+          {showIngredientMatching && extractedIngredientsToMatch.length > 0 && (
+            <IngredientMatchingModal
+              currentIngredient={extractedIngredientsToMatch[currentMatchingIndex]}
+              currentIndex={currentMatchingIndex}
+              totalCount={extractedIngredientsToMatch.length}
+              suggestions={getIngredientSuggestions(extractedIngredientsToMatch[currentMatchingIndex]?.originalName || '', ingredientsDb, 5)}
+              onSelect={handleMatchIngredient}
+              onSkip={handleSkipIngredient}
+              onPrevious={handlePreviousIngredient}
+              onCustomInput={(customName) => handleMatchIngredient(customName)}
+              ingredientsDb={ingredientsDb}
+              allIngredients={allIngredients}
+            />
+          )}
         </div>
       );
     };
+
 
     const ConfirmDialog = ({ title, message, onConfirm, onCancel }) => (
       <div className="fixed inset-0 z-[60] bg-ink-950 flex items-center justify-center p-4" onClick={onCancel}>
