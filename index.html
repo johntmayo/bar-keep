@@ -5858,14 +5858,19 @@
                 
                 if (ingredientsToMatch.length > 0) {
                   console.log('📋 Setting up ingredient matching modal with', ingredientsToMatch.length, 'ingredients');
-                  // Show matching modal
+                  // Set the ingredients FIRST
                   setExtractedIngredientsToMatch(ingredientsToMatch);
                   setMatchedIngredients(new Array(ingredientsToMatch.length).fill(null));
                   setCurrentMatchingIndex(0);
-                  setShowIngredientMatching(true);
-                  console.log('✅ Ingredient matching modal should be visible now');
-                  console.log('🔍 Modal state - showIngredientMatching:', true);
-                  console.log('🔍 Modal state - extractedIngredientsToMatch length:', ingredientsToMatch.length);
+                  
+                  // Use setTimeout to ensure state is updated before showing modal
+                  // This fixes React state batching issue where modal renders before extractedIngredientsToMatch is populated
+                  setTimeout(() => {
+                    setShowIngredientMatching(true);
+                    console.log('✅ Ingredient matching modal should be visible now');
+                    console.log('🔍 Modal state - showIngredientMatching:', true);
+                    console.log('🔍 Modal state - extractedIngredientsToMatch length:', ingredientsToMatch.length);
+                  }, 0);
                 } else {
                   console.error('❌ No valid ingredients after processing!');
                   toast('No ingredients found in recipe', 'error');
@@ -7140,7 +7145,7 @@
           )}
 
           {/* Ingredient Matching Modal */}
-          {showIngredientMatching && extractedIngredientsToMatch.length > 0 && (
+          {showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex] && (
             <IngredientMatchingModal
               currentIngredient={extractedIngredientsToMatch[currentMatchingIndex]}
               currentIndex={currentMatchingIndex}
