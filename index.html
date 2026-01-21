@@ -4656,30 +4656,27 @@
                       const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
                       const hasIt = invCanonical.has(ingCanonical);
                       const isSubstituted = substitutions.has(ing.name);
+                      const substituteName = isSubstituted ? substitutions.get(ing.name) : null;
                       const displayMeasure = convertMeasure(ing.measure, unitPreference);
                       return (
                         <div key={i} className="text-ink-100 flex items-center gap-2">
-                          <span className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt || isSubstituted ? 'bg-ink-500' : 'border border-ink-600 bg-transparent'}`}></span>
+                          {hasIt ? (
+                            <span className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 bg-ink-500"></span>
+                          ) : isSubstituted ? (
+                            <span className="inline-block flex-shrink-0 text-ink-500 font-medium">*</span>
+                          ) : (
+                            <span className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 border border-ink-600 bg-transparent"></span>
+                          )}
                           <button
                             onClick={() => onNavigateToIngredient?.(ingCanonical)}
                             className="hover:text-copper transition-colors text-left flex items-center gap-1"
                           >
-                            <span>{displayMeasure} {ing.name}</span>
-                            {isSubstituted && (
-                              <span className="text-ink-600 text-xs font-medium" title={`Substituted with ${substitutions.get(ing.name)}`}>S</span>
-                            )}
+                            <span>{displayMeasure} {ing.name}{isSubstituted && substituteName && <span className="text-ink-500"> (sub: {substituteName})</span>}</span>
                           </button>
                         </div>
                       );
                     })}
                   </div>
-                  {substitutions.size > 0 && (
-                    <div className="mt-3 pt-3 border-t border-ink-700">
-                      <p className="text-xs text-ink-500">
-                        <span className="text-ink-600 font-medium">*</span> You can substitute with: {Array.from(substitutions.values()).join(', ')}
-                      </p>
-                    </div>
-                  )}
                 </div>
 
                 <hr className="border-ink-700" />
