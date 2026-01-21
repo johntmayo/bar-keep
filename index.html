@@ -5351,11 +5351,20 @@
     };
 
     const IngredientMatchingModal = ({ currentIngredient, currentIndex, totalCount, suggestions, onSelect, onSkip, onPrevious, onCustomInput, ingredientsDb, allIngredients }) => {
+      console.log('🎨 IngredientMatchingModal RENDERED with:', {
+        hasCurrentIngredient: !!currentIngredient,
+        currentIngredient,
+        currentIndex,
+        totalCount,
+        suggestionsCount: suggestions?.length
+      });
+      
       const [customInput, setCustomInput] = useState('');
       const [showCustomInput, setShowCustomInput] = useState(false);
       const [customSuggestions, setCustomSuggestions] = useState([]);
 
       useEffect(() => {
+        console.log('🔔 IngredientMatchingModal useEffect - customInput changed:', customInput);
         if (customInput.length >= 2) {
           const filtered = allIngredients
             .filter(ing => {
@@ -5379,7 +5388,12 @@
         }
       };
 
-      if (!currentIngredient) return null;
+      if (!currentIngredient) {
+        console.warn('⚠️ IngredientMatchingModal returning null - no currentIngredient');
+        return null;
+      }
+      
+      console.log('✅ IngredientMatchingModal rendering JSX');
 
       return (
         <div className="fixed inset-0 z-[70] bg-ink-950/95 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
@@ -5505,6 +5519,8 @@
     };
 
     const AddRecipeModal = ({ onClose, onAdd, onUpdate, editingDrink, ingredientsDb }) => {
+      console.log('🏗️ AddRecipeModal RENDERED');
+      
       const [name, setName] = useState(editingDrink?.name || '');
       const [category, setCategory] = useState(editingDrink?.category || 'Cocktail');
       const [glass, setGlass] = useState(editingDrink?.glass || '');
@@ -7145,7 +7161,17 @@
           )}
 
           {/* Ingredient Matching Modal */}
-          {showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex] && (
+          {(() => {
+            const shouldRender = showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex];
+            console.log('🔍 Checking if IngredientMatchingModal should render:', {
+              showIngredientMatching,
+              extractedIngredientsToMatchLength: extractedIngredientsToMatch.length,
+              currentMatchingIndex,
+              hasCurrentIngredient: !!extractedIngredientsToMatch[currentMatchingIndex],
+              shouldRender
+            });
+            return shouldRender;
+          })() && (
             <IngredientMatchingModal
               currentIngredient={extractedIngredientsToMatch[currentMatchingIndex]}
               currentIndex={currentMatchingIndex}
