@@ -5636,15 +5636,20 @@
 
       // Handle ingredient matching
       const handleMatchIngredient = (selectedName) => {
+        console.log('🎯 handleMatchIngredient called with:', selectedName);
+        console.log('📍 Current index:', currentMatchingIndex, 'of', extractedIngredientsToMatch.length);
         const updated = [...matchedIngredients];
         updated[currentMatchingIndex] = selectedName;
         setMatchedIngredients(updated);
+        console.log('📝 Updated matched ingredients:', updated);
         
         // Move to next ingredient
         if (currentMatchingIndex < extractedIngredientsToMatch.length - 1) {
+          console.log('➡️ Moving to next ingredient');
           setCurrentMatchingIndex(currentMatchingIndex + 1);
         } else {
           // All ingredients matched, apply to form
+          console.log('✅ All ingredients matched, applying to form');
           applyMatchedIngredients(updated);
         }
       };
@@ -5663,16 +5668,39 @@
       };
 
       const applyMatchedIngredients = (matched) => {
-        const formatted = extractedIngredientsToMatch.map((ing, i) => ({
-          name: matched[i] || ing.originalName,
-          amount: ing.amount,
-          unit: ing.unit
-        }));
+        console.log('✅ Applying matched ingredients:', matched);
+        console.log('📋 Extracted ingredients to match:', extractedIngredientsToMatch);
+        
+        const formatted = extractedIngredientsToMatch.map((ing, i) => {
+          const matchedName = matched[i] || ing.originalName;
+          // Format measure from amount + unit
+          let measure = '';
+          if (ing.unit && ing.unit !== 'garnish') {
+            if (ing.amount) {
+              measure = `${ing.amount} ${ing.unit}`;
+            } else {
+              measure = ing.unit;
+            }
+          } else if (ing.unit === 'garnish') {
+            measure = 'garnish';
+          } else if (ing.amount) {
+            measure = ing.amount;
+          }
+          
+          return {
+            name: matchedName,
+            amount: ing.amount || '',
+            unit: ing.unit || 'oz'
+          };
+        });
+        
+        console.log('📝 Formatted ingredients for form:', formatted);
         setIngredients(formatted);
         setShowIngredientMatching(false);
         setExtractedIngredientsToMatch([]);
         setMatchedIngredients([]);
         setCurrentMatchingIndex(0);
+        console.log('✅ Ingredients added to form, modal closed');
       };
 
       const handlePreviousIngredient = () => {
@@ -5800,14 +5828,17 @@
                 console.log('Ingredients count:', ingredientsToMatch.length);
                 
                 if (ingredientsToMatch.length > 0) {
+                  console.log('📋 Setting up ingredient matching modal with', ingredientsToMatch.length, 'ingredients');
                   // Show matching modal
                   setExtractedIngredientsToMatch(ingredientsToMatch);
                   setMatchedIngredients(new Array(ingredientsToMatch.length).fill(null));
                   setCurrentMatchingIndex(0);
                   setShowIngredientMatching(true);
-                  console.log('Ingredient matching modal should be visible now');
+                  console.log('✅ Ingredient matching modal should be visible now');
+                  console.log('🔍 Modal state - showIngredientMatching:', true);
+                  console.log('🔍 Modal state - extractedIngredientsToMatch length:', ingredientsToMatch.length);
                 } else {
-                  console.error('No valid ingredients after processing!');
+                  console.error('❌ No valid ingredients after processing!');
                   toast('No ingredients found in recipe', 'error');
                 }
               } else {
