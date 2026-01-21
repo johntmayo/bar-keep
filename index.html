@@ -6014,8 +6014,8 @@
         { id: 'collins', name: 'Collins Glass' }, { id: 'flute', name: 'Champagne Flute' }
       ];
 
-      // Compute render condition for ingredient matching modal
-      const shouldShowIngredientMatching = showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex];
+      // Compute render condition for ingredient matching modal (explicitly convert to boolean)
+      const shouldShowIngredientMatching = !!(showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex]);
       console.log('🎯 Computed shouldShowIngredientMatching:', {
         shouldShowIngredientMatching,
         showIngredientMatching,
@@ -6026,6 +6026,7 @@
       });
 
       return (
+        <>
         <div className="fixed inset-0 z-50 bg-ink-950 overflow-y-auto" onClick={onClose}>
           <div className="min-h-screen sm:py-8 sm:px-4" onClick={e => e.stopPropagation()}>
             <div className="max-w-xl mx-auto bg-ink-950 sm:card sm:rounded-2xl ">
@@ -7195,22 +7196,24 @@
             </div>
           )}
 
-          {/* Ingredient Matching Modal */}
-          {shouldShowIngredientMatching && (
-            <IngredientMatchingModal
-              currentIngredient={extractedIngredientsToMatch[currentMatchingIndex]}
-              currentIndex={currentMatchingIndex}
-              totalCount={extractedIngredientsToMatch.length}
-              suggestions={getIngredientSuggestions(extractedIngredientsToMatch[currentMatchingIndex]?.originalName || '', ingredientsDb, 5)}
-              onSelect={handleMatchIngredient}
-              onSkip={handleSkipIngredient}
-              onPrevious={handlePreviousIngredient}
-              onCustomInput={(customName) => handleMatchIngredient(customName)}
-              ingredientsDb={ingredientsDb}
-              allIngredients={allIngredients}
-            />
-          )}
         </div>
+        
+        {/* Ingredient Matching Modal - rendered outside AddRecipeModal for proper z-index */}
+        {shouldShowIngredientMatching && (
+          <IngredientMatchingModal
+            currentIngredient={extractedIngredientsToMatch[currentMatchingIndex]}
+            currentIndex={currentMatchingIndex}
+            totalCount={extractedIngredientsToMatch.length}
+            suggestions={getIngredientSuggestions(extractedIngredientsToMatch[currentMatchingIndex]?.originalName || '', ingredientsDb, 5)}
+            onSelect={handleMatchIngredient}
+            onSkip={handleSkipIngredient}
+            onPrevious={handlePreviousIngredient}
+            onCustomInput={(customName) => handleMatchIngredient(customName)}
+            ingredientsDb={ingredientsDb}
+            allIngredients={allIngredients}
+          />
+        )}
+        </>
       );
     };
 
