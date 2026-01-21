@@ -191,6 +191,35 @@
       body { padding-top: env(safe-area-inset-top); }
       .mobile-bottom-nav { padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem); }
     }
+    
+    /* Missing ingredient callout - smaller and lighter */
+    .missing-count-callout {
+      font-size: 0.625rem; /* Smaller than text-2xs */
+      color: #57534e; /* Lighter gray than text-ink-500 */
+      font-weight: 400;
+      line-height: 1;
+    }
+    
+    [data-theme="light"] .missing-count-callout {
+      color: #9ca3af; /* Lighter gray for light theme */
+    }
+    
+    /* Substitute asterisk bullet - smaller and properly aligned */
+    .substitute-bullet {
+      display: inline-block;
+      width: 0.375rem; /* Match w-1.5 (6px) */
+      height: 0.375rem; /* Match h-1.5 (6px) */
+      line-height: 0.375rem;
+      text-align: center;
+      font-size: 0.5rem; /* Smaller asterisk */
+      font-weight: 400; /* Remove font-medium */
+      color: #78716c; /* text-ink-500 equivalent */
+      flex-shrink: 0;
+    }
+    
+    [data-theme="light"] .substitute-bullet {
+      color: #6b7280; /* text-ink-500 for light theme */
+    }
   </style>
   <script>
     // Set initial theme immediately to avoid flash
@@ -4578,7 +4607,7 @@
         } else if (missingCount > 0) {
           // Missing ingredients: show negative number in gray
           return (
-            <span className="text-ink-500 text-2xs font-medium leading-none tabular-nums">
+            <span className="missing-count-callout tabular-nums">
               -{missingCount}
             </span>
           );
@@ -4816,7 +4845,7 @@
                           {hasIt ? (
                             <span className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 bg-ink-500"></span>
                           ) : isSubstituted ? (
-                            <span className="inline-block flex-shrink-0 text-ink-500 font-medium">*</span>
+                            <span className="substitute-bullet">*</span>
                           ) : (
                             <span className="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 border border-ink-600 bg-transparent"></span>
                           )}
