@@ -1,0 +1,20 @@
+[
+  {
+    "id": "blue-hawaii",
+    "name": "Blue Hawaii",
+    "template": "TIKI_PUNCH",
+    "reason": "Could not be automatically classified"
+  },
+  {
+    "id": "sea-breeze",
+    "name": "Sea Breeze",
+    "template": "HIGHBALL_FIZZ",
+    "reason": "Could not be automatically classified"
+  },
+  {
+    "id": "yellow-bird",
+    "name": "Yellow Bird",
+    "template": "TIKI_PUNCH",
+    "reason": "Could not be automatically classified"
+  }
+]

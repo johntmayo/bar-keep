@@ -824,7 +824,7 @@
         methods: [],
         glasses: [],
         tags: [],
-        categories: []
+        templates: [] // Replaces categories
       });
       const [filtersExpanded, setFiltersExpanded] = useState(false);
       const [sortBy, setSortBy] = useState('name');
@@ -1671,13 +1671,16 @@
           recipe: {
             id: drink.id,
             name: drink.name,
-            category: drink.category,
+            template: drink.template,
+            tags: drink.tags,
             glass: drink.glass,
             ingredients: convertedIngredients,
             instructions: drink.instructions,
             notes: drink.notes,
             image: drink.image,
             source: drink.source,
+            // Legacy fields for backward compatibility
+            category: drink.category,
             // Origin fields (optional)
             originTitle: drink.originTitle,
             originAuthor: drink.originAuthor,
@@ -1772,7 +1775,7 @@
           description: 'Time-tested cocktails that every bartender should know',
           collectionType: 'curated',
           rules: {
-            style: ['spirit-forward', 'sour']
+            tags: ['classic', 'iba'] // Use tags instead of style
           }
         },
         {
@@ -2162,13 +2165,28 @@
           drinks = drinks.filter(d => d.glass && filters.glasses.includes(d.glass));
         }
         
-        if (filters.categories.length > 0) {
+        // Filter by template (replaces category filter)
+        if (filters.templates.length > 0) {
           drinks = drinks.filter(d => {
-            const drinkCategory = d.category || d.ibaCategory;
-            return drinkCategory && filters.categories.includes(drinkCategory);
+            const drinkTemplate = d.template || d._migration?.template; // Support migration period
+            return drinkTemplate && filters.templates.includes(drinkTemplate);
           });
         }
         
+        // Filter by tags (expanded from just special tags)
+        if (filters.tags.length > 0) {
+          const specialTags = ['canMake', 'almostMake', 'keepers', 'toTry'];
+          const regularTags = filters.tags.filter(t => !specialTags.includes(t));
+          
+          if (regularTags.length > 0) {
+            drinks = drinks.filter(d => {
+              const drinkTags = d.tags || [];
+              return regularTags.some(tag => drinkTags.includes(tag));
+            });
+          }
+        }
+        
+        // Special tag filters (not part of recipe tags)
         if (filters.tags.includes('canMake')) {
           drinks = drinks.filter(d => canMakeDrink(d));
         }
@@ -2215,11 +2233,11 @@
       };
       
       const clearFilters = () => {
-        setFilters({ spirits: [], methods: [], glasses: [], tags: [], categories: [] });
+        setFilters({ spirits: [], methods: [], glasses: [], tags: [], templates: [] });
         setSearchTerm('');
       };
       
-      const hasActiveFilters = filters.spirits.length > 0 || filters.methods.length > 0 || filters.glasses.length > 0 || filters.tags.length > 0 || filters.categories.length > 0 || searchTerm.trim();
+      const hasActiveFilters = filters.spirits.length > 0 || filters.methods.length > 0 || filters.glasses.length > 0 || filters.tags.length > 0 || filters.templates.length > 0 || searchTerm.trim();
       
       // Get unique glass types from all drinks
       const availableGlasses = useMemo(() => {
@@ -2231,7 +2249,18 @@
         return Array.from(glassesSet).sort();
       }, [curatedDrinks, customDrinks]);
 
-      // Get unique categories from all drinks
+      // Get unique templates from all drinks (replaces categories)
+      const availableTemplates = useMemo(() => {
+        const templatesSet = new Set();
+        const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
+        allDrinks.forEach(drink => {
+          const template = drink.template || drink._migration?.template; // Support migration period
+          if (template) templatesSet.add(template);
+        });
+        return Array.from(templatesSet).sort();
+      }, [curatedDrinks, customDrinks]);
+
+      // Get unique categories from all drinks (legacy support during migration)
       const availableCategories = useMemo(() => {
         const categoriesSet = new Set();
         const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
@@ -2542,7 +2571,7 @@
                         <span>Filters</span>
                         {hasActiveFilters && (
                           <span className="text-xs text-ink-500 ml-1">
-                            ({filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length})
+                            ({filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length})
                           </span>
                         )}
                       </button>
@@ -2564,20 +2593,117 @@
                     {/* Expandable Filter Drawer */}
                     {filtersExpanded && (
                     <div className="space-y-4 pt-3 border-t border-ink-700">
-                      {/* Categories */}
+                      {/* Quick Browse Presets */}
+                      <div className="flex flex-wrap gap-1.5 items-baseline">
+                        <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Browse</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {[
+                            { id: 'boozy', label: 'Boozy', filters: { templates: ['STIRRED_SPIRIT_FORWARD'], tags: ['boozy'] } },
+                            { id: 'refreshing', label: 'Refreshing', filters: { tags: ['refreshing'] } },
+                            { id: 'bitter', label: 'Bitter / Amaro', filters: { tags: ['bitter'] } },
+                            { id: 'tropical', label: 'Tropical', filters: { templates: ['TIKI_PUNCH'], tags: ['tropical'] } },
+                            { id: 'dessert', label: 'Dessert', filters: { tags: ['dessert'] } },
+                            { id: 'nightcap', label: 'Nightcap', filters: { tags: ['nightcap'] } },
+                            { id: 'sparkling', label: 'Sparkling', filters: { tags: ['sparkling'] } }
+                          ].map(preset => (
+                            <button
+                              key={preset.id}
+                              onClick={() => {
+                                // Apply preset filters
+                                // For presets with both templates and tags, use OR logic
+                                const newFilters = { ...filters };
+                                
+                                if (preset.filters.templates && preset.filters.tags) {
+                                  // Complex preset: show drinks matching template OR tags
+                                  // We'll add a special tag to indicate this is a preset
+                                  preset.filters.tags.forEach(t => {
+                                    if (!newFilters.tags.includes(t)) {
+                                      newFilters.tags.push(t);
+                                    }
+                                  });
+                                  preset.filters.templates.forEach(t => {
+                                    if (!newFilters.templates.includes(t)) {
+                                      newFilters.templates.push(t);
+                                    }
+                                  });
+                                } else if (preset.filters.templates) {
+                                  preset.filters.templates.forEach(t => {
+                                    if (!newFilters.templates.includes(t)) {
+                                      newFilters.templates.push(t);
+                                    }
+                                  });
+                                } else if (preset.filters.tags) {
+                                  preset.filters.tags.forEach(t => {
+                                    if (!newFilters.tags.includes(t)) {
+                                      newFilters.tags.push(t);
+                                    }
+                                  });
+                                }
+                                
+                                setFilters(newFilters);
+                              }}
+                              className="px-2 py-1 text-xs whitespace-nowrap text-ink-500 hover:text-ink-300 border border-ink-700 hover:border-ink-600"
+                            >
+                              {preset.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Templates */}
+                      {availableTemplates.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 items-baseline">
+                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Template</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {availableTemplates.map(template => {
+                              // Format template name for display
+                              const displayName = template
+                                .split('_')
+                                .map(word => word.charAt(0) + word.slice(1).toLowerCase())
+                                .join(' ');
+                              return (
+                                <button
+                                  key={template}
+                                  onClick={() => toggleFilter('templates', template)}
+                                  className={`px-2 py-1 text-xs whitespace-nowrap ${
+                                    filters.templates.includes(template)
+                                      ? 'text-ink-100 font-bold'
+                                      : 'text-ink-500 hover:text-ink-300'
+                                  }`}
+                                >
+                                  {displayName}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Legacy Categories (during migration) */}
                       {availableCategories.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Category</span>
+                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Category (Legacy)</span>
                           <div className="flex flex-wrap gap-1.5">
                             {availableCategories.map(category => (
                               <button
                                 key={category}
-                                onClick={() => toggleFilter('categories', category)}
-                                className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                  filters.categories.includes(category)
-                                    ? 'text-ink-100 font-bold'
-                                    : 'text-ink-500 hover:text-ink-300'
-                                }`}
+                                onClick={() => {
+                                  // Map legacy category to template if possible
+                                  const categoryToTemplate = {
+                                    'Cocktail': 'STIRRED_SPIRIT_FORWARD',
+                                    'Sour': 'SOUR',
+                                    'Highball': 'HIGHBALL_FIZZ',
+                                    'Tiki': 'TIKI_PUNCH'
+                                  };
+                                  const mappedTemplate = categoryToTemplate[category];
+                                  if (mappedTemplate && !filters.templates.includes(mappedTemplate)) {
+                                    setFilters(prev => ({
+                                      ...prev,
+                                      templates: [...prev.templates, mappedTemplate]
+                                    }));
+                                  }
+                                }}
+                                className="px-2 py-1 text-xs whitespace-nowrap text-ink-500 hover:text-ink-300 opacity-60"
                               >
                                 {category}
                               </button>
@@ -2735,7 +2861,7 @@
                     {displayDrinks.length} {displayDrinks.length === 1 ? 'recipe' : 'recipes'}
                     {hasActiveFilters && (
                       <span className="text-copper ml-1">
-                        · {filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length} filter{filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length !== 1 ? 's' : ''}
+                        · {filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length} filter{filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length !== 1 ? 's' : ''}
                       </span>
                     )}
                   </p>
@@ -4427,7 +4553,9 @@
             {drink.name}
           </h3>
           <div className="flex items-center justify-between mt-1.5">
-            <p className="text-2xs sm:text-xs text-ink-500 font-light truncate">{drink.glass || drink.category}</p>
+            <p className="text-2xs sm:text-xs text-ink-500 font-light truncate">
+              {drink.glass || (drink.template ? drink.template.split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ') : '')}
+            </p>
             {rating > 0 && <StarRating rating={rating} readonly size="text-2xs sm:text-xs" />}
           </div>
         </div>
@@ -4438,7 +4566,7 @@
       const spirit = detectSpirit(drink);
       const method = detectMethod(drink);
       const modifiers = extractModifiers(drink, ingredientsDb);
-      const category = drink.category || drink.ibaCategory;
+      // Legacy category removed - no longer displayed
       
       // Status indicator - more prominent for better visibility
       const getStatusIndicator = () => {
@@ -6984,3 +7112,4 @@
   </script>
 </body>
 </html>
+

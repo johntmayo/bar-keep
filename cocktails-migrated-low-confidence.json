@@ -1,0 +1,442 @@
+[
+  {
+    "id": "bijou",
+    "name": "Bijou",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "hotel-nacional-special",
+    "name": "Hotel Nacional Special",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "papa-doble",
+    "name": "Papa Doble",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "tequila-sunrise",
+    "name": "Tequila Sunrise",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "matador",
+    "name": "Matador",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "mexican-firing-squad",
+    "name": "Mexican Firing Squad",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "blue-hawaii",
+    "name": "Blue Hawaii",
+    "template": "TEMPLATE_UNCLASSIFIED",
+    "confidence": "low",
+    "method": "fallback",
+    "reason": "Low confidence classification"
+  },
+  {
+    "id": "naked-and-famous",
+    "name": "Naked & Famous",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "angel-face",
+    "name": "Angel Face",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "casino",
+    "name": "Casino",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "monkey-gland",
+    "name": "Monkey Gland",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "paradise",
+    "name": "Paradise",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "tuxedo",
+    "name": "Tuxedo",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "bloody-mary",
+    "name": "Bloody Mary",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "french-connection",
+    "name": "French Connection",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "horses-neck",
+    "name": "Horse's Neck",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "spirit-forward-default",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "sea-breeze",
+    "name": "Sea Breeze",
+    "template": "TEMPLATE_UNCLASSIFIED",
+    "confidence": "low",
+    "method": "fallback",
+    "reason": "Low confidence classification"
+  },
+  {
+    "id": "sex-on-the-beach",
+    "name": "Sex on the Beach",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "canchanchara",
+    "name": "Canchanchara",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "yellow-bird",
+    "name": "Yellow Bird",
+    "template": "TEMPLATE_UNCLASSIFIED",
+    "confidence": "low",
+    "method": "fallback",
+    "reason": "Low confidence classification"
+  },
+  {
+    "id": "canadian-rye-cynar",
+    "name": "Canadian Rye & Cynar",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "last-fortress",
+    "name": "Last Fortress",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "chimp-on-fire",
+    "name": "Chimp on Fire",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "washington-apple",
+    "name": "Washington Apple",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "brandy-fernet-nightcap",
+    "name": "Brandy Fernet Nightcap",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "grapefruit-moon",
+    "name": "The Grapefruit Moon",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "snake-eyes",
+    "name": "Snake Eyes",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "clandestine",
+    "name": "Clandestine",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "blanka",
+    "name": "Blanka",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "ni-de-aqui-ni-de-alla",
+    "name": "Ni De Aqui Ni De Alla",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "puritan",
+    "name": "Puritan",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "yellow",
+    "name": "Yellow",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "rolls-royce",
+    "name": "Rolls Royce",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "tunnel",
+    "name": "Tunnel",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "obituary",
+    "name": "Obituary",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "cardinale",
+    "name": "Cardinale",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "eeyores-requiem",
+    "name": "Eeyore's Requiem",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "barrymore-cocktail",
+    "name": "Barrymore Cocktail",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "yellow-parrot",
+    "name": "Yellow Parrot",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "sun-city",
+    "name": "Sun City",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "nova-scotia",
+    "name": "Nova Scotia",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "rhubarbra-streisand",
+    "name": "Rhubarbra Streisand",
+    "template": "SOUR",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "mickey-finn",
+    "name": "Mickey Finn",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "lantern-fly",
+    "name": "Lantern Fly",
+    "template": "SOUR",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "the-thirsty-monk",
+    "name": "The Thirsty Monk",
+    "template": "SOUR",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "up-in-smoke",
+    "name": "Up in Smoke",
+    "template": "SOUR",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "tall-boxes",
+    "name": "Tall Boxes",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "caribbean-queen",
+    "name": "Caribbean Queen",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "black-apple-old-fashioned",
+    "name": "Black Apple Old-Fashioned",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "spirit-forward-default",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "amoxicillin",
+    "name": "Amoxicillin",
+    "template": "SOUR",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "powerful-baritone",
+    "name": "Powerful Baritone",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "lux-capacitor",
+    "name": "Lux-Capacitor",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "strange-stirrings",
+    "name": "Strange Stirrings",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "sydenham-sunset",
+    "name": "Sydenham Sunset",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  },
+  {
+    "id": "bushwick",
+    "name": "Bushwick",
+    "template": "STIRRED_SPIRIT_FORWARD",
+    "confidence": "medium",
+    "method": "legacy-style",
+    "reason": "Medium confidence - may need verification"
+  }
+]
