@@ -6026,7 +6026,7 @@
       });
 
       return (
-        <>
+        <React.Fragment>
         <div className="fixed inset-0 z-50 bg-ink-950 overflow-y-auto" onClick={onClose}>
           <div className="min-h-screen sm:py-8 sm:px-4" onClick={e => e.stopPropagation()}>
             <div className="max-w-xl mx-auto bg-ink-950 sm:card sm:rounded-2xl ">
@@ -7213,7 +7213,7 @@
             allIngredients={allIngredients}
           />
         )}
-        </>
+        </React.Fragment>
       );
     };
 
