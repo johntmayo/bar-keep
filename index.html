@@ -5577,7 +5577,8 @@
           extractedLength: extractedIngredientsToMatch.length,
           showIngredientMatching,
           currentIndex: currentMatchingIndex,
-          hasFirstIngredient: !!extractedIngredientsToMatch[0]
+          hasFirstIngredient: !!extractedIngredientsToMatch[0],
+          hasCurrentIngredient: !!extractedIngredientsToMatch[currentMatchingIndex]
         });
         
         if (extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex] && !showIngredientMatching) {
@@ -5586,6 +5587,18 @@
           setShowIngredientMatching(true);
         }
       }, [extractedIngredientsToMatch, currentMatchingIndex, showIngredientMatching]);
+
+      // Debug effect to log render conditions
+      useEffect(() => {
+        const shouldRender = showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex];
+        console.log('🔍 Render condition check:', {
+          showIngredientMatching,
+          extractedLength: extractedIngredientsToMatch.length,
+          currentIndex: currentMatchingIndex,
+          hasCurrentIngredient: !!extractedIngredientsToMatch[currentMatchingIndex],
+          shouldRender
+        });
+      }, [showIngredientMatching, extractedIngredientsToMatch, currentMatchingIndex]);
 
       // Flatten all ingredients for search (including aliases)
       const allIngredients = useMemo(() => {
@@ -6000,6 +6013,17 @@
         { id: 'martini', name: 'Martini Glass' }, { id: 'highball', name: 'Highball Glass' },
         { id: 'collins', name: 'Collins Glass' }, { id: 'flute', name: 'Champagne Flute' }
       ];
+
+      // Compute render condition for ingredient matching modal
+      const shouldShowIngredientMatching = showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex];
+      console.log('🎯 Computed shouldShowIngredientMatching:', {
+        shouldShowIngredientMatching,
+        showIngredientMatching,
+        extractedLength: extractedIngredientsToMatch.length,
+        currentIndex: currentMatchingIndex,
+        hasCurrentIngredient: !!extractedIngredientsToMatch[currentMatchingIndex],
+        currentIngredient: extractedIngredientsToMatch[currentMatchingIndex]
+      });
 
       return (
         <div className="fixed inset-0 z-50 bg-ink-950 overflow-y-auto" onClick={onClose}>
@@ -7172,17 +7196,7 @@
           )}
 
           {/* Ingredient Matching Modal */}
-          {(() => {
-            const shouldRender = showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex];
-            console.log('🔍 Checking if IngredientMatchingModal should render:', {
-              showIngredientMatching,
-              extractedIngredientsToMatchLength: extractedIngredientsToMatch.length,
-              currentMatchingIndex,
-              hasCurrentIngredient: !!extractedIngredientsToMatch[currentMatchingIndex],
-              shouldRender
-            });
-            return shouldRender;
-          })() && (
+          {shouldShowIngredientMatching && (
             <IngredientMatchingModal
               currentIngredient={extractedIngredientsToMatch[currentMatchingIndex]}
               currentIndex={currentMatchingIndex}
