@@ -5570,6 +5570,22 @@
       const [extractedIngredientsToMatch, setExtractedIngredientsToMatch] = useState([]);
       const [currentMatchingIndex, setCurrentMatchingIndex] = useState(0);
       const [matchedIngredients, setMatchedIngredients] = useState([]);
+      
+      // Effect to show modal when ingredients are ready
+      useEffect(() => {
+        console.log('🔔 useEffect check:', {
+          extractedLength: extractedIngredientsToMatch.length,
+          showIngredientMatching,
+          currentIndex: currentMatchingIndex,
+          hasFirstIngredient: !!extractedIngredientsToMatch[0]
+        });
+        
+        if (extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex] && !showIngredientMatching) {
+          console.log('🔔 useEffect triggered - ingredients ready, showing modal NOW');
+          console.log('🔔 First ingredient:', extractedIngredientsToMatch[0]);
+          setShowIngredientMatching(true);
+        }
+      }, [extractedIngredientsToMatch, currentMatchingIndex, showIngredientMatching]);
 
       // Flatten all ingredients for search (including aliases)
       const allIngredients = useMemo(() => {
@@ -5874,19 +5890,14 @@
                 
                 if (ingredientsToMatch.length > 0) {
                   console.log('📋 Setting up ingredient matching modal with', ingredientsToMatch.length, 'ingredients');
-                  // Set the ingredients FIRST
+                  console.log('📋 First ingredient:', ingredientsToMatch[0]);
+                  
+                  // Set the ingredients - useEffect will handle showing modal when ready
                   setExtractedIngredientsToMatch(ingredientsToMatch);
                   setMatchedIngredients(new Array(ingredientsToMatch.length).fill(null));
                   setCurrentMatchingIndex(0);
-                  
-                  // Use setTimeout to ensure state is updated before showing modal
-                  // This fixes React state batching issue where modal renders before extractedIngredientsToMatch is populated
-                  setTimeout(() => {
-                    setShowIngredientMatching(true);
-                    console.log('✅ Ingredient matching modal should be visible now');
-                    console.log('🔍 Modal state - showIngredientMatching:', true);
-                    console.log('🔍 Modal state - extractedIngredientsToMatch length:', ingredientsToMatch.length);
-                  }, 0);
+                  // useEffect will detect the change and show the modal
+                  console.log('📋 State updated, useEffect should trigger modal');
                 } else {
                   console.error('❌ No valid ingredients after processing!');
                   toast('No ingredients found in recipe', 'error');
