@@ -5682,20 +5682,36 @@
       };
 
       const handleImageScan = async (file) => {
-        if (!file) return;
+        console.log('🔍 handleImageScan called with file:', file?.name, file?.size);
+        if (!file) {
+          console.warn('No file provided to handleImageScan');
+          return;
+        }
         
         setScanningImage(true);
         const previewUrl = URL.createObjectURL(file);
         setImagePreview(previewUrl);
+        console.log('📸 Image preview created, starting FileReader...');
         
         try {
           // Convert image to base64
           const reader = new FileReader();
+          reader.onerror = (error) => {
+            console.error('❌ FileReader error:', error);
+            setScanningImage(false);
+            toast('Failed to read image file', 'error');
+          };
           reader.onloadend = async () => {
+            console.log('📖 FileReader onloadend triggered');
             try {
+              if (!reader.result) {
+                throw new Error('FileReader result is empty');
+              }
               const base64Image = reader.result.split(',')[1];
+              console.log('🖼️ Image converted to base64, length:', base64Image?.length);
               
               // Call Netlify function
+              console.log('📡 Calling Netlify function: /.netlify/functions/extract');
               const response = await fetch('/.netlify/functions/extract', {
                 method: 'POST',
                 headers: {
@@ -5704,17 +5720,19 @@
                 body: JSON.stringify({ image: base64Image })
               });
               
+              console.log('📥 Response received, status:', response.status, response.statusText);
+              
               if (!response.ok) {
-                throw new Error('Failed to extract recipe');
+                const errorText = await response.text();
+                console.error('❌ Response not OK:', response.status, errorText);
+                throw new Error(`Failed to extract recipe: ${response.status} ${errorText}`);
               }
               
               const data = await response.json();
-              
-              // Debug logging
-              console.log('Extract response received:', data);
-              console.log('Ingredients in response:', data.ingredients);
-              console.log('Ingredients is array?', Array.isArray(data.ingredients));
-              console.log('Ingredients count:', data.ingredients?.length);
+              console.log('✅ Extract response received:', data);
+              console.log('📋 Ingredients in response:', data.ingredients);
+              console.log('🔢 Ingredients is array?', Array.isArray(data.ingredients));
+              console.log('🔢 Ingredients count:', data.ingredients?.length);
               
               // Populate form with extracted data
               if (data.name) setName(data.name);
@@ -5724,50 +5742,81 @@
               if (data.notes) setNotes(data.notes);
               if (data.recipeSource) setRecipeSource(data.recipeSource);
               
-              if (data.ingredients && Array.isArray(data.ingredients)) {
+              if (data.ingredients && Array.isArray(data.ingredients) && data.ingredients.length > 0) {
                 console.log('Processing ingredients array with', data.ingredients.length, 'items');
                 // Store extracted ingredients for matching instead of auto-matching
-                const ingredientsToMatch = data.ingredients.map(ing => {
-                  // Parse ingredient - could be string or object
-                  const rawName = typeof ing === 'string' ? ing : (ing.name || '');
-                  
-                  // Parse measure
-                  let amount = '';
-                  let unit = 'oz';
-                  
-                  if (typeof ing !== 'string') {
-                    if (ing.measure) {
-                      // Parse measure like "2 oz" or "1/2 oz"
-                      const parts = ing.measure.trim().split(/\s+/);
-                      if (parts.length >= 2) {
-                        amount = parts.slice(0, -1).join(' ');
-                        unit = parts[parts.length - 1];
-                      } else if (parts.length === 1) {
-                        unit = parts[0];
-                      }
-                    } else if (ing.amount) {
-                      amount = ing.amount;
-                      unit = ing.unit || 'oz';
+                const ingredientsToMatch = data.ingredients
+                  .map(ing => {
+                    // Parse ingredient - could be string or object
+                    const rawName = typeof ing === 'string' ? ing : (ing.name || '');
+                    
+                    // Skip if no name
+                    if (!rawName || rawName.trim().length === 0) {
+                      console.warn('Skipping ingredient with no name:', ing);
+                      return null;
                     }
-                  }
-                  
-                  return { 
-                    originalName: rawName,
-                    amount, 
-                    unit,
-                    matchedName: null // Will be set during matching
-                  };
-                });
+                    
+                    // Parse measure
+                    let amount = '';
+                    let unit = 'oz';
+                    
+                    if (typeof ing !== 'string') {
+                      if (ing.measure) {
+                        // Parse measure like "2 oz" or "1/2 oz" or "garnish"
+                        const measureStr = ing.measure.trim();
+                        if (measureStr.toLowerCase() === 'garnish') {
+                          amount = '';
+                          unit = 'garnish';
+                        } else {
+                          const parts = measureStr.split(/\s+/);
+                          if (parts.length >= 2) {
+                            amount = parts.slice(0, -1).join(' ');
+                            unit = parts[parts.length - 1];
+                          } else if (parts.length === 1) {
+                            // Could be just a unit or just an amount
+                            if (['oz', 'ml', 'dash', 'dashes', 'drop', 'drops'].includes(parts[0].toLowerCase())) {
+                              unit = parts[0];
+                            } else {
+                              amount = parts[0];
+                            }
+                          }
+                        }
+                      } else if (ing.amount) {
+                        amount = ing.amount;
+                        unit = ing.unit || 'oz';
+                      }
+                    }
+                    
+                    return { 
+                      originalName: rawName.trim(),
+                      amount, 
+                      unit,
+                      matchedName: null // Will be set during matching
+                    };
+                  })
+                  .filter(ing => ing !== null); // Remove null entries
                 
-                console.log('Ingredients to match:', ingredientsToMatch);
+                console.log('Ingredients to match after processing:', ingredientsToMatch);
+                console.log('Ingredients count:', ingredientsToMatch.length);
                 
-                // Show matching modal
-                setExtractedIngredientsToMatch(ingredientsToMatch);
-                setMatchedIngredients(new Array(ingredientsToMatch.length).fill(null));
-                setCurrentMatchingIndex(0);
-                setShowIngredientMatching(true);
+                if (ingredientsToMatch.length > 0) {
+                  // Show matching modal
+                  setExtractedIngredientsToMatch(ingredientsToMatch);
+                  setMatchedIngredients(new Array(ingredientsToMatch.length).fill(null));
+                  setCurrentMatchingIndex(0);
+                  setShowIngredientMatching(true);
+                  console.log('Ingredient matching modal should be visible now');
+                } else {
+                  console.error('No valid ingredients after processing!');
+                  toast('No ingredients found in recipe', 'error');
+                }
               } else {
-                console.warn('No ingredients found in response or not an array:', data.ingredients);
+                console.warn('No ingredients found in response or not an array:', {
+                  hasIngredients: !!data.ingredients,
+                  isArray: Array.isArray(data.ingredients),
+                  length: data.ingredients?.length,
+                  ingredients: data.ingredients
+                });
               }
               
               setScanningImage(false);
@@ -5786,11 +5835,12 @@
               URL.revokeObjectURL(previewUrl);
             }
           };
+          console.log('📚 Starting FileReader.readAsDataURL...');
           reader.readAsDataURL(file);
         } catch (error) {
-          console.error('Scan error:', error);
+          console.error('❌ Scan error in handleImageScan:', error);
           setScanningImage(false);
-          toast('Failed to extract recipe. Please try again.', 'error');
+          toast(`Failed to extract recipe: ${error.message}`, 'error');
           if (imagePreview) {
             URL.revokeObjectURL(imagePreview);
             setImagePreview(null);
