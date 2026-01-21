@@ -185,6 +185,17 @@ Be precise with ingredient names and measurements. If any field cannot be determ
       notes: recipeData.notes || ''
     };
 
+    // Final validation log
+    console.log('Final result ingredients count:', result.ingredients.length);
+    console.log('Final result structure:', {
+      hasName: !!result.name,
+      hasCategory: !!result.category,
+      hasGlass: !!result.glass,
+      hasIngredients: Array.isArray(result.ingredients) && result.ingredients.length > 0,
+      ingredientsCount: result.ingredients.length,
+      hasInstructions: !!result.instructions
+    });
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },

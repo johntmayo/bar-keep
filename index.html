@@ -5710,6 +5710,12 @@
               
               const data = await response.json();
               
+              // Debug logging
+              console.log('Extract response received:', data);
+              console.log('Ingredients in response:', data.ingredients);
+              console.log('Ingredients is array?', Array.isArray(data.ingredients));
+              console.log('Ingredients count:', data.ingredients?.length);
+              
               // Populate form with extracted data
               if (data.name) setName(data.name);
               if (data.category) setCategory(data.category);
@@ -5719,6 +5725,7 @@
               if (data.recipeSource) setRecipeSource(data.recipeSource);
               
               if (data.ingredients && Array.isArray(data.ingredients)) {
+                console.log('Processing ingredients array with', data.ingredients.length, 'items');
                 // Store extracted ingredients for matching instead of auto-matching
                 const ingredientsToMatch = data.ingredients.map(ing => {
                   // Parse ingredient - could be string or object
@@ -5752,17 +5759,26 @@
                   };
                 });
                 
+                console.log('Ingredients to match:', ingredientsToMatch);
+                
                 // Show matching modal
                 setExtractedIngredientsToMatch(ingredientsToMatch);
                 setMatchedIngredients(new Array(ingredientsToMatch.length).fill(null));
                 setCurrentMatchingIndex(0);
                 setShowIngredientMatching(true);
+              } else {
+                console.warn('No ingredients found in response or not an array:', data.ingredients);
               }
               
               setScanningImage(false);
               toast('Recipe extracted successfully!', 'success');
             } catch (error) {
               console.error('Scan error:', error);
+              console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                name: error.name
+              });
               setScanningImage(false);
               toast('Failed to extract recipe. Please try again.', 'error');
             } finally {
