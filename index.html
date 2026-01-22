@@ -6027,8 +6027,8 @@
       const measurements = ingredientsDb?.measurements || [
         { id: 'oz', name: 'oz' }, { id: 'ml', name: 'ml' }, { id: 'dash', name: 'dash' },
         { id: 'dashes', name: 'dashes' }, { id: 'barspoon', name: 'barspoon' }, { id: 'splash', name: 'splash' },
-        { id: 'top', name: 'top' }, { id: 'rinse', name: 'rinse' }, { id: 'whole', name: 'whole' },
-        { id: 'leaves', name: 'leaves' }, { id: 'drops', name: 'drops' }
+        { id: 'top', name: 'top' }, { id: 'rinse', name: 'rinse' }, { id: 'tsp', name: 'tsp' },
+        { id: 'whole', name: 'whole' }, { id: 'leaves', name: 'leaves' }, { id: 'drops', name: 'drops' }
       ];
 
       const amounts = ingredientsDb?.amounts || ['1/4', '1/2', '3/4', '1', '1 1/2', '2', '2 1/2', '3', '4', '6', '8'];
@@ -6156,7 +6156,7 @@
                                   <div className="flex items-center gap-1">
                                     <span className="text-xs text-ink-600">Quick:</span>
                                     <div className="flex gap-1">
-                                      {['1/4', '1/2', '3/4', '1'].map(amt => (
+                                      {['1/4', '1/2', '3/4', '1', '1 1/2', '2'].map(amt => (
                                         <button
                                           key={amt}
                                           onClick={() => quickAddAmount(i, amt)}
@@ -6175,7 +6175,7 @@
                                   
                                   {/* Unit helpers */}
                                   <div className="flex gap-1">
-                                    {['oz', 'dash', 'tsp', 'barspoon'].map(unit => (
+                                    {['oz', 'dash', 'rinse', 'barspoon'].map(unit => (
                                       <button
                                         key={unit}
                                         onClick={() => updateIngredient(i, 'unit', unit)}
