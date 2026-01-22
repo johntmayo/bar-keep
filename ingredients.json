@@ -102,11 +102,20 @@
           "name": "Gin",
           "items": [
             {
+              "id": "generic-gin",
+              "name": "Gin",
+              "aliases": [
+                "generic gin",
+                "gin"
+              ],
+              "description": "A generic gin option for recipes that don't specify a particular gin style. When a recipe simply calls for 'gin', this is the default match."
+            },
+            {
               "id": "gin",
               "name": "London Dry Gin",
               "aliases": [
-                "gin",
-                "dry gin"
+                "dry gin",
+                "london gin"
               ],
               "description": "Crisp, juniper-forward classic gin style with no added sweeteners after distillation. Its dry, botanical profile makes it the versatile base for staples like the Martini and Gin & Tonic."
             },
