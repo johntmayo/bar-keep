@@ -3117,29 +3117,32 @@
     }) => {
       const allCollections = Array.isArray(getAllCollections) ? getAllCollections : [];
       
+      const cardBase = 'rounded-xl border border-ink-700 p-6 text-left transition-all duration-200 hover:border-copper/40 hover:bg-ink-900/50';
       return (
-        <div className="space-y-6">
+        <div className="space-y-5">
+          {/* Subtle top accent */}
+          <div className="h-px bg-gradient-to-r from-transparent via-copper/30 to-transparent" aria-hidden="true" />
           {/* Button Grid */}
-          <div className="space-y-3">
-            {/* Row 1: Ready (full-width) */}
+          <div className="space-y-4">
+            {/* Row 1: Ready (full-width) — hero card */}
             <button
               onClick={() => onNavigate('canMake')}
-              className="w-full border-2 border-copper bg-copper/5 p-8 text-left group hover:bg-copper/10 hover:border-copper transition-all"
+              className="w-full rounded-2xl border-2 border-copper bg-copper/5 p-8 text-left transition-all duration-200 hover:bg-copper/10 hover:border-copper hover:shadow-[0_0_24px_-4px_rgba(212,165,116,0.2)]"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-copper/20 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-9 h-9 rounded-full bg-copper/20 flex items-center justify-center">
                     <Icon name="CheckCircle" className="w-5 h-5 text-copper" />
                   </div>
                   <div>
-                    <h3 className="font-display text-xl text-ink-100 font-normal text-copper transition-colors mb-1">
+                    <h3 className="font-display text-xl text-ink-100 font-normal text-copper mb-1">
                       Ready
                     </h3>
                     <p className="text-sm text-ink-500">Ready to make now</p>
                   </div>
                 </div>
                 {canMakeCount > 0 && (
-                  <span className="text-sm px-3 py-1 bg-copper/30 text-copper font-medium border border-copper/30">
+                  <span className="text-sm px-3 py-1.5 rounded-lg bg-copper/25 text-copper font-medium border border-copper/30">
                     {canMakeCount}
                   </span>
                 )}
@@ -3147,17 +3150,17 @@
             </button>
 
             {/* Row 2: Almost (half) and Keepers (half) */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => onNavigate('almostMake')}
-                className="border border-ink-700 p-6 text-left group hover:border-copper/50 transition-colors"
+                className={cardBase}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper transition-colors">
+                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
                     Almost
                   </h3>
                   {almostMakeCount > 0 && (
-                    <span className="text-xs px-2 py-1 bg-copper/20 text-copper font-medium">
+                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
                       {almostMakeCount}
                     </span>
                   )}
@@ -3167,14 +3170,14 @@
 
               <button
                 onClick={() => onNavigate('keepers')}
-                className="border border-ink-700 p-6 text-left group hover:border-copper/50 transition-colors"
+                className={cardBase}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper transition-colors">
+                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
                     Keepers
                   </h3>
                   {favoritesCount > 0 && (
-                    <span className="text-xs px-2 py-1 bg-copper/20 text-copper font-medium">
+                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
                       {favoritesCount}
                     </span>
                   )}
@@ -3184,17 +3187,17 @@
             </div>
 
             {/* Row 3: Wanna Try (half) and Collections (half) */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => onNavigate('toTry')}
-                className="border border-ink-700 p-6 text-left group hover:border-copper/50 transition-colors"
+                className={cardBase}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper transition-colors">
+                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
                     Wanna Try
                   </h3>
                   {wantToTryCount > 0 && (
-                    <span className="text-xs px-2 py-1 bg-copper/20 text-copper font-medium">
+                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
                       {wantToTryCount}
                     </span>
                   )}
@@ -3204,14 +3207,14 @@
 
               <button
                 onClick={() => onNavigate('collections')}
-                className="border border-ink-700 p-6 text-left group hover:border-copper/50 transition-colors"
+                className={cardBase}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper transition-colors">
+                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
                     Collections
                   </h3>
                   {collectionsCount > 0 && (
-                    <span className="text-xs px-2 py-1 bg-copper/20 text-copper font-medium">
+                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
                       {collectionsCount}
                     </span>
                   )}
@@ -3221,17 +3224,17 @@
             </div>
 
             {/* Row 4: Custom (half-width) */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => onNavigate('custom')}
-                className="border border-ink-700 p-6 text-left group hover:border-copper/50 transition-colors"
+                className={cardBase}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper transition-colors">
+                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
                     Custom
                   </h3>
                   {customCount > 0 && (
-                    <span className="text-xs px-2 py-1 bg-copper/20 text-copper font-medium">
+                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
                       {customCount}
                     </span>
                   )}

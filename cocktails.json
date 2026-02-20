@@ -4330,7 +4330,7 @@
     "glass": "Coupe or cocktail glass",
     "ingredients": [
       {
-        "name": "gin, preferably Beefeater",
+        "name": "gin",
         "measure": "3/4 ounce"
       },
       {
@@ -4468,11 +4468,11 @@
         "measure": "1 ounce"
       },
       {
-        "name": "white rum, preferably Hamilton White 'Stache",
+        "name": "white rum",
         "measure": "3/4 ounce"
       },
       {
-        "name": "aged aquavit, preferably Linie",
+        "name": "aged aquavit",
         "measure": "3/4 ounce"
       },
       {
@@ -4484,7 +4484,7 @@
         "measure": "3/8 ounce"
       },
       {
-        "name": "pistachio orgeat, preferably Orgeat Works",
+        "name": "pistachio orgeat",
         "measure": "1/4 ounce"
       },
       {
@@ -4516,7 +4516,7 @@
         "measure": "2/3 ounce"
       },
       {
-        "name": "Italian vermouth, preferably Punt e Mes",
+        "name": "Italian vermouth",
         "measure": "1/3 ounce"
       }
     ],
@@ -4581,7 +4581,7 @@
     "glass": "Coupe",
     "ingredients": [
       {
-        "name": "unaged rum, preferably San Zanj Haitian rum",
+        "name": "unaged rum",
         "measure": "1 1/2 ounces"
       },
       {
@@ -4593,11 +4593,11 @@
         "measure": "1/2 ounce"
       },
       {
-        "name": "absinthe, preferably Kübler Original",
+        "name": "absinthe",
         "measure": "4 dashes"
       },
       {
-        "name": "orange bitters, preferably Regans' or Fee Brothers",
+        "name": "orange bitters",
         "measure": "1 dash"
       }
     ],
@@ -4635,7 +4635,7 @@
     "glass": "Coupe",
     "ingredients": [
       {
-        "name": "Calvados, preferably Lemorton Reserve",
+        "name": "Calvados",
         "measure": "1 1/2 ounces"
       },
       {
@@ -4663,11 +4663,11 @@
     "glass": "Highball glass",
     "ingredients": [
       {
-        "name": "aged rum, preferably Santa Teresa 1796",
+        "name": "aged rum",
         "measure": "1 1/2 ounces"
       },
       {
-        "name": "gin, preferably Bombay Sapphire",
+        "name": "gin",
         "measure": "1/2 ounce"
       },
       {
@@ -4675,7 +4675,7 @@
         "measure": "1/2 ounce"
       },
       {
-        "name": "cherry liqueur, preferably Cherry Heering",
+        "name": "cherry liqueur",
         "measure": "1/2 ounce"
       },
       {
@@ -4710,7 +4710,7 @@
         "measure": "1 1/2 ounces"
       },
       {
-        "name": "club soda, preferably Fever-Tree, chilled",
+        "name": "club soda",
         "measure": "2 ounces"
       }
     ],
@@ -4850,7 +4850,7 @@
         "measure": "1 ounce"
       },
       {
-        "name": "gin, preferably Tanqueray",
+        "name": "gin",
         "measure": "1 ounce"
       }
     ],
@@ -4865,7 +4865,7 @@
     "glass": "Coupe or cocktail glass",
     "ingredients": [
       {
-        "name": "gin (preferably Junipero)",
+        "name": "gin",
         "measure": "1 ounce"
       },
       {
@@ -4873,7 +4873,7 @@
         "measure": "1 1/2 ounces"
       },
       {
-        "name": "bianco vermouth (preferably Dolin Blanc)",
+        "name": "bianco vermouth",
         "measure": "1 ounce"
       },
       {
@@ -6645,15 +6645,15 @@
     "glass": "Cocktail glass",
     "ingredients": [
       {
-        "name": "rye, preferably Rittenhouse",
+        "name": "rye",
         "measure": "2 ounces"
       },
       {
-        "name": "sweet vermouth, preferably Carpano Antica",
+        "name": "sweet vermouth",
         "measure": "3/4 ounce"
       },
       {
-        "name": "maraschino liqueur, preferably Luxardo",
+        "name": "maraschino liqueur",
         "measure": "1/4 ounce"
       },
       {
@@ -6724,11 +6724,11 @@
     "glass": "Coupe or cocktail glass",
     "ingredients": [
       {
-        "name": "rye (preferably Rittenhouse)",
+        "name": "rye",
         "measure": "2 ounces"
       },
       {
-        "name": "sweet vermouth (preferably Punt e Mes)",
+        "name": "sweet vermouth",
         "measure": "1/2 ounce"
       },
       {
@@ -6736,7 +6736,7 @@
         "measure": "1/2 ounce"
       },
       {
-        "name": "maraschino liqueur (preferably Luxardo)",
+        "name": "maraschino liqueur",
         "measure": "1 scant teaspoon"
       }
     ],
@@ -6757,7 +6757,7 @@
         "measure": "3/4 ounce"
       },
       {
-        "name": "apricot liqueur, preferably Rothman & Winter Orchard Apricot",
+        "name": "apricot liqueur",
         "measure": "1/4 ounce"
       },
       {
@@ -6844,7 +6844,7 @@
     "glass": "Sazerac glass",
     "ingredients": [
       {
-        "name": "blanche de armagnac, preferably Cobra Fire Eau de Vie de Raisin",
+        "name": "blanche de armagnac",
         "measure": "15ml"
       },
       {
@@ -6852,11 +6852,11 @@
         "measure": "15ml"
       },
       {
-        "name": "lychee liqueur, preferably Giffard Lichi Li Lychee Liqueur",
+        "name": "lychee liqueur",
         "measure": "10ml"
       },
       {
-        "name": "crème de cacao, preferably Marie Brizard",
+        "name": "crème de cacao",
         "measure": "5ml"
       },
       {
@@ -6874,7 +6874,7 @@
     "glass": "Coupe",
     "ingredients": [
       {
-        "name": "blanco tequila, preferably Cabeza",
+        "name": "blanco tequila",
         "measure": "30ml"
       },
       {
@@ -6886,15 +6886,15 @@
         "measure": "22.5ml"
       },
       {
-        "name": "coconut liqueur, preferably Kalani",
+        "name": "coconut liqueur",
         "measure": "7.5ml"
       },
       {
-        "name": "banana liqueur, preferably Giffard",
+        "name": "banana liqueur",
         "measure": "7.5ml"
       },
       {
-        "name": "pineapple drinking vinegar, preferably Som",
+        "name": "pineapple drinking vinegar",
         "measure": "5ml"
       },
       {
