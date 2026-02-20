@@ -6787,5 +6787,123 @@
       }
     ],
     "instructions": "Add all ingredients to a mixing glass. Add ice, and stir. Strain into a coupe glass."
+  },
+  {
+    "id": "leeward-negroni",
+    "name": "Leeward Negroni",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "Bittermens 'Elemakule Tiki Bitters",
+        "measure": ""
+      },
+      {
+        "name": "Campari",
+        "measure": "30ml"
+      },
+      {
+        "name": "pandan cordial (see Editor's Note)",
+        "measure": "22.5ml"
+      },
+      {
+        "name": "Sipsmith VJOP Gin",
+        "measure": "15ml"
+      }
+    ],
+    "instructions": "Dash tiki bitters into a rocks glass. Gently rotate the glass to coat the inside with the bitters, then spill out any excess. Combine the remaining ingredients in a mixing glass over ice and stir until chilled. Strain into a rocks glass over a large ice cube. Garnish with a fresh pandan leaf.",
+    "notes": "Pandan Cordial:\n\nTo make pandan cordial, tie 5 fresh or frozen (thawed) pandan leaves into a knot (the leaves are long and thin) and place in an airtight container with 8 ounces of Everclear. Cap tightly and let sit for 2 days. Strain out the leaves.\n\nStir together with 12 ounces simple syrup (1:1 hot water and sugar, stirred until the sugar dissolves).",
+    "source": "https://punchdrink.com/recipes/leeward-negroni/"
+  },
+  {
+    "id": "remember-the-alimony",
+    "name": "Remember the Alimony",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "fino sherry",
+        "measure": "22.5ml"
+      },
+      {
+        "name": "Cynar",
+        "measure": "22.5ml"
+      },
+      {
+        "name": "Beefeater gin",
+        "measure": "22.5ml"
+      }
+    ],
+    "instructions": "Combine all the ingredients except the orange twist in a rocks glass filled with one large piece of ice. Stir until chilled, about 30 seconds. Express an orange twist over the drink and drop into the glass.",
+    "source": "https://punchdrink.com/recipes/remember-the-alimony/"
+  },
+  {
+    "id": "queen-snake",
+    "name": "Queen Snake",
+    "category": "Cocktail",
+    "glass": "Sazerac glass",
+    "ingredients": [
+      {
+        "name": "blanche de armagnac, preferably Cobra Fire Eau de Vie de Raisin",
+        "measure": "15ml"
+      },
+      {
+        "name": "Clear Creek Douglas Fir Eau de Vie",
+        "measure": "15ml"
+      },
+      {
+        "name": "lychee liqueur, preferably Giffard Lichi Li Lychee Liqueur",
+        "measure": "10ml"
+      },
+      {
+        "name": "crème de cacao, preferably Marie Brizard",
+        "measure": "5ml"
+      },
+      {
+        "name": "lime shoulder",
+        "measure": "1"
+      }
+    ],
+    "instructions": "Express lime, leave in bottom of a Sazerac glass. Combine all ingredients and stir to integrate. Top with cracked ice.",
+    "source": "https://punchdrink.com/recipes/queen-snake/"
+  },
+  {
+    "id": "unlikely-negroni",
+    "name": "Unlikely Negroni",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "blanco tequila, preferably Cabeza",
+        "measure": "30ml"
+      },
+      {
+        "name": "Campari",
+        "measure": "22.5ml"
+      },
+      {
+        "name": "Cocchi Torino",
+        "measure": "22.5ml"
+      },
+      {
+        "name": "coconut liqueur, preferably Kalani",
+        "measure": "7.5ml"
+      },
+      {
+        "name": "banana liqueur, preferably Giffard",
+        "measure": "7.5ml"
+      },
+      {
+        "name": "pineapple drinking vinegar, preferably Som",
+        "measure": "5ml"
+      },
+      {
+        "name": "dropper Thai chile tincture (see Editor's Note)",
+        "measure": "1"
+      }
+    ],
+    "instructions": "Combine all ingredients in mixing glass over ice and stir. Strain into silver coupe. Garnish with banana chip.",
+    "notes": "Thai chile tincture\n\n3 dried Thai chiles\n\n8 ounces vodka\n\nInfuse chiles into vodka for 3 days, shaking occasionally. Strain into a dropper.",
+    "source": "https://punchdrink.com/recipes/unlikely-negroni/"
   }
 ]
