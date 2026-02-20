@@ -6905,5 +6905,836 @@
     "instructions": "Combine all ingredients in mixing glass over ice and stir. Strain into silver coupe. Garnish with banana chip.",
     "notes": "Thai chile tincture\n\n3 dried Thai chiles\n\n8 ounces vodka\n\nInfuse chiles into vodka for 3 days, shaking occasionally. Strain into a dropper.",
     "source": "https://punchdrink.com/recipes/unlikely-negroni/"
+  },
+  {
+    "id": "bitter-in-brazil",
+    "name": "Bitter in Brazil",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Cachaça", "measure": "45ml" },
+      { "name": "Orange Curaçao", "measure": "22.5ml" },
+      { "name": "Vermouth amaro (Pun.)", "measure": "22.5ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "5ml" },
+      { "name": "Fernet liqueur", "measure": "1/2 barspoon" },
+      { "name": "Chilled water", "measure": "15ml" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of orange zest twist. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably a large cube or chunk of block ice). EXPRESS orange zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3511/bitter-in-brazil"
+  },
+  {
+    "id": "brazilian-contessa",
+    "name": "Brazilian Contessa",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Cachaça", "measure": "30ml" },
+      { "name": "Orange-red aperitivo", "measure": "30ml" },
+      { "name": "Dry vermouth", "measure": "30ml" },
+      { "name": "Orange bitters", "measure": "1 dash" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of orange slice wheel. STIR all ingredients with ice. FINE STRAIN into ice-filled glass (preferably over a large cube or chunk of block ice). Garnish with orange slice wheel.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/33254/brazilian-contessa"
+  },
+  {
+    "id": "brazuca-remedy",
+    "name": "Brazuca Remedy",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "fresh Basil leaves", "measure": "3" },
+      { "name": "Cachaça", "measure": "45ml" },
+      { "name": "Limoncello liqueur", "measure": "20ml" },
+      { "name": "Orange-red aperitivo", "measure": "20ml" },
+      { "name": "Lemon juice", "measure": "10ml" },
+      { "name": "Honey and water syrup", "measure": "5ml" },
+      { "name": "Egg white (pasteurised)", "measure": "15ml" }
+    ],
+    "instructions": "Select and pre-chill a SOUR OR MARTINI/COUPETTE GLASS. Prepare garnish of lemon zest twist and basil leaf. MUDDLE basil in base of shaker. Add other ingredients, SHAKE with ice and strain back into shaker. DRY SHAKE (without ice) to emulsify. FINE STRAIN into chilled glass. EXPRESS lemon zest twist over the cocktail and discard. Garnish with a basil leaf boat floated on surface.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4245/brazuca-remedy"
+  },
+  {
+    "id": "edisons-medicine-cocktail",
+    "name": "Edison's Medicine cocktail",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "fresh Basil leaves", "measure": "6" },
+      { "name": "Cachaça", "measure": "45ml" },
+      { "name": "Chartreuse Yellow", "measure": "15ml" },
+      { "name": "Lime juice", "measure": "22.5ml" },
+      { "name": "Agave syrup", "measure": "15ml" },
+      { "name": "Chilled water", "measure": "10ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of basil leaf. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. Garnish with basil leaf boat floated on cocktail.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3534/edisons-medicine-cocktail"
+  },
+  {
+    "id": "brown-derby",
+    "name": "Brown Derby",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Bourbon whiskey", "measure": "45ml" },
+      { "name": "Pink grapefruit juice", "measure": "30ml" },
+      { "name": "Maple syrup", "measure": "10ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of grapefruit zest twist. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS grapefruit zest twist over cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3246/brown-derby"
+  },
+  {
+    "id": "enrico-pallazzo",
+    "name": "Enrico Pallazzo",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Bourbon whiskey", "measure": "45ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "30ml" },
+      { "name": "Orange-red aperitivo", "measure": "22.5ml" },
+      { "name": "Gentian liqueur", "measure": "7.5ml" },
+      { "name": "Grapefruit bitters", "measure": "2 dash" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of grapefruit zest twist. STIR all ingredients with ice. STRAIN into carbonator. CARBONATE and pour into chilled glass. EXPRESS grapefruit zest twist over cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3588/enrico-pallazzo"
+  },
+  {
+    "id": "haberdasher",
+    "name": "Haberdasher",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Bourbon whiskey", "measure": "45ml" },
+      { "name": "Dark crème de cacao", "measure": "30ml" },
+      { "name": "Fernet liqueur", "measure": "7.5ml" },
+      { "name": "Chartreuse Green", "measure": "15ml" },
+      { "name": "Whipping cream", "measure": "30ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of cocoa powder and mint leaf. STIR first 3 ingredients with ice. STRAIN into chilled glass. SHAKE Chartreuse and cream with ice and strain back into shaker. DRY SHAKE (without ice) to emulsify. LAYER by carefully straining Chartreuse cream over surface of cocktail. Dust with cacao powder, then float mint leaf in the centre of the cocktail.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3283/haberdasher"
+  },
+  {
+    "id": "haystack-cocktail",
+    "name": "Haystack Cocktail",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Bourbon whiskey", "measure": "30ml" },
+      { "name": "Gentian liqueur", "measure": "25ml" },
+      { "name": "Apricot liqueur", "measure": "15ml" },
+      { "name": "Lemon juice", "measure": "15ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of dried apricot. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. Garnish with dried apricot on rim.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4322/haystack-cocktail"
+  },
+  {
+    "id": "hi-falutin",
+    "name": "Hi Falutin",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Bourbon whiskey", "measure": "45ml" },
+      { "name": "Swedish Punsch", "measure": "30ml" },
+      { "name": "Red quinquina e.g. Dubonnet, Byrrh", "measure": "30ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of lemon zest twist. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS lemon zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3240/hi-falutin"
+  },
+  {
+    "id": "kentucky-buck",
+    "name": "Kentucky Buck",
+    "category": "Cocktail",
+    "glass": "Collins glass",
+    "ingredients": [
+      { "name": "fresh Strawberries (fresh)", "measure": "1" },
+      { "name": "Bourbon whiskey", "measure": "60ml" },
+      { "name": "Lemon juice", "measure": "22.5ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "7.5ml" },
+      { "name": "Aromatic bitters", "measure": "2 dash" },
+      { "name": "Ginger beer", "measure": "top up" }
+    ],
+    "instructions": "Select and pre-chill a COLLINS GLASS. Prepare garnish of lemon slice wheel and strawberry slice. MUDDLE strawberry in base of shaker. Add next 4 ingredients and SHAKE with ice. FINE STRAIN into ice-filled glass. TOP with ginger beer and briefly stir. Garnish with lemon and strawberry slices.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4121/kentucky-buck"
+  },
+  {
+    "id": "sunset-strip",
+    "name": "Sunset Strip",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Rye whiskey 50% abv", "measure": "22.5ml" },
+      { "name": "Tennessee whiskey", "measure": "22.5ml" },
+      { "name": "Pamplemousse liqueur", "measure": "30ml" },
+      { "name": "Orange-red aperitivo", "measure": "30ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of grapefruit zest twist. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS grapefruit zest twist over cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3662/sunset-strip"
+  },
+  {
+    "id": "vieille-place",
+    "name": "Vieille Place",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Bourbon whiskey", "measure": "25ml" },
+      { "name": "Cognac (brandy)", "measure": "25ml" },
+      { "name": "Gentian liqueur", "measure": "20ml" },
+      { "name": "Dry vermouth", "measure": "15ml" },
+      { "name": "Amaretto liqueur", "measure": "5ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "5ml" },
+      { "name": "Creole bitters", "measure": "1 dash" },
+      { "name": "Aromatic bitters", "measure": "1 dash" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of lemon zest twist. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably over a large cube or chunk of block ice). EXPRESS lemon zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4675/vieille-place"
+  },
+  {
+    "id": "vieux-carr-cocktail",
+    "name": "Vieux Carré Cocktail",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Rye whiskey 50% abv", "measure": "22.5ml" },
+      { "name": "Cognac (brandy)", "measure": "22.5ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "22.5ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "10ml" },
+      { "name": "Creole bitters", "measure": "2 dash" },
+      { "name": "Aromatic bitters", "measure": "1 dash" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of lemon zest twist. STIR all ingredients with ice. STRAIN into ice-filled glass. EXPRESS lemon zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/2048/vieux-carre-cocktail"
+  },
+  {
+    "id": "brass-rail",
+    "name": "Brass Rail",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Aged rum (6-10yr)", "measure": "50ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "15ml" },
+      { "name": "Lemon juice", "measure": "15ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "10ml" },
+      { "name": "Egg white (pasteurised)", "measure": "10ml" },
+      { "name": "Orange bitters", "measure": "1 dash" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of Prepare garnish of orange zest twist (flamed) and ground cinnamon. SHAKE all ingredients with ice and strain back into shaker. DRY SHAKE (without ice). FINE STRAIN into chilled glass. EXPRESS flamed orange zest twist over cocktail then discard. Dust with cinnamon powder.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/564/brass-rail"
+  },
+  {
+    "id": "chrysanthemum",
+    "name": "Chrysanthemum",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Dry vermouth", "measure": "50ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "15ml" },
+      { "name": "Absinthe", "measure": "4 dash" }
+    ],
+    "instructions": "Select and pre-chill a NICK & NORA GLASS. Prepare garnish of orange zest twist. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS orange zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/2338/chrysanthemum"
+  },
+  {
+    "id": "la-louisiane",
+    "name": "La Louisiane",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Rye whiskey 50% abv", "measure": "40ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "30ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "15ml" },
+      { "name": "Absinthe", "measure": "1.5ml" },
+      { "name": "Chilled water", "measure": "7.5ml" },
+      { "name": "Creole bitters", "measure": "2 dash" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of skewered Luxardo Maraschino Cherries. STIR all ingredients with ice. FINE STRAIN into chilled glass. Garnish with skewered cherries.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/2985/la-louisiane"
+  },
+  {
+    "id": "ford-cocktail",
+    "name": "Ford Cocktail",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Old Tom gin", "measure": "45ml" },
+      { "name": "Dry vermouth", "measure": "45ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "10ml" },
+      { "name": "Orange bitters", "measure": "2 dash" },
+      { "name": "Saline solution 4:1", "measure": "2 drop" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of orange zest twist. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS orange zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3379/ford-cocktail"
+  },
+  {
+    "id": "greyhounds-tooth",
+    "name": "Greyhound's Tooth",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Bénédictine D.O.M.", "measure": "22.5ml" },
+      { "name": "Vodka", "measure": "45ml" },
+      { "name": "Pink grapefruit juice", "measure": "22.5ml" },
+      { "name": "Lemon juice", "measure": "7.5ml" },
+      { "name": "Grapefruit bitters", "measure": "8 drop" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of lemon zest twist. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS lemon zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/2803/greyhounds-tooth"
+  },
+  {
+    "id": "honeymoon",
+    "name": "Honeymoon",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Calvados apple brandy", "measure": "30ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "30ml" },
+      { "name": "Lemon juice", "measure": "15ml" },
+      { "name": "Orange Curaçao", "measure": "5ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of orange zest twist. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS orange zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/969/honeymoon"
+  },
+  {
+    "id": "la-poire-des-b-n-dictines",
+    "name": "La Poire des Bénédictines",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Poire William", "measure": "22.5ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "22.5ml" },
+      { "name": "Cognac (brandy)", "measure": "22.5ml" },
+      { "name": "Chilled water", "measure": "10ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of pear wedge speared with cube of Roquefort cheese. STIR all ingredients with ice. FINE STRAIN into chilled glass. Garnish with pear wedge speared with cube of Roquefort cheese.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3463/la-poire-des-benedictines"
+  },
+  {
+    "id": "london-gypsy",
+    "name": "London Gypsy",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Gin", "measure": "45ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "22.5ml" },
+      { "name": "Aromatic bitters", "measure": "1 dash" }
+    ],
+    "instructions": "Select and pre-chill a NICK & NORA GLASS. Prepare garnish of grapefruit zest twist. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS grapefruit zest twist over cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/2891/london-gypsy"
+  },
+  {
+    "id": "garibaldi",
+    "name": "Garibaldi",
+    "category": "Cocktail",
+    "glass": "Highball glass",
+    "ingredients": [
+      { "name": "Red bitter liqueur", "measure": "45ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "2.5ml" },
+      { "name": "Orange juice", "measure": "120ml" }
+    ],
+    "instructions": "Select and pre-chill a HIGHBALL (MAX 10OZ/300ML) GLASS. Prepare garnish of orange wedge. Squeeze orange juice using pillar or elbow press and fine strain to remove any flesh. DRY BLEND the freshly squeezed juice at high speed (without ice) to make 'fluffy'. Pour bitter liqueur, sugar syrup and half of the orange juice into glass over 2 cubes of ice and STIR. Fill glass with more ice (3 cubes) and fill with rest of fluffy orange juice. Garnish with orange wedge rested across rim.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/825/garibaldi"
+  },
+  {
+    "id": "milano-torino-mi-to-cocktail",
+    "name": "Milano Torino (Mi-To) Cocktail",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Red bitter liqueur", "measure": "45ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "45ml" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of orange slice or wedge. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably a large cube or chunk of block ice). Garnish with orange slice or wedge.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3495/milano-torino-mi-to-cocktail"
+  },
+  {
+    "id": "milanese-g-t",
+    "name": "Milanese G&T",
+    "category": "Cocktail",
+    "glass": "Collins glass",
+    "ingredients": [
+      { "name": "Red bitter liqueur", "measure": "30ml" },
+      { "name": "Gin", "measure": "30ml" },
+      { "name": "Tonic water", "measure": "120ml" }
+    ],
+    "instructions": "Select and pre-chill a COLLINS GLASS. Prepare garnish of orange slice wheel. POUR all ingredients into ice-filled glass. Briefly STIR. Garnish with orange slice wheel.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4071/milanese-gandt"
+  },
+  {
+    "id": "negroni-tredici",
+    "name": "Negroni Tredici",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Gin", "measure": "60ml" },
+      { "name": "Cynar/carciofo amaro", "measure": "7.5ml" },
+      { "name": "Red bitter liqueur", "measure": "7.5ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "30ml" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of lemon zest twist and orange wedge. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS lemon zest twist over the cocktail and discard. Garnish with orange wedge.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/2826/negroni-tredici"
+  },
+  {
+    "id": "old-acquaintance",
+    "name": "Old Acquaintance",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Gin", "measure": "45ml" },
+      { "name": "Pink grapefruit juice", "measure": "22.5ml" },
+      { "name": "Red bitter liqueur", "measure": "15ml" },
+      { "name": "Lime juice", "measure": "15ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "15ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of grapefruit zest twist. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS grapefruit zest twist over cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4315/old-acquaintance"
+  },
+  {
+    "id": "old-gal",
+    "name": "Old Gal",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Rye whiskey 50% abv", "measure": "30ml" },
+      { "name": "Red bitter liqueur", "measure": "30ml" },
+      { "name": "Bianco/blanco vermouth", "measure": "30ml" },
+      { "name": "Saline solution 4:1", "measure": "3 drop" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of orange zest twist. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably over a large cube or chunk of block ice). EXPRESS orange zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/5158/old-gal"
+  },
+  {
+    "id": "the-ribbon",
+    "name": "The Ribbon",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Fino sherry", "measure": "40ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "40ml" },
+      { "name": "Blood orange liqueur", "measure": "15ml" },
+      { "name": "Red bitter liqueur", "measure": "15ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of orange zest twist. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS orange zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4124/the-ribbon"
+  },
+  {
+    "id": "sloegroni",
+    "name": "Sloegroni",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Gin", "measure": "30ml" },
+      { "name": "Red bitter liqueur", "measure": "20ml" },
+      { "name": "Sloe gin liqueur", "measure": "20ml" },
+      { "name": "Rosé/rosato vermouth", "measure": "20ml" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare orange slice for garnish. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably over a large cube or chunk of block ice). Garnish with orange slice.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4875/sloegroni"
+  },
+  {
+    "id": "the-dante",
+    "name": "The Dante",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Blanco tequila", "measure": "40ml" },
+      { "name": "Chartreuse Green", "measure": "10ml" },
+      { "name": "Kummel liqueur", "measure": "10ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "10ml" },
+      { "name": "Lime juice", "measure": "20ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of basil leaf. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. Garnish with basil leaf boat floated on cocktail.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4868/the-dante"
+  },
+  {
+    "id": "dublin-minstrel",
+    "name": "Dublin Minstrel",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Irish whiskey", "measure": "30ml" },
+      { "name": "Chartreuse Green", "measure": "20ml" },
+      { "name": "Maraschino liqueur", "measure": "20ml" },
+      { "name": "Lime juice", "measure": "20ml" }
+    ],
+    "instructions": "Select and pre-chill a NICK & NORA GLASS. Prepare garnish of lime zest twist. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. Express lime zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3440/dublin-minstrel"
+  },
+  {
+    "id": "episcopal",
+    "name": "Episcopal",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Chartreuse Green", "measure": "30ml" },
+      { "name": "Chartreuse Yellow", "measure": "30ml" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. STIR ingredients with ice. STRAIN into ice-filled glass.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/721/episcopal"
+  },
+  {
+    "id": "celery-gimlet-no-2",
+    "name": "Celery Gimlet No.2",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Celery stick", "measure": "6 inch" },
+      { "name": "Celery salt", "measure": "1 pinch" },
+      { "name": "Gin", "measure": "45ml" },
+      { "name": "Chartreuse Green", "measure": "7.5ml" },
+      { "name": "Lime juice", "measure": "22.5ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "15ml" },
+      { "name": "White wine vinegar", "measure": "5ml" },
+      { "name": "Celery bitters", "measure": "2 dash" }
+    ],
+    "instructions": "MUDDLE celery with salt in base of shaker Add other ingredients, SHAKE with ice and fine strain into ice-filled glass.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4105/celery-gimlet-no2"
+  },
+  {
+    "id": "hearn-cocktail",
+    "name": "Hearn Cocktail",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Irish whiskey", "measure": "45ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "45ml" },
+      { "name": "Chartreuse Green", "measure": "15ml" },
+      { "name": "Orinoco bitters", "measure": "4 dash" },
+      { "name": "Absinthe", "measure": "2 dash" },
+      { "name": "Orange bitters", "measure": "2 dash" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of orange zest twist. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS orange zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3645/hearn-cocktail"
+  },
+  {
+    "id": "highland-sazerac",
+    "name": "Highland Sazerac",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Chartreuse Green", "measure": "5ml" },
+      { "name": "Cognac (brandy)", "measure": "45ml" },
+      { "name": "Speyside single malt", "measure": "15ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "7.5ml" },
+      { "name": "Creole bitters", "measure": "3 dash" },
+      { "name": "Aromatic bitters", "measure": "2 dash" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of lemon zest twist. POUR Chartreuse into glass and twirl to coat inside with liqueur. Fill glass with ice and set aside. Separately, STIR other ingredients with ice in mixing glass. DISCARD contents of glass (Chartreuse and ice). FILL Chartreuse-coated glass with fresh ice and STRAIN contents of mixing glass. EXPRESS lemon zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/2807/highland-sazerac"
+  },
+  {
+    "id": "brasil",
+    "name": "Brasil",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Cachaça", "measure": "40ml" },
+      { "name": "Chartreuse Yellow", "measure": "20ml" },
+      { "name": "Lemon juice", "measure": "25ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "10ml" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of basil sprig. SHAKE all ingredients with ice. STRAIN into ice-filled glass. Garnish with basil sprigs bouquet.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/8746/brasil"
+  },
+  {
+    "id": "ce-soir-this-evening",
+    "name": "Ce Soir (This Evening)",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Cognac (brandy)", "measure": "45ml" },
+      { "name": "Cynar/carciofo amaro", "measure": "15ml" },
+      { "name": "Chartreuse Yellow", "measure": "12.5ml" },
+      { "name": "Orange bitters", "measure": "1 dash" },
+      { "name": "Aromatic bitters", "measure": "1 dash" },
+      { "name": "Saline solution 4:1", "measure": "2 drop" },
+      { "name": "Chilled water", "measure": "10ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of lemon zest twist. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS lemon zest twist over the cocktail and discard.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4858/ce-soir-this-evening"
+  },
+  {
+    "id": "diamondback",
+    "name": "Diamondback",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Rye whiskey 50% abv", "measure": "30ml" },
+      { "name": "Calvados apple brandy", "measure": "15ml" },
+      { "name": "Chartreuse Yellow", "measure": "15ml" },
+      { "name": "Chilled water", "measure": "7.5ml" }
+    ],
+    "instructions": "Select and pre-chill a NICK & NORA GLASS. Prepare garnish of skewered Luxardo Maraschino Cherry. STIR all ingredients with ice. STRAIN into chilled glass. Garnish with skewered cherry.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3058/diamondback"
+  },
+  {
+    "id": "dragon-punch",
+    "name": "Dragon Punch",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Mezcal", "measure": "45ml" },
+      { "name": "Chartreuse Yellow", "measure": "15ml" },
+      { "name": "Lime juice", "measure": "30ml" },
+      { "name": "Orgeat syrup", "measure": "15ml" },
+      { "name": "Red hot pepper sauce", "measure": "2 dash" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of skewered cucumber roll. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. Garnish with skewered cucumber roll.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/6829/dragon-punch"
+  },
+  {
+    "id": "gnome",
+    "name": "Gnome",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Gin", "measure": "20ml" },
+      { "name": "Chartreuse Yellow", "measure": "20ml" },
+      { "name": "Fino sherry", "measure": "20ml" }
+    ],
+    "instructions": "Select and pre-chill a NICK & NORA GLASS. Prepare garnish of mint leaf or mint sprig. STIR all ingredients with ice. FINE STRAIN into chilled glass. Garnish with mint leaf floated or sprig pegged to rim.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/5175/gnome"
+  },
+  {
+    "id": "100-year-old-cigar",
+    "name": "100 Year Old Cigar",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Absinthe", "measure": "2.5ml" },
+      { "name": "Aged rum (6-10yr)", "measure": "50ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "15ml" },
+      { "name": "Cynar/carciofo amaro", "measure": "15ml" },
+      { "name": "Peated malt whisky", "measure": "5ml" },
+      { "name": "Aromatic bitters", "measure": "1 dash" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. No garnish to prepare. RINSE chilled glass with absinthe (swirl around to coat and discard excess) and set to one side. STIR other ingredients with ice. STRAIN into absinthe-rinsed glass. Serve naked, without garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/5811/100-year-old-cigar"
+  },
+  {
+    "id": "sin-cyn",
+    "name": "Sin Cyn",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Speyside single malt", "measure": "30ml" },
+      { "name": "Cynar/carciofo amaro", "measure": "30ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "30ml" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of orange zest twist. POUR ingredients into ice-filled glass. Briefly STIR. EXPRESS orange zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3517/sin-cyn"
+  },
+  {
+    "id": "bensonhurst",
+    "name": "Bensonhurst",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Rye whiskey 50% abv", "measure": "45ml" },
+      { "name": "Maraschino liqueur", "measure": "10ml" },
+      { "name": "Dry vermouth", "measure": "30ml" },
+      { "name": "Cynar/carciofo amaro", "measure": "5ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of Luxardo Maraschino Cherry. STIR all ingredients with ice. FINE STRAIN into chilled glass. Garnish with maraschino cherry.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/541/bensonhurst"
+  },
+  {
+    "id": "bitter-giuseppe",
+    "name": "Bitter Giuseppe",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Lemon peel twist", "measure": "1" },
+      { "name": "Cynar/carciofo amaro", "measure": "60ml" },
+      { "name": "Vermouth alla vaniglia", "measure": "30ml" },
+      { "name": "Lemon juice", "measure": "7.5ml" },
+      { "name": "Orange bitters", "measure": "3 dash" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of lemon zest twist (in addition to twist used in the recipe). SQUEEZE the oils from a lemon zest into stirring glass and drop zest in. Add other ingredients and STIR with ice. STRAIN into ice-filled glass. EXPRESS a lemon zest over each cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4856/bitter-giuseppe"
+  },
+  {
+    "id": "bubo-bubo",
+    "name": "Bubo Bubo",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Rye whiskey 50% abv", "measure": "45ml" },
+      { "name": "Cynar/carciofo amaro", "measure": "15ml" },
+      { "name": "Amaro (e.g. Montenegro)", "measure": "15ml" },
+      { "name": "Honey and water syrup", "measure": "10ml" }
+    ],
+    "instructions": "Select and pre-chill a NICK & NORA GLASS. Prepare garnish of spray mist of Islay whisky. STIR all ingredients with ice. FINE STRAIN into chilled glass.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/5119/bubo-bubo"
+  },
+  {
+    "id": "easy-speak",
+    "name": "Easy Speak",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Bourbon whiskey", "measure": "60ml" },
+      { "name": "Cynar/carciofo amaro", "measure": "22.5ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "10ml" },
+      { "name": "Chocolate bitters", "measure": "4 drop" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of lemon zest twist. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably over a large cube or chunk of block ice). EXPRESS lemon zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3276/easy-speak"
+  },
+  {
+    "id": "banana-bliss",
+    "name": "Banana Bliss",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Cognac (brandy)", "measure": "30ml" },
+      { "name": "Banana liqueur", "measure": "15ml" },
+      { "name": "Oloroso sherry", "measure": "10ml" },
+      { "name": "Abbott's bitters", "measure": "4 drop" }
+    ],
+    "instructions": "Select and pre-chill a NICK & NORA GLASS. Prepare garnish of dried banana chips or fresh banana slice. STIR all ingredients with ice. FINE STRAIN into chilled glass. Garnish with dried banana chip.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/159/banana-bliss"
+  },
+  {
+    "id": "banana-alexander",
+    "name": "Banana Alexander",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Cognac (brandy)", "measure": "45ml" },
+      { "name": "Banana liqueur", "measure": "30ml" },
+      { "name": "Whipping cream", "measure": "25ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of grated nutmeg. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. Dust with freshly grated nutmeg.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/11284/banana-alexander"
+  },
+  {
+    "id": "banana-boulevardier",
+    "name": "Banana Boulevardier",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Bourbon whiskey", "measure": "30ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "30ml" },
+      { "name": "Red bitter liqueur", "measure": "15ml" },
+      { "name": "Banana liqueur", "measure": "15ml" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of orange zest twist and dried banana chip. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably over a large cube or chunk of block ice). EXPRESS orange zest twist over cocktail and discard. Garnish with a dried banana chip.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/11280/banana-boulevardier"
+  },
+  {
+    "id": "banana-calling",
+    "name": "Banana Calling",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Gin", "measure": "40ml" },
+      { "name": "Banana liqueur", "measure": "10ml" },
+      { "name": "Fino sherry", "measure": "7.5ml" },
+      { "name": "Lemon juice", "measure": "20ml" },
+      { "name": "Sugar syrup (2:1)", "measure": "7.5ml" }
+    ],
+    "instructions": "Select and pre-chill a NICK & NORA GLASS. Prepare garnish of dried banana chip or fresh banana slice. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. Garnish with dried banana chip pegged to rim, or fresh banana slice on the rim.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/4564/banana-calling"
+  },
+  {
+    "id": "banana-daiquiri-shaken",
+    "name": "Banana Daiquiri (shaken)",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Aged rum (6-10yr)", "measure": "50ml" },
+      { "name": "Banana liqueur", "measure": "30ml" },
+      { "name": "Lime juice", "measure": "15ml" },
+      { "name": "Chilled water", "measure": "10ml" },
+      { "name": "Daiquiri bitters", "measure": "6 drop" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of banana slice. SHAKE all ingredients with ice. FINE STRAIN into chilled glass. Garnish with banana slice on rim.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/5395/banana-daiquiri-shaken"
+  },
+  {
+    "id": "banana-old-fashioned",
+    "name": "Banana Old Fashioned",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Bourbon whiskey", "measure": "60ml" },
+      { "name": "Banana liqueur", "measure": "20ml" },
+      { "name": "Abbott's bitters", "measure": "6 drop" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare garnish of dried banana chip. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably over a large cube or chunk of block ice). Garnish with dried banana chip.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/11281/banana-old-fashioned"
+  },
+  {
+    "id": "alpine-negroni",
+    "name": "Alpine Negroni",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      { "name": "Gin", "measure": "30ml" },
+      { "name": "Gentian liqueur", "measure": "22.5ml" },
+      { "name": "Americano bianco", "measure": "22.5ml" },
+      { "name": "Génépi liqueur", "measure": "15ml" },
+      { "name": "White crème de menthe", "measure": "5ml" },
+      { "name": "Lemon bitters", "measure": "3 dash" },
+      { "name": "Saline solution 4:1", "measure": "3 drop" }
+    ],
+    "instructions": "Select and pre-chill an OLD-FASHIONED GLASS. Prepare rosemary sprig for garnish. STIR all ingredients with ice. STRAIN into ice-filled glass (preferably over a large cube or chunk of block ice). Rosemary sprig.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/5414/alpine-negroni"
+  },
+  {
+    "id": "left-bank-martini",
+    "name": "Left Bank Martini",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Gin", "measure": "60ml" },
+      { "name": "Elderflower liqueur", "measure": "15ml" },
+      { "name": "Chardonnay wine", "measure": "15ml" },
+      { "name": "Dry vermouth", "measure": "7.5ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of lime zest twist. STIR all ingredients with ice. STRAIN into chilled glass. Express lime zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/2464/left-bank-martini"
+  },
+  {
+    "id": "marsala-martini",
+    "name": "Marsala Martini",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Gin", "measure": "50ml" },
+      { "name": "Marsala semisecco (medium)", "measure": "10ml" },
+      { "name": "Amaretto liqueur", "measure": "7.5ml" },
+      { "name": "Dry vermouth", "measure": "5ml" },
+      { "name": "Boker's bitters", "measure": "1 dash" }
+    ],
+    "instructions": "Select and pre-chill a NICK & NORA GLASS. Prepare garnish of pickled almond. STIR all ingredients with ice. FINE STRAIN into chilled glass. Garnish with pickled almond in cocktail.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/3450/marsala-martini"
+  },
+  {
+    "id": "poets-dream",
+    "name": "Poet's Dream",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Gin", "measure": "30ml" },
+      { "name": "Bénédictine D.O.M.", "measure": "22.5ml" },
+      { "name": "Dry vermouth", "measure": "30ml" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of lemon zest twist. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS lemon zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/1576/poets-dream"
+  },
+  {
+    "id": "psychopathia-sexualis",
+    "name": "Psychopathia Sexualis",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      { "name": "Old Tom gin", "measure": "22.5ml" },
+      { "name": "Palo cortado sherry", "measure": "22.5ml" },
+      { "name": "Dry vermouth", "measure": "22.5ml" },
+      { "name": "Rosso/sweet vermouth", "measure": "22.5ml" },
+      { "name": "Orange bitters", "measure": "1 dash" },
+      { "name": "Saline solution 4:1", "measure": "2 drop" }
+    ],
+    "instructions": "Select and pre-chill a COUPE GLASS. Prepare garnish of orange zest twist. STIR all ingredients with ice. FINE STRAIN into chilled glass. EXPRESS orange zest twist over the cocktail and use as garnish.",
+    "source": "https://www.diffordsguide.com/cocktails/recipe/5107/psychopathia-sexualis"
   }
 ]
