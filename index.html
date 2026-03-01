@@ -76,8 +76,8 @@
 
     [data-theme="light"] {
       --bg-primary: #faf8f5;
-      --bg-secondary: #f9fafb;
-      --bg-tertiary: #f3f4f6;
+      --bg-secondary: #f5f1ec;
+      --bg-tertiary: #ede8e1;
       --text-primary: #111827;
       --text-secondary: #6b7280;
       --text-muted: #9ca3af;
@@ -144,10 +144,10 @@
     .stagger-item:nth-child(4) { animation-delay: 90ms; }
     .stagger-item:nth-child(5) { animation-delay: 120ms; }
     .stagger-item:nth-child(6) { animation-delay: 150ms; }
-    .stagger-item:nth-child(7) { animation-delay: 180ms; }
-    .stagger-item:nth-child(8) { animation-delay: 210ms; }
-    .stagger-item:nth-child(9) { animation-delay: 240ms; }
-    .stagger-item:nth-child(n+10) { animation-delay: 270ms; }
+    .stagger-item:nth-child(7) { animation-delay: 150ms; }
+    .stagger-item:nth-child(8) { animation-delay: 150ms; }
+    .stagger-item:nth-child(9) { animation-delay: 150ms; }
+    .stagger-item:nth-child(n+10) { animation-delay: 150ms; }
     
     /* Focus & inputs */
     input:focus, textarea:focus, select:focus, button:focus-visible { outline: none; }
@@ -2605,7 +2605,7 @@
                       </button>
                       {/* Sort (always visible) */}
                       <div className="flex items-center gap-2">
-                        <span className="text-2xs text-ink-600 uppercase tracking-wider">Sort:</span>
+                        <span className="text-xs text-ink-600 uppercase tracking-wider">Sort:</span>
                         <select
                           value={sortBy}
                           onChange={(e) => setSortBy(e.target.value)}
@@ -2623,7 +2623,7 @@
                     <div className="space-y-4 pt-3 border-t border-ink-700">
                       {/* Quick Browse Presets */}
                       <div className="flex flex-wrap gap-1.5 items-baseline">
-                        <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Browse</span>
+                        <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Browse</span>
                         <div className="flex flex-wrap gap-1.5">
                           {[
                             { id: 'boozy', label: 'Boozy', filters: { templates: ['STIRRED_SPIRIT_FORWARD'], tags: ['boozy'] } },
@@ -2681,7 +2681,7 @@
                       {/* Templates */}
                       {availableTemplates.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Template</span>
+                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Template</span>
                           <div className="flex flex-wrap gap-1.5">
                             {availableTemplates.map(template => {
                               // Format template name for display
@@ -2710,7 +2710,7 @@
                       {/* Legacy Categories (during migration) */}
                       {availableCategories.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Category (Legacy)</span>
+                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Category (Legacy)</span>
                           <div className="flex flex-wrap gap-1.5">
                             {availableCategories.map(category => (
                               <button
@@ -2742,7 +2742,7 @@
                       
                       {/* Spirits */}
                       <div className="flex flex-wrap gap-1.5 items-baseline">
-                        <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Spirit</span>
+                        <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Spirit</span>
                         <div className="flex flex-wrap gap-1.5">
                           {SPIRIT_CATEGORIES.map(spirit => (
                             <button
@@ -2762,7 +2762,7 @@
                       
                       {/* Methods */}
                       <div className="flex flex-wrap gap-1.5 items-baseline">
-                        <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Method</span>
+                        <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Method</span>
                         <div className="flex flex-wrap gap-1.5">
                           {METHOD_OPTIONS.map(method => (
                             <button
@@ -2783,7 +2783,7 @@
                       {/* Glasses */}
                       {availableGlasses.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Glass</span>
+                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Glass</span>
                           <div className="flex flex-wrap gap-1.5">
                             {availableGlasses.slice(0, 8).map(glass => (
                               <button
@@ -2805,7 +2805,7 @@
                       {/* Tags */}
                       {(view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'custom') && (
                         <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Tags</span>
+                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Tags</span>
                           <div className="flex flex-wrap gap-1.5">
                             <button
                               onClick={() => toggleFilter('tags', 'canMake')}
@@ -3003,7 +3003,7 @@
                   }`}
                 >
                   <img src={item.icon} className="w-8 h-8" alt={item.label} />
-                  <span className="text-2xs">{item.label}</span>
+                  <span className="text-xs">{item.label}</span>
                 </button>
               ))}
             </div>
@@ -3120,32 +3120,23 @@
       const cardBase = 'rounded-xl border border-ink-700 p-6 text-left transition-all duration-200 hover:border-copper/40 hover:bg-ink-900/50';
       return (
         <div className="space-y-5">
-          {/* Subtle top accent */}
-          <div className="h-px bg-gradient-to-r from-transparent via-copper/30 to-transparent" aria-hidden="true" />
           {/* Button Grid */}
           <div className="space-y-4">
             {/* Row 1: Ready (full-width) — hero card */}
             <button
               onClick={() => onNavigate('canMake')}
-              className="w-full rounded-2xl border-2 border-copper bg-copper/5 p-8 text-left transition-all duration-200 hover:bg-copper/10 hover:border-copper hover:shadow-[0_0_24px_-4px_rgba(212,165,116,0.2)]"
+              className="w-full rounded-2xl border-2 border-copper bg-copper/5 p-8 text-left transition-all duration-200 hover:bg-copper/10 hover:border-copper hover:shadow-[0_0_20px_0_rgba(212,165,116,0.35)]"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-9 h-9 rounded-full bg-copper/20 flex items-center justify-center">
-                    <Icon name="CheckCircle" className="w-5 h-5 text-copper" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl text-ink-100 font-normal text-copper mb-1">
-                      Ready
-                    </h3>
-                    <p className="text-sm text-ink-500">Ready to make now</p>
-                  </div>
-                </div>
-                {canMakeCount > 0 && (
-                  <span className="text-sm px-3 py-1.5 rounded-lg bg-copper/25 text-copper font-medium border border-copper/30">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className="font-display font-bold text-copper leading-none mb-2 text-6xl">
                     {canMakeCount}
-                  </span>
-                )}
+                  </div>
+                  <p className="text-sm text-ink-500">ready to make</p>
+                </div>
+                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-copper/20 flex items-center justify-center">
+                  <Icon name="CheckCircle" className="w-5 h-5 text-copper" />
+                </div>
               </div>
             </button>
 
@@ -3517,7 +3508,7 @@
                           {item.count} {item.count === 1 ? 'recipe' : 'recipes'}
                         </span>
                       </div>
-                      <p className="text-ink-600 text-2xs font-light line-clamp-1">
+                      <p className="text-ink-600 text-xs font-light line-clamp-1">
                         {item.recipes.slice(0, 5).map(r => r.name).join(' · ')}
                         {item.recipes.length > 5 && ' · ...'}
                       </p>
@@ -3691,7 +3682,7 @@
                         <h3 className="font-display text-lg text-ink-100 font-normal text-copper transition-colors">
                           {item.label}
                         </h3>
-                        <p className="text-2xs text-ink-500 mt-0.5">{item.description}</p>
+                        <p className="text-xs text-ink-500 mt-0.5">{item.description}</p>
                       </div>
                     </div>
                     {item.count > 0 && (
@@ -3758,7 +3749,7 @@
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-medium">{coll.name}</div>
                             {coll.description && (
-                              <p className="text-2xs text-ink-500 mt-0.5 line-clamp-1">{coll.description}</p>
+                              <p className="text-xs text-ink-500 mt-0.5 line-clamp-1">{coll.description}</p>
                             )}
                           </div>
                           {isInCollection && (
@@ -3804,7 +3795,7 @@
                 </button>
               </div>
               <div>
-                <label className="text-2xs text-ink-500 uppercase tracking-widest mb-1.5 block">Name *</label>
+                <label className="text-xs text-ink-500 uppercase tracking-wider mb-1.5 block">Name *</label>
                 <input
                   type="text"
                   value={newCollectionName}
@@ -3824,7 +3815,7 @@
                 />
               </div>
               <div>
-                <label className="text-2xs text-ink-500 uppercase tracking-widest mb-1.5 block">Description</label>
+                <label className="text-xs text-ink-500 uppercase tracking-wider mb-1.5 block">Description</label>
                 <textarea
                   value={newCollectionDescription}
                   onChange={(e) => setNewCollectionDescription(e.target.value)}
@@ -3924,7 +3915,7 @@
                   {recipe.glass && <p className="text-sm text-ink-400 mb-4">{recipe.glass}</p>}
                   
                   <div className="mb-4">
-                    <h4 className="text-2xs text-ink-500 uppercase tracking-widest mb-2">Ingredients</h4>
+                    <h4 className="text-xs text-ink-500 uppercase tracking-wider mb-2">Ingredients</h4>
                     <ul className="space-y-1">
                       {recipe.ingredients?.map((ing, i) => (
                         <li key={i} className="text-sm text-ink-300">
@@ -3936,7 +3927,7 @@
                   
                   {recipe.instructions && (
                     <div>
-                      <h4 className="text-2xs text-ink-500 uppercase tracking-widest mb-2">Method</h4>
+                      <h4 className="text-xs text-ink-500 uppercase tracking-wider mb-2">Method</h4>
                       <p className="text-sm text-ink-300">{recipe.instructions}</p>
                     </div>
                   )}
@@ -4076,7 +4067,7 @@
               </h3>
               <div className="space-y-4">
                 <div>
-                  <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Name *</label>
+                  <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Name *</label>
                   <input
                     type="text"
                     value={newName}
@@ -4087,7 +4078,7 @@
                   />
                 </div>
                 <div>
-                  <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Description</label>
+                  <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Description</label>
                   <textarea
                     value={newDescription}
                     onChange={(e) => setNewDescription(e.target.value)}
@@ -4122,7 +4113,7 @@
               onClick={() => setExpandedSections({...expandedSections, system: !expandedSections.system})}
               className="flex items-center justify-between w-full mb-4"
             >
-              <h3 className="text-sm text-ink-500 uppercase tracking-widest">System</h3>
+              <h3 className="text-sm text-ink-500 uppercase tracking-wider">System</h3>
               <Icon name={expandedSections.system ? "ChevronUp" : "ChevronDown"} className="w-4 h-4 text-ink-500" />
             </button>
             {expandedSections.system && (
@@ -4177,7 +4168,7 @@
                 onClick={() => setExpandedSections({...expandedSections, curated: !expandedSections.curated})}
                 className="flex items-center justify-between w-full mb-4"
               >
-                <h3 className="text-sm text-ink-500 uppercase tracking-widest">Curated</h3>
+                <h3 className="text-sm text-ink-500 uppercase tracking-wider">Curated</h3>
                 <Icon name={expandedSections.curated ? "ChevronUp" : "ChevronDown"} className="w-4 h-4 text-ink-500" />
               </button>
               {expandedSections.curated && (
@@ -4212,7 +4203,7 @@
                   onClick={() => setExpandedSections({...expandedSections, custom: !expandedSections.custom})}
                   className="flex items-center justify-between w-full mb-4"
                 >
-                  <h3 className="text-sm text-ink-500 uppercase tracking-widest">Custom</h3>
+                  <h3 className="text-sm text-ink-500 uppercase tracking-wider">Custom</h3>
                   <Icon name={expandedSections.custom ? "ChevronUp" : "ChevronDown"} className="w-4 h-4 text-ink-500" />
                 </button>
                 {expandedSections.custom && (
@@ -4234,7 +4225,7 @@
               expandedSections.custom && (
                 <div className="text-center py-8">
                   <p className="text-ink-500 text-sm">No personal collections yet</p>
-                  <p className="text-ink-600 text-2xs mt-1">Create one to get started</p>
+                  <p className="text-ink-600 text-xs mt-1">Create one to get started</p>
                 </div>
               )
             ) : (
@@ -4321,7 +4312,7 @@
               <div className="flex items-center gap-2 mt-1">
                 <p className="text-xs text-ink-600">{recipes.length} {recipes.length === 1 ? 'recipe' : 'recipes'}</p>
                 {collection.collectionType === 'curated' && (
-                  <span className="text-2xs text-ink-600">• Auto-updating</span>
+                  <span className="text-xs text-ink-600">• Auto-updating</span>
                 )}
               </div>
             </div>
@@ -4394,7 +4385,7 @@
                 <div className="flex items-center justify-between p-3 border border-ink-700 ">
                   <div>
                     <p className="text-sm text-ink-100 font-light">Measurement Units</p>
-                    <p className="text-2xs text-ink-500 mt-0.5">Display measurements in ounces or milliliters</p>
+                    <p className="text-xs text-ink-500 mt-0.5">Display measurements in ounces or milliliters</p>
                   </div>
                   <button
                     onClick={onToggleUnit}
@@ -4415,7 +4406,7 @@
                     <Icon name="Download" className="w-5 h-5 text-copper" />
                     <div>
                       <p className="text-ink-100 font-light text-copper transition-colors">Export Data</p>
-                      <p className="text-2xs text-ink-500 mt-0.5">Download your recipes and settings</p>
+                      <p className="text-xs text-ink-500 mt-0.5">Download your recipes and settings</p>
                     </div>
                   </div>
                 </button>
@@ -4425,14 +4416,14 @@
                   <Icon name="Upload" className="w-5 h-5 text-copper" />
                   <div className="flex-1">
                     <p className="text-ink-100 font-light text-copper transition-colors">Import Everything</p>
-                    <p className="text-2xs text-ink-500 mt-0.5">Restore from a backup file</p>
+                    <p className="text-xs text-ink-500 mt-0.5">Restore from a backup file</p>
                   </div>
                 </div>
               </button>
               
               {/* Import mode selection */}
               <div className="mt-3 pt-3 border-t border-ink-700">
-                <p className="text-2xs text-ink-600 uppercase tracking-wider mb-2">Import Mode</p>
+                <p className="text-xs text-ink-600 uppercase tracking-wider mb-2">Import Mode</p>
                 <div className="space-y-2">
                   <label className="flex items-center gap-3 p-2 border border-ink-700 cursor-pointer">
                     <input
@@ -4445,7 +4436,7 @@
                     />
                     <div>
                       <span className="text-sm text-ink-300">Replace</span>
-                      <p className="text-2xs text-ink-600">Overwrite all existing data</p>
+                      <p className="text-xs text-ink-600">Overwrite all existing data</p>
                     </div>
                   </label>
                   <label className="flex items-center gap-3 p-2 border border-ink-700 cursor-pointer">
@@ -4459,7 +4450,7 @@
                     />
                     <div>
                       <span className="text-sm text-ink-300">Merge</span>
-                      <p className="text-2xs text-ink-600">Combine with existing data</p>
+                      <p className="text-xs text-ink-600">Combine with existing data</p>
                     </div>
                   </label>
                 </div>
@@ -4469,7 +4460,7 @@
                   <Icon name="Share2" className="w-5 h-5 text-copper" />
                   <div>
                     <p className="text-ink-100 font-light text-copper transition-colors">Import Shared Recipe</p>
-                    <p className="text-2xs text-ink-500 mt-0.5">Paste a shared recipe JSON</p>
+                    <p className="text-xs text-ink-500 mt-0.5">Paste a shared recipe JSON</p>
                   </div>
                 </div>
               </button>
@@ -4584,10 +4575,10 @@
             {drink.name}
           </h3>
           <div className="flex items-center justify-between mt-1.5">
-            <p className="text-2xs sm:text-xs text-ink-500 font-light truncate">
+            <p className="text-xs text-ink-500 font-light truncate">
               {drink.glass || (drink.template ? drink.template.split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ') : '')}
             </p>
-            {rating > 0 && <StarRating rating={rating} readonly size="text-2xs sm:text-xs" />}
+            {rating > 0 && <StarRating rating={rating} readonly size="text-xs" />}
           </div>
         </div>
       </div>
@@ -4623,10 +4614,17 @@
       if (method) secondaryParts.push(method);
       if (drink.glass) secondaryParts.push(drink.glass);
       const secondaryLine = secondaryParts.join(' · ');
-      
+
+      const ingredientPreview = (() => {
+        if (!drink.ingredients?.length) return '';
+        const names = drink.ingredients.map(ing => ing.name);
+        const extra = names.length - 4;
+        return extra > 0 ? names.slice(0, 4).join(' · ') + `  +${extra}` : names.join(' · ');
+      })();
+
       return (
         <div
-          className="py-4 cursor-pointer group"
+          className={`py-4 cursor-pointer group border-l-[3px] transition-colors duration-150 ${canMake ? 'border-l-emerald-500/60' : missingCount > 0 && missingCount <= 2 ? 'border-l-copper/50' : 'border-l-transparent'}`}
           onClick={onClick}
         >
           <div className="flex items-start gap-4">
@@ -4638,10 +4636,8 @@
               </h3>
 
               {/* Ingredients line */}
-              {drink.ingredients && drink.ingredients.length > 0 && (
-                <div className="text-sm text-ink-500 mb-1">
-                  {drink.ingredients.map(ing => ing.name).join(' · ')}
-                </div>
+              {ingredientPreview && (
+                <div className="text-sm text-ink-500 mb-1">{ingredientPreview}</div>
               )}
 
               {/* Secondary info line */}
@@ -4766,7 +4762,7 @@
               <div className="space-y-6">
                 {/* Title */}
                 <div>
-                  <h1 className="text-2xl font-bold text-ink-100 uppercase mb-2">{drink.name}</h1>
+                  <h1 className="text-4xl font-bold text-ink-100 uppercase leading-tight tracking-tight mb-2">{drink.name}</h1>
                   <hr className="border-ink-700 mb-4" />
                 </div>
 
@@ -4825,7 +4821,7 @@
                 {/* Ingredients */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm text-ink-500 uppercase tracking-widest">Ingredients</h3>
+                    <h3 className="text-sm text-ink-500 uppercase tracking-wider">Ingredients</h3>
                     {/* Unit Toggle */}
                     <button
                       onClick={onToggleUnit}
@@ -5418,7 +5414,7 @@
               <>
                 {suggestions.length > 0 ? (
                   <div className="mb-4">
-                    <p className="text-xs text-ink-500 uppercase tracking-widest mb-2">
+                    <p className="text-xs text-ink-500 uppercase tracking-wider mb-2">
                       {hasExactMatch ? '✓ Exact Match' : 'Suggestions'}
                     </p>
                     <div className="space-y-2">
@@ -5472,7 +5468,7 @@
               </>
             ) : (
               <div className="mb-4">
-                <p className="text-xs text-ink-500 uppercase tracking-widest mb-2">Custom Ingredient</p>
+                <p className="text-xs text-ink-500 uppercase tracking-wider mb-2">Custom Ingredient</p>
                 <div className="relative">
                   <input
                     type="text"
@@ -6097,14 +6093,14 @@
                 <div className="space-y-5">
                   {/* Name */}
                   <div>
-                    <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Name *</label>
+                    <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Name *</label>
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Recipe name" className="w-full px-4 py-3 input-field  text-ink-100 font-light" autoFocus />
                   </div>
 
                   {/* Category & Glass */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Category</label>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Category</label>
                       <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-3 input-field  text-ink-100 font-light bg-transparent appearance-none cursor-pointer">
                         {['Cocktail', 'Sour', 'Spirit Forward', 'Highball', 'Tiki', 'Spritz', 'Martini', 'Flip', 'Hot Drink', 'Other'].map(c => (
                           <option key={c} value={c} className="bg-ink-900">{c}</option>
@@ -6112,7 +6108,7 @@
                       </select>
                     </div>
                     <div>
-                      <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Glass</label>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Glass</label>
                       <select value={glass} onChange={(e) => setGlass(e.target.value)} className="w-full px-4 py-3 input-field  text-ink-100 font-light bg-transparent appearance-none cursor-pointer">
                         <option value="" className="bg-ink-900">Select glass...</option>
                         {glassware.map(g => (
@@ -6125,7 +6121,7 @@
                   {/* Ingredients */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <label className="text-2xs text-ink-500 uppercase tracking-widest">Ingredients *</label>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider">Ingredients *</label>
                     </div>
 
                     {/* Added ingredients */}
@@ -6263,7 +6259,7 @@
                                   
                                   {/* Show original name if it was matched - positioned below input */}
                                   {ing.originalName && !showAutocomplete && editingIngredientIndex !== i && (
-                                    <div className="mt-1 text-2xs text-ink-500 italic">
+                                    <div className="mt-1 text-xs text-ink-500 italic">
                                       Matched from: {ing.originalName}
                                     </div>
                                   )}
@@ -6293,7 +6289,7 @@
                                   
                                   {/* Validation feedback - improved colors for readability */}
                                   {isUnmatched && ing.name.length >= 2 && !showAutocomplete && editingIngredientIndex !== i && (
-                                    <div className="mt-1 px-2 py-1 text-2xs text-ink-400 bg-ink-900 border border-amber-700/50 z-40">
+                                    <div className="mt-1 px-2 py-1 text-xs text-ink-400 bg-ink-900 border border-amber-700/50 z-40">
                                       Custom ingredient (not in database)
                                     </div>
                                   )}
@@ -6343,7 +6339,7 @@
                                 className="w-full text-left px-3 py-2 transparent transition-colors"
                               >
                                 <span className="text-sm text-ink-100">{ing.name}</span>
-                                <span className="text-2xs text-ink-600 ml-2">{ing.subcategory}</span>
+                                <span className="text-xs text-ink-600 ml-2">{ing.subcategory}</span>
                               </button>
                             ))}
                           </div>
@@ -6373,7 +6369,7 @@
                                   <div className="ml-2 border-l border-ink-700">
                                     {cat.subcategories?.map(sub => (
                                       <div key={sub.id} className="ml-2">
-                                        <p className="text-2xs text-ink-600 px-2 py-1 mt-1">{sub.name}</p>
+                                        <p className="text-xs text-ink-600 px-2 py-1 mt-1">{sub.name}</p>
                                         {sub.items?.map(item => (
                                           <button
                                             key={item.id}
@@ -6404,19 +6400,19 @@
 
                   {/* Method */}
                   <div>
-                    <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Method</label>
+                    <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Method</label>
                     <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="Shake, stir, build..." rows="3" className="w-full px-4 py-3 input-field  text-ink-100 font-light resize-none" />
                   </div>
 
                   {/* Notes */}
                   <div>
-                    <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Notes</label>
+                    <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Notes</label>
                     <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Variations, tips, etc..." rows="2" className="w-full px-4 py-3 input-field  text-ink-100 font-light resize-none" />
                   </div>
 
                   {/* Source */}
                   <div>
-                    <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Source (Optional)</label>
+                    <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Source (Optional)</label>
                     <input type="text" value={recipeSource} onChange={(e) => setRecipeSource(e.target.value)} placeholder="Where you learned this recipe..." className="w-full px-4 py-3 input-field text-ink-100 font-light" />
                   </div>
 
@@ -6855,7 +6851,7 @@
                       {Object.entries(groupedSuggestions).map(([category, items]) => (
                         <div key={category} className="border-b border-ink-700 last:border-0">
                           <div className="px-3 py-2 bg-ink-900">
-                            <p className="text-2xs text-ink-500 uppercase tracking-wider">{category}</p>
+                            <p className="text-xs text-ink-500 uppercase tracking-wider">{category}</p>
                           </div>
                           {items.map((ing, idx) => {
                             const globalIdx = flatSuggestions.findIndex(s => s.id === ing.id && s.name === ing.name);
@@ -6873,7 +6869,7 @@
                               >
                                 <span>{ing.name}</span>
                                 {ing.subcategory && (
-                                  <span className="text-2xs text-ink-600 ml-2">{ing.subcategory}</span>
+                                  <span className="text-xs text-ink-600 ml-2">{ing.subcategory}</span>
                                 )}
                               </button>
                             );
@@ -6899,7 +6895,7 @@
               {/* Quick add buttons (when input is empty) */}
               {!newItem.trim() && quickSuggestions.length > 0 && (
                 <div className="border-t border-ink-700 pt-3">
-                  <p className="text-2xs text-ink-600 uppercase tracking-widest mb-2">Quick add</p>
+                  <p className="text-xs text-ink-600 uppercase tracking-wider mb-2">Quick add</p>
                   <div className="flex flex-wrap gap-1.5">
                     {quickSuggestions.map(s => (
                       <button
@@ -6930,7 +6926,7 @@
                 if (items.length === 0) return null;
                 return (
                   <div key={cat}>
-                    <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-3">{cat}</h3>
+                    <h3 className="text-xs text-ink-500 uppercase tracking-wider mb-3">{cat}</h3>
                     <div className="flex flex-wrap gap-2">
                       {items.map(item => (
                         <div key={item.id} className="group flex items-center gap-2 px-3 py-2 border border-ink-700 transition-colors">
@@ -6989,7 +6985,7 @@
                   <Icon name="Download" className="w-5 h-5 text-copper" />
                   <div>
                     <p className="text-ink-100 font-light text-copper transition-colors">Export Data</p>
-                    <p className="text-2xs text-ink-500 mt-0.5">Download your recipes and settings</p>
+                    <p className="text-xs text-ink-500 mt-0.5">Download your recipes and settings</p>
                   </div>
                 </div>
               </button>
@@ -6999,7 +6995,7 @@
                   <Icon name="Upload" className="w-5 h-5 text-copper" />
                   <div>
                     <p className="text-ink-100 font-light text-copper transition-colors">Import Data</p>
-                    <p className="text-2xs text-ink-500 mt-0.5">Restore from a backup file</p>
+                    <p className="text-xs text-ink-500 mt-0.5">Restore from a backup file</p>
                   </div>
                 </div>
               </button>
@@ -7162,7 +7158,7 @@
                             </span>
                           )}
                         </div>
-                        <p className="text-2xs text-ink-500">
+                        <p className="text-xs text-ink-500">
                           {bar.inventory.length} ingredients
                           {bar.updatedAt && ` • Updated ${new Date(bar.updatedAt).toLocaleDateString()}`}
                         </p>
