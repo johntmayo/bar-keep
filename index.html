@@ -138,16 +138,19 @@
     
     /* Staggered grid animation */
     .stagger-item { opacity: 0; animation: slideUp 0.4s ease forwards; }
-    .stagger-item:nth-child(1) { animation-delay: 0ms; }
-    .stagger-item:nth-child(2) { animation-delay: 30ms; }
-    .stagger-item:nth-child(3) { animation-delay: 60ms; }
-    .stagger-item:nth-child(4) { animation-delay: 90ms; }
-    .stagger-item:nth-child(5) { animation-delay: 120ms; }
-    .stagger-item:nth-child(6) { animation-delay: 150ms; }
-    .stagger-item:nth-child(7) { animation-delay: 150ms; }
-    .stagger-item:nth-child(8) { animation-delay: 150ms; }
-    .stagger-item:nth-child(9) { animation-delay: 150ms; }
-    .stagger-item:nth-child(n+10) { animation-delay: 150ms; }
+    .stagger-item:nth-child(1)  { animation-delay: 0ms; }
+    .stagger-item:nth-child(2)  { animation-delay: 30ms; }
+    .stagger-item:nth-child(3)  { animation-delay: 55ms; }
+    .stagger-item:nth-child(4)  { animation-delay: 80ms; }
+    .stagger-item:nth-child(5)  { animation-delay: 105ms; }
+    .stagger-item:nth-child(6)  { animation-delay: 130ms; }
+    .stagger-item:nth-child(7)  { animation-delay: 155ms; }
+    .stagger-item:nth-child(8)  { animation-delay: 175ms; }
+    .stagger-item:nth-child(9)  { animation-delay: 195ms; }
+    .stagger-item:nth-child(10) { animation-delay: 210ms; }
+    .stagger-item:nth-child(11) { animation-delay: 225ms; }
+    .stagger-item:nth-child(12) { animation-delay: 240ms; }
+    .stagger-item:nth-child(n+13) { animation-delay: 250ms; }
     
     /* Focus & inputs */
     input:focus, textarea:focus, select:focus, button:focus-visible { outline: none; }
@@ -2307,10 +2310,10 @@
       };
 
       const navItems = [
-        { id: 'home', label: 'Mix', icon: 'icons/home.svg' },
-        { id: 'bars', label: 'Bar', icon: 'icons/bars.svg' },
-        { id: 'library', label: 'Notebook', icon: 'icons/library.svg' },
-        { id: 'settings', label: 'Settings', icon: 'icons/settings.svg' },
+        { id: 'home', label: 'Mix', icon: 'Home' },
+        { id: 'bars', label: 'Bar', icon: 'Wine' },
+        { id: 'library', label: 'Notebook', icon: 'BookOpen' },
+        { id: 'settings', label: 'Settings', icon: 'Settings' },
       ];
 
       return (
@@ -3002,7 +3005,7 @@
                     view === item.id ? 'text-copper' : 'text-ink-500'
                   }`}
                 >
-                  <img src={item.icon} className="w-8 h-8" alt={item.label} />
+                  <Icon name={item.icon} className="w-6 h-6" />
                   <span className="text-xs">{item.label}</span>
                 </button>
               ))}
@@ -3489,7 +3492,7 @@
               {gatewayBottles.map((item) => (
                 <div
                   key={item.name}
-                  className="py-3 px-4 border-b border-ink-700 transparent transition-colors last:border-0 group"
+                  className="py-3 px-4 border-b border-ink-700 transition-colors last:border-0 group"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
@@ -3572,7 +3575,8 @@
               <button
                 onClick={() => {
                   if (!Array.isArray(bars) || bars.length === 0) return;
-                  const nextBar = bars.find(b => b.id !== activeBar?.id) || bars[0];
+                  const currentIndex = bars.findIndex(b => b.id === activeBar?.id);
+                  const nextBar = bars[(currentIndex + 1) % bars.length];
                   if (nextBar) onSwitchBar(nextBar.id);
                 }}
                 className="text-xs text-copper hover:text-copper flex items-center gap-1"
@@ -3675,7 +3679,7 @@
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-3">
-                      <div className="p-2  bg-transparent group-copper/10 transition-colors">
+                      <div className="p-2 bg-transparent group-hover:bg-copper/10 transition-colors">
                         <Icon name={item.icon} className="w-5 h-5 text-copper" />
                       </div>
                       <div>
@@ -5202,7 +5206,8 @@
                 {ingredientDetails?.aliases && ingredientDetails.aliases.length > 0 && (
                   <>
                     <div>
-                      <div className="text-ink-100 text-sm">{ingredientDetails.aliases.join(', ')}</div>
+                      <p className="text-xs text-ink-500 uppercase tracking-wider mb-1">Also known as</p>
+                      <div className="text-ink-300 text-sm">{ingredientDetails.aliases.join(', ')}</div>
                     </div>
                     <hr className="border-ink-700" />
                   </>
@@ -5349,14 +5354,6 @@
     };
 
     const IngredientMatchingModal = ({ currentIngredient, currentIndex, totalCount, suggestions, onSelect, onSkip, onPrevious, onCustomInput, ingredientsDb, allIngredients }) => {
-      console.log('🎨 IngredientMatchingModal RENDERED with:', {
-        hasCurrentIngredient: !!currentIngredient,
-        currentIngredient,
-        currentIndex,
-        totalCount,
-        suggestionsCount: suggestions?.length
-      });
-      
       const [customInput, setCustomInput] = useState('');
       const [showCustomInput, setShowCustomInput] = useState(false);
       const [customSuggestions, setCustomSuggestions] = useState([]);
@@ -5365,7 +5362,6 @@
       const hasExactMatch = suggestions && suggestions.length > 0 && suggestions[0].score === 100;
 
       useEffect(() => {
-        console.log('🔔 IngredientMatchingModal useEffect - customInput changed:', customInput);
         if (customInput.length >= 2) {
           const filtered = allIngredients
             .filter(ing => {
@@ -5389,12 +5385,7 @@
         }
       };
 
-      if (!currentIngredient) {
-        console.warn('⚠️ IngredientMatchingModal returning null - no currentIngredient');
-        return null;
-      }
-      
-      console.log('✅ IngredientMatchingModal rendering JSX');
+      if (!currentIngredient) return null;
 
       return (
         <div className="fixed inset-0 z-[70] bg-ink-950/95 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
@@ -5542,8 +5533,6 @@
     };
 
     const AddRecipeModal = ({ onClose, onAdd, onUpdate, editingDrink, ingredientsDb }) => {
-      console.log('🏗️ AddRecipeModal RENDERED');
-      
       const [name, setName] = useState(editingDrink?.name || '');
       const [category, setCategory] = useState(editingDrink?.category || 'Cocktail');
       const [glass, setGlass] = useState(editingDrink?.glass || '');
@@ -5596,32 +5585,10 @@
       
       // Effect to show modal when ingredients are ready
       useEffect(() => {
-        console.log('🔔 useEffect check:', {
-          extractedLength: extractedIngredientsToMatch.length,
-          showIngredientMatching,
-          currentIndex: currentMatchingIndex,
-          hasFirstIngredient: !!extractedIngredientsToMatch[0],
-          hasCurrentIngredient: !!extractedIngredientsToMatch[currentMatchingIndex]
-        });
-        
         if (extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex] && !showIngredientMatching) {
-          console.log('🔔 useEffect triggered - ingredients ready, showing modal NOW');
-          console.log('🔔 First ingredient:', extractedIngredientsToMatch[0]);
           setShowIngredientMatching(true);
         }
       }, [extractedIngredientsToMatch, currentMatchingIndex, showIngredientMatching]);
-
-      // Debug effect to log render conditions
-      useEffect(() => {
-        const shouldRender = showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex];
-        console.log('🔍 Render condition check:', {
-          showIngredientMatching,
-          extractedLength: extractedIngredientsToMatch.length,
-          currentIndex: currentMatchingIndex,
-          hasCurrentIngredient: !!extractedIngredientsToMatch[currentMatchingIndex],
-          shouldRender
-        });
-      }, [showIngredientMatching, extractedIngredientsToMatch, currentMatchingIndex]);
 
       // Flatten all ingredients for search (including aliases)
       const allIngredients = useMemo(() => {
@@ -5733,20 +5700,13 @@
 
       // Handle ingredient matching
       const handleMatchIngredient = (selectedName) => {
-        console.log('🎯 handleMatchIngredient called with:', selectedName);
-        console.log('📍 Current index:', currentMatchingIndex, 'of', extractedIngredientsToMatch.length);
         const updated = [...matchedIngredients];
         updated[currentMatchingIndex] = selectedName;
         setMatchedIngredients(updated);
-        console.log('📝 Updated matched ingredients:', updated);
-        
-        // Move to next ingredient
+
         if (currentMatchingIndex < extractedIngredientsToMatch.length - 1) {
-          console.log('➡️ Moving to next ingredient');
           setCurrentMatchingIndex(currentMatchingIndex + 1);
         } else {
-          // All ingredients matched, apply to form
-          console.log('✅ All ingredients matched, applying to form');
           applyMatchedIngredients(updated);
         }
       };
@@ -5765,9 +5725,6 @@
       };
 
       const applyMatchedIngredients = (matched) => {
-        console.log('✅ Applying matched ingredients:', matched);
-        console.log('📋 Extracted ingredients to match:', extractedIngredientsToMatch);
-        
         const formatted = extractedIngredientsToMatch.map((ing, i) => {
           const matchedName = matched[i] || ing.originalName;
           // Format measure from amount + unit
@@ -5791,13 +5748,11 @@
           };
         });
         
-        console.log('📝 Formatted ingredients for form:', formatted);
         setIngredients(formatted);
         setShowIngredientMatching(false);
         setExtractedIngredientsToMatch([]);
         setMatchedIngredients([]);
         setCurrentMatchingIndex(0);
-        console.log('✅ Ingredients added to form, modal closed');
       };
 
       const handlePreviousIngredient = () => {
@@ -5807,16 +5762,11 @@
       };
 
       const handleImageScan = async (file) => {
-        console.log('🔍 handleImageScan called with file:', file?.name, file?.size);
-        if (!file) {
-          console.warn('No file provided to handleImageScan');
-          return;
-        }
-        
+        if (!file) return;
+
         setScanningImage(true);
         const previewUrl = URL.createObjectURL(file);
         setImagePreview(previewUrl);
-        console.log('📸 Image preview created, starting FileReader...');
         
         try {
           // Convert image to base64
@@ -5827,16 +5777,12 @@
             toast('Failed to read image file', 'error');
           };
           reader.onloadend = async () => {
-            console.log('📖 FileReader onloadend triggered');
             try {
               if (!reader.result) {
                 throw new Error('FileReader result is empty');
               }
               const base64Image = reader.result.split(',')[1];
-              console.log('🖼️ Image converted to base64, length:', base64Image?.length);
-              
-              // Call Netlify function
-              console.log('📡 Calling Netlify function: /.netlify/functions/extract');
+
               const response = await fetch('/.netlify/functions/extract', {
                 method: 'POST',
                 headers: {
@@ -5845,8 +5791,6 @@
                 body: JSON.stringify({ image: base64Image })
               });
               
-              console.log('📥 Response received, status:', response.status, response.statusText);
-              
               if (!response.ok) {
                 const errorText = await response.text();
                 console.error('❌ Response not OK:', response.status, errorText);
@@ -5854,11 +5798,7 @@
               }
               
               const data = await response.json();
-              console.log('✅ Extract response received:', data);
-              console.log('📋 Ingredients in response:', data.ingredients);
-              console.log('🔢 Ingredients is array?', Array.isArray(data.ingredients));
-              console.log('🔢 Ingredients count:', data.ingredients?.length);
-              
+
               // Populate form with extracted data
               if (data.name) setName(data.name);
               if (data.category) setCategory(data.category);
@@ -5868,7 +5808,6 @@
               if (data.recipeSource) setRecipeSource(data.recipeSource);
               
               if (data.ingredients && Array.isArray(data.ingredients) && data.ingredients.length > 0) {
-                console.log('Processing ingredients array with', data.ingredients.length, 'items');
                 // Store extracted ingredients for matching instead of auto-matching
                 const ingredientsToMatch = data.ingredients
                   .map(ing => {
@@ -5876,10 +5815,7 @@
                     const rawName = typeof ing === 'string' ? ing : (ing.name || '');
                     
                     // Skip if no name
-                    if (!rawName || rawName.trim().length === 0) {
-                      console.warn('Skipping ingredient with no name:', ing);
-                      return null;
-                    }
+                    if (!rawName || rawName.trim().length === 0) return null;
                     
                     // Parse measure
                     let amount = '';
@@ -5921,41 +5857,19 @@
                   })
                   .filter(ing => ing !== null); // Remove null entries
                 
-                console.log('Ingredients to match after processing:', ingredientsToMatch);
-                console.log('Ingredients count:', ingredientsToMatch.length);
-                
                 if (ingredientsToMatch.length > 0) {
-                  console.log('📋 Setting up ingredient matching modal with', ingredientsToMatch.length, 'ingredients');
-                  console.log('📋 First ingredient:', ingredientsToMatch[0]);
-                  
-                  // Set the ingredients - useEffect will handle showing modal when ready
                   setExtractedIngredientsToMatch(ingredientsToMatch);
                   setMatchedIngredients(new Array(ingredientsToMatch.length).fill(null));
                   setCurrentMatchingIndex(0);
-                  // useEffect will detect the change and show the modal
-                  console.log('📋 State updated, useEffect should trigger modal');
                 } else {
-                  console.error('❌ No valid ingredients after processing!');
                   toast('No ingredients found in recipe', 'error');
                 }
-              } else {
-                console.warn('No ingredients found in response or not an array:', {
-                  hasIngredients: !!data.ingredients,
-                  isArray: Array.isArray(data.ingredients),
-                  length: data.ingredients?.length,
-                  ingredients: data.ingredients
-                });
               }
               
               setScanningImage(false);
               toast('Recipe extracted successfully!', 'success');
             } catch (error) {
               console.error('Scan error:', error);
-              console.error('Error details:', {
-                message: error.message,
-                stack: error.stack,
-                name: error.name
-              });
               setScanningImage(false);
               toast('Failed to extract recipe. Please try again.', 'error');
             } finally {
@@ -5963,7 +5877,6 @@
               URL.revokeObjectURL(previewUrl);
             }
           };
-          console.log('📚 Starting FileReader.readAsDataURL...');
           reader.readAsDataURL(file);
         } catch (error) {
           console.error('❌ Scan error in handleImageScan:', error);
@@ -6037,22 +5950,13 @@
         { id: 'collins', name: 'Collins Glass' }, { id: 'flute', name: 'Champagne Flute' }
       ];
 
-      // Compute render condition for ingredient matching modal (explicitly convert to boolean)
       const shouldShowIngredientMatching = !!(showIngredientMatching && extractedIngredientsToMatch.length > 0 && extractedIngredientsToMatch[currentMatchingIndex]);
-      console.log('🎯 Computed shouldShowIngredientMatching:', {
-        shouldShowIngredientMatching,
-        showIngredientMatching,
-        extractedLength: extractedIngredientsToMatch.length,
-        currentIndex: currentMatchingIndex,
-        hasCurrentIngredient: !!extractedIngredientsToMatch[currentMatchingIndex],
-        currentIngredient: extractedIngredientsToMatch[currentMatchingIndex]
-      });
 
       return (
         <React.Fragment>
         <div className="fixed inset-0 z-50 bg-ink-950 overflow-y-auto" onClick={onClose}>
           <div className="min-h-screen sm:py-8 sm:px-4" onClick={e => e.stopPropagation()}>
-            <div className="max-w-xl mx-auto bg-ink-950 sm:card sm:rounded-2xl ">
+            <div className="max-w-xl mx-auto bg-ink-950 sm:card">
               <div className="p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="font-display text-2xl text-ink-100 font-light">{editingDrink ? 'Edit Recipe' : 'Build Cocktail'}</h2>
@@ -6336,7 +6240,7 @@
                               <button
                                 key={i}
                                 onClick={() => addIngredient(ing.name)}
-                                className="w-full text-left px-3 py-2 transparent transition-colors"
+                                className="w-full text-left px-3 py-2 hover:bg-ink-800 transition-colors"
                               >
                                 <span className="text-sm text-ink-100">{ing.name}</span>
                                 <span className="text-xs text-ink-600 ml-2">{ing.subcategory}</span>
@@ -6360,7 +6264,7 @@
                               <div key={cat.id} className="mb-1">
                                 <button
                                   onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
-                                  className="w-full flex items-center justify-between px-3 py-2 transparent transition-colors"
+                                  className="w-full flex items-center justify-between px-3 py-2 hover:bg-ink-800 transition-colors"
                                 >
                                   <span className="text-xs text-ink-400 uppercase tracking-wider">{cat.name}</span>
                                   <Icon name={expandedCategory === cat.id ? 'ChevronDown' : 'ChevronRight'} className="w-4 h-4 text-ink-600" />
@@ -6374,7 +6278,7 @@
                                           <button
                                             key={item.id}
                                             onClick={() => addIngredient(item.name)}
-                                            className="w-full text-left px-3 py-1.5 text-sm text-ink-300 hover:text-ink-100 transparent transition-colors"
+                                            className="w-full text-left px-3 py-1.5 text-sm text-ink-300 hover:text-ink-100 hover:bg-ink-800 transition-colors"
                                           >
                                             {item.name}
                                           </button>
@@ -6901,7 +6805,7 @@
                       <button
                         key={s}
                         onClick={() => handleAdd(s)}
-                        className="px-2.5 py-1.5 text-xs text-ink-400 bg-transparent transparent hover:text-copper transition-colors"
+                        className="px-2.5 py-1.5 text-xs text-ink-400 bg-transparent hover:text-copper transition-colors"
                       >
                         {s}
                       </button>
