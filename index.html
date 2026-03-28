@@ -2943,7 +2943,7 @@
                     }} />
                   )
                 ) : (
-                  <div className="bg-transparent overflow-hidden">
+                  <div className="bg-transparent overflow-hidden divide-y divide-ink-800/20">
                     {/* Create New Recipe Button - only show in custom view */}
                     {view === 'custom' && (
                       <div
@@ -3599,7 +3599,7 @@
                   see all →
                 </button>
               </div>
-              <div>
+              <div className="divide-y divide-ink-800/20">
                 {canMakeRecipes.map(drink => (
                       <RecipeRow
                         key={drink.id}
@@ -4599,7 +4599,7 @@
         if (canMake) {
           // Ready: show more visible checkmark
           return (
-            <Icon name="Check" className="w-3 h-3 text-ink-400" />
+            <Icon name="Check" className="w-3 h-3 text-copper/60" />
           );
         } else if (missingCount > 0) {
           // Missing ingredients: show negative number in gray
@@ -4628,10 +4628,10 @@
 
       return (
         <div
-          className={`py-4 cursor-pointer group border-l-[3px] transition-colors duration-150 ${canMake ? 'border-l-emerald-500/60' : missingCount > 0 && missingCount <= 2 ? 'border-l-copper/50' : 'border-l-transparent'}`}
+          className={`py-4 cursor-pointer group border-l-2 transition-colors duration-150 ${canMake ? 'border-l-copper/60' : missingCount > 0 && missingCount <= 2 ? 'border-l-copper/25' : 'border-l-transparent'}`}
           onClick={onClick}
         >
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 pl-3">
             <div className="flex-1 min-w-0">
               {/* Recipe name */}
               <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">
