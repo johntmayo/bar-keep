@@ -866,6 +866,7 @@
       const [ingredientsDb, setIngredientsDb] = useState(null);
       const [showSettings, setShowSettings] = useState(false);
       const [showImportShared, setShowImportShared] = useState(false);
+      const [showAiBartender, setShowAiBartender] = useState(false);
       const [sharedRecipeData, setSharedRecipeData] = useState(null);
       const [collections, setCollections] = useState([]);
       const [updateAvailable, setUpdateAvailable] = useState(false);
@@ -890,12 +891,13 @@
             if (showConfirmDelete) setShowConfirmDelete(null);
             else if (selectedDrink) setSelectedDrink(null);
             else if (showAddDrink) setShowAddDrink(false);
+            else if (showAiBartender) setShowAiBartender(false);
             else if (showImportExport) setShowImportExport(false);
           }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-      }, [selectedDrink, showAddDrink, showImportExport, showConfirmDelete]);
+      }, [selectedDrink, showAddDrink, showAiBartender, showImportExport, showConfirmDelete]);
 
       // Scroll to top on view change
       useEffect(() => {
@@ -2332,6 +2334,13 @@
                   >
                     <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} className="w-4 h-4" />
                   </button>
+                  <button
+                    onClick={() => setShowAiBartender(true)}
+                    className="p-2 text-copper hover:text-copper/80"
+                    title="Ask the AI Bartender"
+                  >
+                    <Icon name="BotMessageSquare" className="w-4 h-4" />
+                  </button>
                   {view === 'browse' && (
                     <button onClick={() => setShowAddDrink(true)} className="p-2 text-ink-500 hover:text-ink-300" title="New Recipe">
                       <Icon name="Plus" className="w-4 h-4" />
@@ -2396,6 +2405,13 @@
                 >
                   <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} className="w-4 h-4" />
                 </button>
+                <button
+                  onClick={() => setShowAiBartender(true)}
+                  className="p-2 text-copper"
+                  title="Ask the AI Bartender"
+                >
+                  <Icon name="BotMessageSquare" className="w-5 h-5" />
+                </button>
                 {view === 'browse' && (
                   <button onClick={() => setShowAddDrink(true)} className="p-2 text-copper">
                     <Icon name="Plus" className="w-5 h-5" />
@@ -2420,6 +2436,7 @@
                 onNavigate={(viewId) => {
                   setView(viewId);
                 }}
+                onAskBartender={() => setShowAiBartender(true)}
                 getMakeableDrinks={getMakeableDrinks}
                 getAlmostMakeableDrinks={() => getAllDrinks().filter(d => {
                   const missing = getMissingCount(d);
@@ -3082,6 +3099,8 @@
             />
           )}
 
+          {showAiBartender && <AiBartenderModal onClose={() => setShowAiBartender(false)} onAdd={(recipe) => { addCustomDrink(recipe); }} />}
+
           {showAddDrink && <AddRecipeModal onClose={() => { setShowAddDrink(false); setEditingDrink(null); }} onAdd={addCustomDrink} onUpdate={updateCustomDrink} editingDrink={editingDrink} ingredientsDb={ingredientsDb} />}
           
           {showImportShared && (
@@ -3113,10 +3132,10 @@
     // ============ COMPONENTS ============
 
     const HomeView = ({
-      savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, 
+      savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount,
       onNavigate, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
-      onSelectDrink, keepers, collections, getMissingCount, canMakeDrink, ingredientsDb, 
-      bars = [], activeBar, onSwitchBar, toggleKeeper, toggleToTry, isInToTry
+      onSelectDrink, keepers, collections, getMissingCount, canMakeDrink, ingredientsDb,
+      bars = [], activeBar, onSwitchBar, toggleKeeper, toggleToTry, isInToTry, onAskBartender
     }) => {
       const allCollections = Array.isArray(getAllCollections) ? getAllCollections : [];
       
@@ -3217,7 +3236,7 @@
               </button>
             </div>
 
-            {/* Row 4: Custom (half-width) */}
+            {/* Row 4: Custom (half) and Ask the Bartender (half) */}
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => onNavigate('custom')}
@@ -3234,6 +3253,21 @@
                   )}
                 </div>
                 <p className="text-xs text-ink-500">Your custom recipes</p>
+              </button>
+
+              <button
+                onClick={onAskBartender}
+                className={cardBase}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
+                    Ask
+                  </h3>
+                  <div className="w-6 h-6 bg-copper/20 flex items-center justify-center flex-shrink-0">
+                    <Icon name="BotMessageSquare" className="w-3.5 h-3.5 text-copper" />
+                  </div>
+                </div>
+                <p className="text-xs text-ink-500">AI bartender lookup</p>
               </button>
             </div>
           </div>
@@ -5527,6 +5561,219 @@
               )}
               <div className="flex-1" />
             </div>
+          </div>
+        </div>
+      );
+    };
+
+    // ============ AI BARTENDER MODAL ============
+
+    const AiBartenderModal = ({ onClose, onAdd }) => {
+      const [query, setQuery] = useState('');
+      const [loading, setLoading] = useState(false);
+      const [result, setResult] = useState(null);
+      const [error, setError] = useState(null);
+      const [added, setAdded] = useState(false);
+      const inputRef = useRef(null);
+
+      useEffect(() => {
+        inputRef.current?.focus();
+      }, []);
+
+      const askBartender = async (e) => {
+        e?.preventDefault();
+        if (!query.trim() || loading) return;
+        setLoading(true);
+        setError(null);
+        setResult(null);
+        setAdded(false);
+        try {
+          const response = await fetch('/.netlify/functions/bartender', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: query.trim() })
+          });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || 'Something went wrong');
+          setResult(data);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handleAdd = () => {
+        if (!result?.recipe) return;
+        onAdd(result.recipe);
+        setAdded(true);
+      };
+
+      const handleKeyDown = (e) => {
+        if (e.key === 'Escape') onClose();
+      };
+
+      return (
+        <div
+          className="fixed inset-0 z-50 bg-ink-950/95 flex flex-col"
+          onKeyDown={handleKeyDown}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-4 border-b border-ink-700 flex-shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-copper/20 flex items-center justify-center">
+                <Icon name="BotMessageSquare" className="w-4 h-4 text-copper" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-ink-100 uppercase tracking-wider">Ask the Bartender</h2>
+                <p className="text-2xs text-ink-500">AI-powered recipe lookup</p>
+              </div>
+            </div>
+            <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-200">
+              <Icon name="X" className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Search */}
+          <div className="px-4 pt-5 pb-4 flex-shrink-0">
+            <form onSubmit={askBartender} className="flex gap-2">
+              <div className="flex-1 relative">
+                <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-600" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="What drink can I make for you?"
+                  className="w-full pl-10 pr-4 py-3 input-field text-sm text-ink-200 font-light"
+                  disabled={loading}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={!query.trim() || loading}
+                className="px-4 py-3 bg-copper/20 text-copper border border-copper/40 text-sm font-medium hover:bg-copper/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading ? (
+                  <Icon name="Loader" className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Icon name="Send" className="w-4 h-4" />
+                )}
+              </button>
+            </form>
+            <p className="mt-2 text-2xs text-ink-600">
+              Try: "Negroni", "something spicy with mezcal", "classic gin sour"
+            </p>
+          </div>
+
+          {/* Results */}
+          <div className="flex-1 overflow-y-auto px-4 pb-8">
+            {loading && (
+              <div className="flex flex-col items-center justify-center py-16 gap-4">
+                <div className="w-12 h-12 bg-copper/10 flex items-center justify-center animate-pulse">
+                  <Icon name="GlassWater" className="w-6 h-6 text-copper" />
+                </div>
+                <p className="text-sm text-ink-500">Shaking up a recipe...</p>
+              </div>
+            )}
+
+            {error && (
+              <div className="border border-red-900/40 bg-red-900/10 p-4 text-sm text-red-400">
+                {error}
+              </div>
+            )}
+
+            {result && (
+              <div className="space-y-5 animate-[slideUp_0.3s_ease]">
+                {/* Bartender's Note */}
+                {result.bartenderNote && (
+                  <div className="border-l-2 border-copper/50 pl-4 py-1">
+                    <p className="text-xs text-ink-400 font-light italic leading-relaxed">
+                      "{result.bartenderNote}"
+                    </p>
+                  </div>
+                )}
+
+                {/* Recipe Card */}
+                <div className="border border-ink-700 bg-ink-900/50 p-5 space-y-4">
+                  {/* Name + Glass */}
+                  <div>
+                    <h3 className="text-xl font-bold text-ink-100 font-display">{result.recipe.name}</h3>
+                    {result.recipe.glass && (
+                      <p className="text-xs text-ink-500 mt-0.5 flex items-center gap-1.5">
+                        <Icon name="GlassWater" className="w-3 h-3" />
+                        {result.recipe.glass}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Ingredients */}
+                  <div>
+                    <h4 className="text-2xs text-ink-600 uppercase tracking-wider mb-2">Ingredients</h4>
+                    <ul className="space-y-1.5">
+                      {result.recipe.ingredients.map((ing, i) => (
+                        <li key={i} className="flex items-baseline gap-3">
+                          <span className="text-xs text-copper font-medium w-16 flex-shrink-0 text-right">{ing.measure}</span>
+                          <span className="w-px h-3 bg-ink-700 flex-shrink-0 self-center" />
+                          <span className="text-sm text-ink-200 font-light">{ing.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Instructions */}
+                  {result.recipe.instructions && (
+                    <div>
+                      <h4 className="text-2xs text-ink-600 uppercase tracking-wider mb-2">Instructions</h4>
+                      <p className="text-sm text-ink-300 font-light leading-relaxed">{result.recipe.instructions}</p>
+                    </div>
+                  )}
+
+                  {/* Notes */}
+                  {result.recipe.notes && (
+                    <div>
+                      <h4 className="text-2xs text-ink-600 uppercase tracking-wider mb-1">Notes</h4>
+                      <p className="text-sm text-ink-400 font-light">{result.recipe.notes}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Add to Library */}
+                <div className="flex gap-3">
+                  {added ? (
+                    <div className="flex-1 py-3 flex items-center justify-center gap-2 border border-emerald-900/40 bg-emerald-900/10 text-emerald-400 text-sm">
+                      <Icon name="Check" className="w-4 h-4" />
+                      Added to your library
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleAdd}
+                      className="flex-1 py-3 flex items-center justify-center gap-2 bg-copper/20 text-copper border border-copper/40 text-sm font-medium hover:bg-copper/30 transition-colors"
+                    >
+                      <Icon name="Plus" className="w-4 h-4" />
+                      Add to My Library
+                    </button>
+                  )}
+                  <button
+                    onClick={() => { setResult(null); setQuery(''); inputRef.current?.focus(); }}
+                    className="px-4 py-3 border border-ink-700 text-ink-400 hover:text-ink-200 text-sm transition-colors"
+                  >
+                    New Search
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {!loading && !error && !result && (
+              <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
+                <div className="w-16 h-16 bg-copper/10 flex items-center justify-center">
+                  <Icon name="BotMessageSquare" className="w-8 h-8 text-copper/50" />
+                </div>
+                <p className="text-sm text-ink-500 max-w-xs">
+                  Ask me about any cocktail — classic or modern. I'll pull up the recipe and you can add it straight to your library.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       );
