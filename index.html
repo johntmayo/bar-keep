@@ -284,6 +284,17 @@
     let ingredientAliasMap = null;
     let unmatchedIngredients = new Set();
     
+    const normalizeIngredientKey = (name) => {
+      if (!name || typeof name !== 'string') return '';
+      return name
+        .toLowerCase()
+        .replace(/[’]/g, "'")
+        .replace(/&/g, ' and ')
+        .replace(/[.,;:!?'"()]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
+    
     const buildIngredientAliasMap = (ingredientsDb) => {
       if (ingredientAliasMap) return ingredientAliasMap;
       if (!ingredientsDb) return {};
@@ -292,13 +303,13 @@
       ingredientsDb.categories?.forEach(cat => {
         cat.subcategories?.forEach(sub => {
           sub.items?.forEach(item => {
-            const canonical = item.name.toLowerCase().trim();
+            const canonical = normalizeIngredientKey(item.name);
             // Map canonical name to itself
             map[canonical] = canonical;
             // Map aliases to canonical name
             if (item.aliases && Array.isArray(item.aliases)) {
               item.aliases.forEach(alias => {
-                map[alias.toLowerCase().trim()] = canonical;
+                map[normalizeIngredientKey(alias)] = canonical;
               });
             }
           });
@@ -314,12 +325,7 @@
       // Build alias map if needed
       const aliasMap = buildIngredientAliasMap(ingredientsDb);
       
-      // Normalize: lowercase, trim, remove punctuation
-      let normalized = name.toLowerCase().trim();
-      // Remove common punctuation but keep spaces
-      normalized = normalized.replace(/[.,;:!?'"()]/g, '');
-      // Normalize multiple spaces to single space
-      normalized = normalized.replace(/\s+/g, ' ');
+      let normalized = normalizeIngredientKey(name);
       
       // Look up in alias map
       if (aliasMap[normalized]) {
@@ -619,8 +625,332 @@
       { value: 'ingredients', label: 'Fewest Ingredients' },
     ];
     
+    const PRIMARY_FAMILY_OPTIONS = [
+      'Old-Fashioned',
+      'Aromatized',
+      'Bitter Aromatized',
+      'Sour',
+      'Daisy',
+      'Enhanced Sour',
+      'Collins',
+      'Highball',
+      'Rich & Creamy',
+      'Tropical / Punch-derived'
+    ];
+    const BUILD_METHOD_OPTIONS = ['Stirred', 'Shaken', 'Built', 'Blended', 'Swizzled', 'Thrown', 'Whipped'];
+    const SERVICE_STYLE_OPTIONS = ['Up', 'Rocks', 'Large rock', 'Long / tall', 'Neat', 'Frozen', 'Hot'];
+    const BASE_SPIRIT_OPTIONS = [
+      'Gin',
+      'Vodka',
+      'Whiskey — Bourbon',
+      'Whiskey — Rye',
+      'Whiskey — Scotch',
+      'Whiskey — Irish',
+      'Rum — White',
+      'Rum — Aged',
+      'Rum — Overproof',
+      'Tequila — Blanco',
+      'Tequila — Reposado',
+      'Tequila — Añejo',
+      'Mezcal',
+      'Brandy / Cognac',
+      'Pisco',
+      'Calvados',
+      'Eau de vie',
+      'Aquavit',
+      'Shochu / Soju',
+      'Other'
+    ];
+    
+    const LEGACY_CATEGORY_TO_FAMILY = {
+      'Cocktail': 'Old-Fashioned',
+      'Spirit Forward': 'Old-Fashioned',
+      'Sour': 'Sour',
+      'Highball': 'Highball',
+      'Tiki': 'Tropical / Punch-derived',
+      'Spritz': 'Bitter Aromatized',
+      'Martini': 'Aromatized',
+      'Flip': 'Rich & Creamy',
+      'Hot Drink': 'Highball'
+    };
+    
+    const LEGACY_TEMPLATE_TO_FAMILY = {
+      'STIRRED_SPIRIT_FORWARD': 'Old-Fashioned',
+      'SOUR': 'Sour',
+      'HIGHBALL_FIZZ': 'Highball',
+      'TIKI_PUNCH': 'Tropical / Punch-derived'
+    };
+    
+    const LEGACY_TAG_MAP = {
+      boozy: { group: 'experience', value: 'Boozy' },
+      refreshing: { group: 'experience', value: 'Refreshing' },
+      bitter: { group: 'experience', value: 'Bitter' },
+      tropical: { group: 'experience', value: 'Fruity' },
+      sweet: { group: 'experience', value: 'Sweet' },
+      sparkling: { group: 'structural', value: 'Carbonated' },
+      nightcap: { group: 'occasion', value: 'Nightcap' },
+      brunch: { group: 'occasion', value: 'Brunch' },
+      summer: { group: 'occasion', value: 'Summer' },
+      winter: { group: 'occasion', value: 'Winter' }
+    };
+    
+    const uniqStrings = (values) => {
+      const seen = new Set();
+      return (Array.isArray(values) ? values : [])
+        .map(value => typeof value === 'string' ? value.trim() : '')
+        .filter(Boolean)
+        .filter(value => {
+          const key = value.toLowerCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+    };
+    
+    const splitTagInput = (value) => uniqStrings((value || '').split(','));
+    const ingredientNamesForRecipe = (drink) => (drink.ingredients || []).map(ing => String(ing?.name || '').toLowerCase()).filter(Boolean);
+    const getRecipeTaxonomyTags = (drink) => uniqStrings([
+      ...(drink.experience_tags || []),
+      ...(drink.occasion_tags || []),
+      ...(drink.structural_tags || [])
+    ]);
+    
+    const normalizeLegacyTagGroup = (legacyTags = [], group) => {
+      return uniqStrings(
+        legacyTags
+          .map(tag => LEGACY_TAG_MAP[String(tag || '').toLowerCase()])
+          .filter(Boolean)
+          .filter(entry => entry.group === group)
+          .map(entry => entry.value)
+      );
+    };
+    
+    const recipeHasCitrus = (drink) => ingredientNamesForRecipe(drink).some(name =>
+      name.includes('lemon juice') ||
+      name.includes('lime juice') ||
+      name.includes('grapefruit juice') ||
+      name.includes('orange juice') ||
+      name.includes('verjus') ||
+      name.includes('citrus')
+    );
+    
+    const recipeHasLengthener = (drink) => ingredientNamesForRecipe(drink).some(name =>
+      name.includes('soda') ||
+      name.includes('tonic') ||
+      name.includes('ginger beer') ||
+      name.includes('cola') ||
+      name.includes('sparkling') ||
+      name.includes('prosecco') ||
+      name.includes('champagne')
+    );
+    
+    const recipeHasVermouthLike = (drink) => ingredientNamesForRecipe(drink).some(name =>
+      name.includes('vermouth') ||
+      name.includes('lillet') ||
+      name.includes('quinquina') ||
+      name.includes('cocchi') ||
+      name.includes('sherry')
+    );
+    
+    const recipeHasStructuralBitterLike = (drink) => ingredientNamesForRecipe(drink).some(name =>
+      name.includes('campari') ||
+      name.includes('aperol') ||
+      name.includes('amaro') ||
+      name.includes('cynar') ||
+      name.includes('suze') ||
+      name.includes('fernet')
+    );
+    
+    const inferTextureAgents = (drink) => uniqStrings(
+      ingredientNamesForRecipe(drink).flatMap(name => {
+        if (name.includes('egg white')) return ['Egg white'];
+        if (name.includes('whole egg') || name === 'egg') return ['Egg'];
+        if (name.includes('cream')) return ['Cream'];
+        if (name.includes('milk')) return ['Milk'];
+        if (name.includes('aquafaba')) return ['Aquafaba'];
+        return [];
+      })
+    );
+    
+    const inferPrimaryFamilyFromRecipe = (drink) => {
+      if (PRIMARY_FAMILY_OPTIONS.includes(drink?.primary_family)) return drink.primary_family;
+      if (LEGACY_CATEGORY_TO_FAMILY[drink?.category]) return LEGACY_CATEGORY_TO_FAMILY[drink.category];
+      if (LEGACY_TEMPLATE_TO_FAMILY[drink?.template]) return LEGACY_TEMPLATE_TO_FAMILY[drink.template];
+      const legacyTags = (drink?.tags || []).map(tag => String(tag).toLowerCase());
+      if (drink?.category === 'Tiki' || legacyTags.includes('tropical')) return 'Tropical / Punch-derived';
+      if (inferTextureAgents(drink).length > 0) return 'Rich & Creamy';
+      if (recipeHasCitrus(drink)) {
+        if (recipeHasLengthener(drink)) return 'Collins';
+        if (recipeHasStructuralBitterLike(drink)) return 'Enhanced Sour';
+        return 'Sour';
+      }
+      if (recipeHasStructuralBitterLike(drink) && recipeHasVermouthLike(drink)) return 'Bitter Aromatized';
+      if (recipeHasVermouthLike(drink)) return 'Aromatized';
+      if (recipeHasLengthener(drink)) return 'Highball';
+      return 'Old-Fashioned';
+    };
+    
+    const inferPrimaryTemplateFromRecipe = (drink) => {
+      if (drink?.primary_template) return drink.primary_template;
+      if (drink?.template && !LEGACY_TEMPLATE_TO_FAMILY[drink.template]) return drink.template;
+      return '';
+    };
+    
+    const inferServiceStyleFromRecipe = (drink) => {
+      if (drink?.service_style) return drink.service_style;
+      const glass = String(drink?.glass || '').toLowerCase();
+      if (glass.includes('coupe') || glass.includes('martini') || glass.includes('cocktail') || glass.includes('nick')) return 'Up';
+      if (glass.includes('rocks') || glass.includes('old fashioned')) return 'Rocks';
+      if (glass.includes('highball') || glass.includes('collins') || glass.includes('mule') || glass.includes('hurricane')) return 'Long / tall';
+      if (glass.includes('shot')) return 'Neat';
+      if (glass.includes('hot')) return 'Hot';
+      if (recipeHasLengthener(drink)) return 'Long / tall';
+      return '';
+    };
+    
+    const inferBaseSpiritFromRecipe = (drink) => {
+      if (drink?.base_spirit) return drink.base_spirit;
+      const names = ingredientNamesForRecipe(drink).join(' ');
+      if (names.includes('mezcal')) return 'Mezcal';
+      if (names.includes('tequila añejo')) return 'Tequila — Añejo';
+      if (names.includes('tequila reposado')) return 'Tequila — Reposado';
+      if (names.includes('tequila')) return 'Tequila — Blanco';
+      if (names.includes('rye')) return 'Whiskey — Rye';
+      if (names.includes('bourbon')) return 'Whiskey — Bourbon';
+      if (names.includes('scotch')) return 'Whiskey — Scotch';
+      if (names.includes('irish whiskey') || names.includes('irish whisky')) return 'Whiskey — Irish';
+      if (names.includes('whiskey') || names.includes('whisky')) return 'Whiskey — Bourbon';
+      if (names.includes('overproof rum')) return 'Rum — Overproof';
+      if (names.includes('aged rum') || names.includes('dark rum') || names.includes('gold rum')) return 'Rum — Aged';
+      if (names.includes('rum')) return 'Rum — White';
+      if (names.includes('gin')) return 'Gin';
+      if (names.includes('vodka')) return 'Vodka';
+      if (names.includes('pisco')) return 'Pisco';
+      if (names.includes('calvados')) return 'Calvados';
+      if (names.includes('aquavit')) return 'Aquavit';
+      if (names.includes('eau de vie')) return 'Eau de vie';
+      if (names.includes('brandy') || names.includes('cognac')) return 'Brandy / Cognac';
+      return 'Other';
+    };
+    
+    const inferBuildMethodFromRecipe = (drink) => {
+      if (drink?.build_method) return drink.build_method;
+      const method = detectMethod(drink);
+      if (method === 'Shake') return 'Shaken';
+      if (method === 'Stir') return 'Stirred';
+      if (method === 'Build' || method === 'Muddle') return 'Built';
+      if (method === 'Blend') return 'Blended';
+      return '';
+    };
+    
+    const inferExperienceTags = (drink, primaryFamily, citrusPresent, lengthened) => {
+      return uniqStrings([
+        ...(drink?.experience_tags || []),
+        ...normalizeLegacyTagGroup(drink?.tags || [], 'experience'),
+        ...(String(drink?.style || '').toLowerCase().includes('spirit-forward') ? ['Spirit-forward'] : []),
+        ...(primaryFamily === 'Tropical / Punch-derived' ? ['Fruity', 'Complex'] : []),
+        ...(primaryFamily === 'Bitter Aromatized' ? ['Bitter'] : []),
+        ...(primaryFamily === 'Old-Fashioned' || primaryFamily === 'Aromatized' ? ['Spirit-forward'] : []),
+        ...(citrusPresent && lengthened ? ['Refreshing'] : [])
+      ]);
+    };
+    
+    const inferOccasionTags = (drink) => uniqStrings([
+      ...(drink?.occasion_tags || []),
+      ...normalizeLegacyTagGroup(drink?.tags || [], 'occasion')
+    ]);
+    
+    const inferStructuralTags = (drink, citrusPresent, lengthened) => uniqStrings([
+      ...(drink?.structural_tags || []),
+      ...normalizeLegacyTagGroup(drink?.tags || [], 'structural'),
+      ...(!citrusPresent ? ['No citrus'] : []),
+      ...(lengthened ? ['Carbonated'] : []),
+      ...((drink?.ingredients || []).length === 3 ? ['Three-ingredient'] : [])
+    ]);
+    
+    const normalizeRecipe = (recipe, defaultSource = null) => {
+      if (!recipe || typeof recipe !== 'object') return null;
+      const {
+        category,
+        style,
+        ibaCategory,
+        template,
+        tags,
+        _migration,
+        ...rest
+      } = recipe;
+      
+      const normalizedIngredients = Array.isArray(recipe.ingredients)
+        ? recipe.ingredients
+            .filter(Boolean)
+            .map(ing => ({
+              ...ing,
+              name: String(ing.name || '').trim(),
+              measure: String(ing.measure || ing.amount || '').trim()
+            }))
+            .filter(ing => ing.name)
+        : [];
+      
+      const draft = {
+        ...rest,
+        category,
+        style,
+        ibaCategory,
+        template,
+        tags,
+        ingredients: normalizedIngredients
+      };
+      const primary_family = inferPrimaryFamilyFromRecipe(draft);
+      const citrus_present = typeof recipe.citrus_present === 'boolean' ? recipe.citrus_present : recipeHasCitrus(draft);
+      const lengthened = typeof recipe.lengthened === 'boolean' ? recipe.lengthened : recipeHasLengthener(draft);
+      
+      return {
+        ...rest,
+        name: String(recipe.name || '').trim(),
+        glass: String(recipe.glass || '').trim(),
+        ingredients: normalizedIngredients,
+        instructions: String(recipe.instructions || '').trim(),
+        notes: String(recipe.notes || '').trim(),
+        recipeSource: String(recipe.recipeSource || '').trim(),
+        source: recipe.source || defaultSource || 'custom',
+        primary_family,
+        primary_template: inferPrimaryTemplateFromRecipe(recipe),
+        secondary_template: String(recipe.secondary_template || '').trim(),
+        build_method: inferBuildMethodFromRecipe(draft),
+        service_style: inferServiceStyleFromRecipe(draft),
+        base_spirit: inferBaseSpiritFromRecipe(draft),
+        citrus_present,
+        lengthened,
+        texture_agents: uniqStrings(Array.isArray(recipe.texture_agents) ? recipe.texture_agents : inferTextureAgents(draft)),
+        experience_tags: inferExperienceTags(recipe, primary_family, citrus_present, lengthened),
+        occasion_tags: inferOccasionTags(recipe),
+        structural_tags: inferStructuralTags(recipe, citrus_present, lengthened),
+        classification_note: String(recipe.classification_note || '').trim(),
+        originTitle: recipe.originTitle,
+        originAuthor: recipe.originAuthor,
+        originSourceType: recipe.originSourceType,
+        originUrl: recipe.originUrl,
+        originYear: recipe.originYear,
+        originNotes: recipe.originNotes,
+        dateAdded: recipe.dateAdded,
+        image: recipe.image
+      };
+    };
+    
+    const normalizeRecipes = (recipes, defaultSource = null) =>
+      (Array.isArray(recipes) ? recipes : [])
+        .map(recipe => normalizeRecipe(recipe, defaultSource))
+        .filter(Boolean);
+    
     // Detect method from instructions
     const detectMethod = (drink) => {
+      if (drink?.build_method) {
+        const buildMethod = drink.build_method.toLowerCase();
+        if (buildMethod.includes('shak')) return 'Shake';
+        if (buildMethod.includes('stirr')) return 'Stir';
+        if (buildMethod.includes('blend')) return 'Blend';
+        if (buildMethod.includes('build') || buildMethod.includes('swizzle') || buildMethod.includes('throw') || buildMethod.includes('whip')) return 'Build';
+      }
       const instr = (drink.instructions || '').toLowerCase();
       if (instr.includes('shake')) return 'Shake';
       if (instr.includes('stir')) return 'Stir';
@@ -632,6 +962,16 @@
     
     // Detect base spirit from ingredients
     const detectSpirit = (drink) => {
+      if (drink?.base_spirit) {
+        const base = drink.base_spirit.toLowerCase();
+        if (base.includes('gin')) return 'Gin';
+        if (base.includes('vodka')) return 'Vodka';
+        if (base.includes('whiskey') || base.includes('whisky')) return 'Whiskey';
+        if (base.includes('rum')) return 'Rum';
+        if (base.includes('tequila') || base.includes('mezcal')) return 'Tequila';
+        if (base.includes('brandy') || base.includes('cognac') || base.includes('pisco') || base.includes('calvados')) return 'Brandy';
+        return 'Other';
+      }
       const ings = drink.ingredients?.map(i => i.name.toLowerCase()).join(' ') || '';
       if (ings.includes('gin')) return 'Gin';
       if (ings.includes('vodka')) return 'Vodka';
@@ -852,10 +1192,11 @@
       const [showImportExport, setShowImportExport] = useState(false);
       const [filters, setFilters] = useState({
         spirits: [],
+        families: [],
         methods: [],
         glasses: [],
         tags: [],
-        templates: [] // Replaces categories
+        templates: []
       });
       const [filtersExpanded, setFiltersExpanded] = useState(false);
       const [sortBy, setSortBy] = useState('name');
@@ -962,7 +1303,7 @@
             throw new Error(`Failed to load cocktails: ${response.status} ${response.statusText}`);
           }
           const data = await response.json();
-          setCuratedDrinks(data);
+          setCuratedDrinks(normalizeRecipes(data, 'curated'));
         } catch (error) {
           console.error('Failed to load cocktails:', error);
           // Set empty array as fallback
@@ -1075,7 +1416,11 @@
           const coll = storage.get('collections');
           const made = storage.get('made-counts');
           
-          if (custom?.value) setCustomDrinks(JSON.parse(custom.value));
+          if (custom?.value) {
+            const normalizedCustom = normalizeRecipes(JSON.parse(custom.value), 'custom');
+            setCustomDrinks(normalizedCustom);
+            saveData('custom-drinks', normalizedCustom);
+          }
           if (keep?.value) setKeepers(new Set(JSON.parse(keep.value)));
           if (coll?.value) {
             // Only load personal collections (curated are system-defined)
@@ -1281,7 +1626,8 @@
             if (mergeMode) {
               // Merge mode: combine with existing data
               if (data.customDrinks) {
-                const merged = [...customDrinks, ...data.customDrinks.filter(d => !customDrinks.some(existing => existing.id === d.id))];
+                const incomingCustom = normalizeRecipes(data.customDrinks, 'custom');
+                const merged = [...customDrinks, ...incomingCustom.filter(d => !customDrinks.some(existing => existing.id === d.id))];
                 setCustomDrinks(merged);
                 saveData('custom-drinks', merged);
               }
@@ -1368,7 +1714,11 @@
               toast('Data merged successfully', 'success');
             } else {
               // Replace mode: overwrite existing data
-              if (data.customDrinks) { setCustomDrinks(data.customDrinks); saveData('custom-drinks', data.customDrinks); }
+              if (data.customDrinks) {
+                const normalizedCustom = normalizeRecipes(data.customDrinks, 'custom');
+                setCustomDrinks(normalizedCustom);
+                saveData('custom-drinks', normalizedCustom);
+              }
               if (data.bars) {
                 saveBars(data.bars);
                 if (data.activeBarId && data.bars.find(b => b.id === data.activeBarId)) {
@@ -1652,7 +2002,12 @@
       };
 
       const addCustomDrink = (drink) => {
-        const newDrink = { id: `custom-${Date.now()}`, ...drink, dateAdded: new Date().toISOString() };
+        const newDrink = normalizeRecipe({
+          id: `custom-${Date.now()}`,
+          ...drink,
+          dateAdded: new Date().toISOString(),
+          source: 'custom'
+        }, 'custom');
         const updated = [...customDrinks, newDrink];
         setCustomDrinks(updated);
         saveData('custom-drinks', updated);
@@ -1664,7 +2019,7 @@
       const updateCustomDrink = (id, drink) => {
         const updated = customDrinks.map(d => 
           d.id === id 
-            ? { ...d, ...drink, dateAdded: d.dateAdded || new Date().toISOString() }
+            ? normalizeRecipe({ ...d, ...drink, id, dateAdded: d.dateAdded || new Date().toISOString(), source: 'custom' }, 'custom')
             : d
         );
         setCustomDrinks(updated);
@@ -1699,21 +2054,30 @@
         })) || [];
         
         const sharePayload = {
-          schema: 'barkeep-recipe-v1',
+          schema: 'barkeep-recipe-v2',
           createdAt: new Date().toISOString(),
           recipe: {
             id: drink.id,
             name: drink.name,
-            template: drink.template,
-            tags: drink.tags,
             glass: drink.glass,
             ingredients: convertedIngredients,
             instructions: drink.instructions,
             notes: drink.notes,
             image: drink.image,
             source: drink.source,
-            // Legacy fields for backward compatibility
-            category: drink.category,
+            primary_family: drink.primary_family,
+            primary_template: drink.primary_template,
+            secondary_template: drink.secondary_template,
+            build_method: drink.build_method,
+            service_style: drink.service_style,
+            base_spirit: drink.base_spirit,
+            citrus_present: drink.citrus_present,
+            lengthened: drink.lengthened,
+            texture_agents: drink.texture_agents,
+            experience_tags: drink.experience_tags,
+            occasion_tags: drink.occasion_tags,
+            structural_tags: drink.structural_tags,
+            classification_note: drink.classification_note,
             // Origin fields (optional)
             originTitle: drink.originTitle,
             originAuthor: drink.originAuthor,
@@ -1757,12 +2121,13 @@
       // Import shared recipe
       const importSharedRecipe = (sharedData, dedupeMode = 'new') => {
         try {
-          if (!sharedData.recipe) {
+          const importedRecipe = sharedData?.recipe || sharedData;
+          if (!importedRecipe) {
             toast('Invalid recipe data', 'error');
             return;
           }
           
-          const recipe = sharedData.recipe;
+          const recipe = normalizeRecipe({ ...importedRecipe, source: 'custom' }, 'custom');
           const existingIndex = customDrinks.findIndex(d => d.id === recipe.id);
           
           // Preserve origin fields if they exist
@@ -1808,7 +2173,7 @@
           description: 'Time-tested cocktails that every bartender should know',
           collectionType: 'curated',
           rules: {
-            tags: ['classic', 'iba'] // Use tags instead of style
+            templates: ['Old-Fashioned', 'Manhattan', 'Martini', 'Negroni', 'Daiquiri', 'Whiskey Sour', 'Margarita', 'Sidecar', 'Tom Collins', 'Mai Tai']
           }
         },
         {
@@ -1862,7 +2227,7 @@
           description: 'Tropical and tiki-style cocktails',
           collectionType: 'curated',
           rules: {
-            category: ['Tiki']
+            families: ['Tropical / Punch-derived']
           }
         },
         {
@@ -1871,7 +2236,7 @@
           description: 'Cocktails where the spirit is the star',
           collectionType: 'curated',
           rules: {
-            style: ['spirit-forward']
+            tags: ['Spirit-forward', 'Boozy']
           }
         },
         {
@@ -1896,6 +2261,15 @@
           if (!rules.baseSpirit.includes(spirit)) return false;
         }
         
+        if (rules.families && rules.families.length > 0) {
+          if (!drink.primary_family || !rules.families.includes(drink.primary_family)) return false;
+        }
+        
+        if (rules.templates && rules.templates.length > 0) {
+          const templates = [drink.primary_template, drink.secondary_template].filter(Boolean);
+          if (!templates.some(templateName => rules.templates.includes(templateName))) return false;
+        }
+        
         // Method rule
         if (rules.method && rules.method.length > 0) {
           const method = detectMethod(drink);
@@ -1907,36 +2281,16 @@
           if (!drink.glass || !rules.glass.includes(drink.glass)) return false;
         }
         
-        // Style rule
-        if (rules.style && rules.style.length > 0) {
-          const drinkStyle = drink.style?.toLowerCase();
-          if (!drinkStyle || !rules.style.some(s => drinkStyle.includes(s.toLowerCase()))) return false;
-        }
-        
-        // Category rule
-        if (rules.category && rules.category.length > 0) {
-          if (!drink.category || !rules.category.includes(drink.category)) return false;
-        }
-        
         // Has citrus rule
         if (rules.hasCitrus !== undefined) {
-          const hasCitrus = drink.ingredients?.some(ing => {
-            const name = ing.name.toLowerCase();
-            return name.includes('lemon') || name.includes('lime') || name.includes('orange') || 
-                   name.includes('grapefruit') || name.includes('citrus') || name.includes('juice');
-          });
+          const hasCitrus = typeof drink.citrus_present === 'boolean' ? drink.citrus_present : recipeHasCitrus(drink);
           if (rules.hasCitrus !== hasCitrus) return false;
         }
         
-        // Tags rule (check if drink has any of the specified tags)
+        // Tags rule (checks any taxonomy tag group)
         if (rules.tags && rules.tags.length > 0) {
-          // For now, tags rule is optional - if drink has tags, check them
-          // Otherwise, skip this check (allows drinks without tags to match)
-          const drinkTags = drink.tags || [];
-          if (drinkTags.length > 0) {
-            const hasMatchingTag = rules.tags.some(tag => drinkTags.includes(tag));
-            if (!hasMatchingTag) return false;
-          }
+          const drinkTags = getRecipeTaxonomyTags(drink);
+          if (!rules.tags.some(tag => drinkTags.includes(tag))) return false;
         }
         
         return true;
@@ -2178,13 +2532,27 @@
             const nameMatch = d.name.toLowerCase().includes(term);
             const ingredientMatch = d.ingredients?.some(i => i.name.toLowerCase().includes(term));
             const noteMatch = userRecipeNotes[d.id]?.toLowerCase().includes(term);
-            return nameMatch || ingredientMatch || noteMatch;
+            const taxonomyMatch = [
+              d.primary_family,
+              d.primary_template,
+              d.secondary_template,
+              d.build_method,
+              d.service_style,
+              d.base_spirit,
+              d.classification_note,
+              ...getRecipeTaxonomyTags(d)
+            ].filter(Boolean).some(value => String(value).toLowerCase().includes(term));
+            return nameMatch || ingredientMatch || noteMatch || taxonomyMatch;
           });
         }
         
         // Apply multi-filters
         if (filters.spirits.length > 0) {
           drinks = drinks.filter(d => filters.spirits.includes(detectSpirit(d)));
+        }
+        
+        if (filters.families.length > 0) {
+          drinks = drinks.filter(d => d.primary_family && filters.families.includes(d.primary_family));
         }
         
         if (filters.methods.length > 0) {
@@ -2198,22 +2566,22 @@
           drinks = drinks.filter(d => d.glass && filters.glasses.includes(d.glass));
         }
         
-        // Filter by template (replaces category filter)
+        // Filter by template
         if (filters.templates.length > 0) {
           drinks = drinks.filter(d => {
-            const drinkTemplate = d.template || d._migration?.template; // Support migration period
-            return drinkTemplate && filters.templates.includes(drinkTemplate);
+            const drinkTemplates = [d.primary_template, d.secondary_template].filter(Boolean);
+            return drinkTemplates.some(template => filters.templates.includes(template));
           });
         }
         
-        // Filter by tags (expanded from just special tags)
+        // Filter by taxonomy tags (experience / occasion / structural)
         if (filters.tags.length > 0) {
           const specialTags = ['canMake', 'almostMake', 'keepers', 'toTry'];
           const regularTags = filters.tags.filter(t => !specialTags.includes(t));
           
           if (regularTags.length > 0) {
             drinks = drinks.filter(d => {
-              const drinkTags = d.tags || [];
+              const drinkTags = getRecipeTaxonomyTags(d);
               return regularTags.some(tag => drinkTags.includes(tag));
             });
           }
@@ -2266,11 +2634,11 @@
       };
       
       const clearFilters = () => {
-        setFilters({ spirits: [], methods: [], glasses: [], tags: [], templates: [] });
+        setFilters({ spirits: [], families: [], methods: [], glasses: [], tags: [], templates: [] });
         setSearchTerm('');
       };
       
-      const hasActiveFilters = filters.spirits.length > 0 || filters.methods.length > 0 || filters.glasses.length > 0 || filters.tags.length > 0 || filters.templates.length > 0 || searchTerm.trim();
+      const hasActiveFilters = filters.spirits.length > 0 || filters.families.length > 0 || filters.methods.length > 0 || filters.glasses.length > 0 || filters.tags.length > 0 || filters.templates.length > 0 || searchTerm.trim();
       
       // Get unique glass types from all drinks
       const availableGlasses = useMemo(() => {
@@ -2282,26 +2650,24 @@
         return Array.from(glassesSet).sort();
       }, [curatedDrinks, customDrinks]);
 
-      // Get unique templates from all drinks (replaces categories)
+      const availableFamilies = useMemo(() => {
+        const familySet = new Set();
+        const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
+        allDrinks.forEach(drink => {
+          if (drink.primary_family) familySet.add(drink.primary_family);
+        });
+        return Array.from(familySet).sort();
+      }, [curatedDrinks, customDrinks]);
+
+      // Get unique templates from all drinks
       const availableTemplates = useMemo(() => {
         const templatesSet = new Set();
         const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
         allDrinks.forEach(drink => {
-          const template = drink.template || drink._migration?.template; // Support migration period
-          if (template) templatesSet.add(template);
+          if (drink.primary_template) templatesSet.add(drink.primary_template);
+          if (drink.secondary_template) templatesSet.add(drink.secondary_template);
         });
         return Array.from(templatesSet).sort();
-      }, [curatedDrinks, customDrinks]);
-
-      // Get unique categories from all drinks (legacy support during migration)
-      const availableCategories = useMemo(() => {
-        const categoriesSet = new Set();
-        const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
-        allDrinks.forEach(drink => {
-          if (drink.category) categoriesSet.add(drink.category);
-          if (drink.ibaCategory) categoriesSet.add(drink.ibaCategory);
-        });
-        return Array.from(categoriesSet).sort();
       }, [curatedDrinks, customDrinks]);
 
       const getAlmostMakeCount = () => {
@@ -2605,7 +2971,7 @@
                         <span>Filters</span>
                         {hasActiveFilters && (
                           <span className="text-xs text-ink-500 ml-1">
-                            ({filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length})
+                            ({filters.spirits.length + filters.families.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length})
                           </span>
                         )}
                       </button>
@@ -2632,44 +2998,38 @@
                         <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Browse</span>
                         <div className="flex flex-wrap gap-1.5">
                           {[
-                            { id: 'boozy', label: 'Boozy', filters: { templates: ['STIRRED_SPIRIT_FORWARD'], tags: ['boozy'] } },
-                            { id: 'refreshing', label: 'Refreshing', filters: { tags: ['refreshing'] } },
-                            { id: 'bitter', label: 'Bitter / Amaro', filters: { tags: ['bitter'] } },
-                            { id: 'tropical', label: 'Tropical', filters: { templates: ['TIKI_PUNCH'], tags: ['tropical'] } },
-                            { id: 'dessert', label: 'Dessert', filters: { tags: ['dessert'] } },
-                            { id: 'nightcap', label: 'Nightcap', filters: { tags: ['nightcap'] } },
-                            { id: 'sparkling', label: 'Sparkling', filters: { tags: ['sparkling'] } }
+                            { id: 'boozy', label: 'Boozy', filters: { tags: ['Boozy', 'Spirit-forward'] } },
+                            { id: 'refreshing', label: 'Refreshing', filters: { tags: ['Refreshing'] } },
+                            { id: 'bitter', label: 'Bitter / Amaro', filters: { tags: ['Bitter'] } },
+                            { id: 'tropical', label: 'Tropical', filters: { families: ['Tropical / Punch-derived'] } },
+                            { id: 'dessert', label: 'Dessert', filters: { families: ['Rich & Creamy'] } },
+                            { id: 'nightcap', label: 'Nightcap', filters: { tags: ['Nightcap'] } },
+                            { id: 'sparkling', label: 'Sparkling', filters: { tags: ['Carbonated'] } }
                           ].map(preset => (
                             <button
                               key={preset.id}
                               onClick={() => {
                                 // Apply preset filters
-                                // For presets with both templates and tags, use OR logic
                                 const newFilters = { ...filters };
                                 
-                                if (preset.filters.templates && preset.filters.tags) {
-                                  // Complex preset: show drinks matching template OR tags
-                                  // We'll add a special tag to indicate this is a preset
-                                  preset.filters.tags.forEach(t => {
-                                    if (!newFilters.tags.includes(t)) {
-                                      newFilters.tags.push(t);
+                                if (preset.filters.families) {
+                                  preset.filters.families.forEach(family => {
+                                    if (!newFilters.families.includes(family)) {
+                                      newFilters.families.push(family);
                                     }
                                   });
-                                  preset.filters.templates.forEach(t => {
-                                    if (!newFilters.templates.includes(t)) {
-                                      newFilters.templates.push(t);
+                                }
+                                if (preset.filters.templates) {
+                                  preset.filters.templates.forEach(templateName => {
+                                    if (!newFilters.templates.includes(templateName)) {
+                                      newFilters.templates.push(templateName);
                                     }
                                   });
-                                } else if (preset.filters.templates) {
-                                  preset.filters.templates.forEach(t => {
-                                    if (!newFilters.templates.includes(t)) {
-                                      newFilters.templates.push(t);
-                                    }
-                                  });
-                                } else if (preset.filters.tags) {
-                                  preset.filters.tags.forEach(t => {
-                                    if (!newFilters.tags.includes(t)) {
-                                      newFilters.tags.push(t);
+                                }
+                                if (preset.filters.tags) {
+                                  preset.filters.tags.forEach(tag => {
+                                    if (!newFilters.tags.includes(tag)) {
+                                      newFilters.tags.push(tag);
                                     }
                                   });
                                 }
@@ -2684,17 +3044,34 @@
                         </div>
                       </div>
 
+                      {/* Families */}
+                      {availableFamilies.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 items-baseline">
+                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Family</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {availableFamilies.map(family => (
+                              <button
+                                key={family}
+                                onClick={() => toggleFilter('families', family)}
+                                className={`px-2 py-1 text-xs whitespace-nowrap ${
+                                  filters.families.includes(family)
+                                    ? 'text-ink-100 font-bold'
+                                    : 'text-ink-500 hover:text-ink-300'
+                                }`}
+                              >
+                                {family}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       {/* Templates */}
                       {availableTemplates.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 items-baseline">
                           <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Template</span>
                           <div className="flex flex-wrap gap-1.5">
                             {availableTemplates.map(template => {
-                              // Format template name for display
-                              const displayName = template
-                                .split('_')
-                                .map(word => word.charAt(0) + word.slice(1).toLowerCase())
-                                .join(' ');
                               return (
                                 <button
                                   key={template}
@@ -2705,43 +3082,10 @@
                                       : 'text-ink-500 hover:text-ink-300'
                                   }`}
                                 >
-                                  {displayName}
+                                  {template}
                                 </button>
                               );
                             })}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Legacy Categories (during migration) */}
-                      {availableCategories.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Category (Legacy)</span>
-                          <div className="flex flex-wrap gap-1.5">
-                            {availableCategories.map(category => (
-                              <button
-                                key={category}
-                                onClick={() => {
-                                  // Map legacy category to template if possible
-                                  const categoryToTemplate = {
-                                    'Cocktail': 'STIRRED_SPIRIT_FORWARD',
-                                    'Sour': 'SOUR',
-                                    'Highball': 'HIGHBALL_FIZZ',
-                                    'Tiki': 'TIKI_PUNCH'
-                                  };
-                                  const mappedTemplate = categoryToTemplate[category];
-                                  if (mappedTemplate && !filters.templates.includes(mappedTemplate)) {
-                                    setFilters(prev => ({
-                                      ...prev,
-                                      templates: [...prev.templates, mappedTemplate]
-                                    }));
-                                  }
-                                }}
-                                className="px-2 py-1 text-xs whitespace-nowrap text-ink-500 hover:text-ink-300 opacity-60"
-                              >
-                                {category}
-                              </button>
-                            ))}
                           </div>
                         </div>
                       )}
@@ -2895,7 +3239,7 @@
                     {displayDrinks.length} {displayDrinks.length === 1 ? 'recipe' : 'recipes'}
                     {hasActiveFilters && (
                       <span className="text-copper ml-1">
-                        · {filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length} filter{filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length !== 1 ? 's' : ''}
+                        · {filters.spirits.length + filters.families.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length} filter{filters.spirits.length + filters.families.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length !== 1 ? 's' : ''}
                       </span>
                     )}
                   </p>
@@ -3875,7 +4219,7 @@
         const handlePaste = () => {
           try {
             const data = JSON.parse(pasteValue);
-            if (data.schema && data.recipe) {
+            if (data?.recipe || data?.name) {
               onImport(data, dedupeMode);
             } else {
               toast?.('Invalid recipe format', 'error');
@@ -4585,7 +4929,7 @@
           </h3>
           <div className="flex items-center justify-between mt-1.5">
             <p className="text-xs text-ink-500 font-light truncate">
-              {drink.glass || (drink.template ? drink.template.split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ') : '')}
+              {drink.glass || drink.service_style || drink.primary_template || drink.primary_family || ''}
             </p>
             {rating > 0 && <StarRating rating={rating} readonly size="text-xs" />}
           </div>
@@ -4866,6 +5210,56 @@
                       );
                     })}
                   </div>
+                </div>
+
+                <hr className="border-ink-700" />
+
+                <div className="space-y-3">
+                  <h3 className="text-sm text-ink-500 uppercase tracking-wider">Taxonomy</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-ink-500 mb-1">Family</p>
+                      <p className="text-ink-100">{drink.primary_family || '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-ink-500 mb-1">Template</p>
+                      <p className="text-ink-100">{[drink.primary_template, drink.secondary_template].filter(Boolean).join(' / ') || '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-ink-500 mb-1">Build</p>
+                      <p className="text-ink-100">{drink.build_method || '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-ink-500 mb-1">Service</p>
+                      <p className="text-ink-100">{drink.service_style || '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-ink-500 mb-1">Base Spirit</p>
+                      <p className="text-ink-100">{drink.base_spirit || '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-ink-500 mb-1">Structure</p>
+                      <p className="text-ink-100">{[drink.citrus_present ? 'Citrus' : 'No citrus', drink.lengthened ? 'Lengthened' : null].filter(Boolean).join(' / ')}</p>
+                    </div>
+                  </div>
+                  {getRecipeTaxonomyTags(drink).length > 0 && (
+                    <div>
+                      <p className="text-ink-500 mb-2 text-sm">Tags</p>
+                      <div className="flex flex-wrap gap-2">
+                        {getRecipeTaxonomyTags(drink).map(tag => (
+                          <span key={tag} className="px-2 py-1 text-xs border border-ink-700 text-ink-300">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {drink.classification_note && (
+                    <div>
+                      <p className="text-ink-500 mb-1 text-sm">Classification Note</p>
+                      <p className="text-ink-300 text-sm">{drink.classification_note}</p>
+                    </div>
+                  )}
                 </div>
 
                 <hr className="border-ink-700" />
@@ -5752,10 +6146,19 @@
 
     const AddRecipeModal = ({ onClose, onAdd, onUpdate, editingDrink, ingredientsDb }) => {
       const [name, setName] = useState(editingDrink?.name || '');
-      const [category, setCategory] = useState(editingDrink?.category || 'Cocktail');
       const [glass, setGlass] = useState(editingDrink?.glass || '');
+      const [primaryFamily, setPrimaryFamily] = useState(editingDrink?.primary_family || inferPrimaryFamilyFromRecipe(editingDrink || {}));
+      const [primaryTemplate, setPrimaryTemplate] = useState(editingDrink?.primary_template || inferPrimaryTemplateFromRecipe(editingDrink || {}));
+      const [secondaryTemplate, setSecondaryTemplate] = useState(editingDrink?.secondary_template || '');
+      const [buildMethod, setBuildMethod] = useState(editingDrink?.build_method || inferBuildMethodFromRecipe(editingDrink || {}));
+      const [serviceStyle, setServiceStyle] = useState(editingDrink?.service_style || inferServiceStyleFromRecipe(editingDrink || {}));
+      const [baseSpirit, setBaseSpirit] = useState(editingDrink?.base_spirit || inferBaseSpiritFromRecipe(editingDrink || {}));
       const [instructions, setInstructions] = useState(editingDrink?.instructions || '');
       const [notes, setNotes] = useState(editingDrink?.notes || '');
+      const [experienceTagsText, setExperienceTagsText] = useState((editingDrink?.experience_tags || []).join(', '));
+      const [occasionTagsText, setOccasionTagsText] = useState((editingDrink?.occasion_tags || []).join(', '));
+      const [structuralTagsText, setStructuralTagsText] = useState((editingDrink?.structural_tags || []).join(', '));
+      const [classificationNote, setClassificationNote] = useState(editingDrink?.classification_note || '');
       const [recipeSource, setRecipeSource] = useState(editingDrink?.recipeSource || '');
       const [ingredients, setIngredients] = useState(() => {
         if (!editingDrink?.ingredients) return [];
@@ -6019,10 +6422,20 @@
 
               // Populate form with extracted data
               if (data.name) setName(data.name);
-              if (data.category) setCategory(data.category);
               if (data.glass) setGlass(data.glass);
+              if (data.primary_family || data.category || data.template) {
+                setPrimaryFamily(data.primary_family || inferPrimaryFamilyFromRecipe(data));
+              }
+              if (data.primary_template || data.template) {
+                setPrimaryTemplate(data.primary_template || (LEGACY_TEMPLATE_TO_FAMILY[data.template] ? '' : data.template));
+              }
+              if (data.secondary_template) setSecondaryTemplate(data.secondary_template);
+              if (data.build_method) setBuildMethod(data.build_method);
+              if (data.service_style) setServiceStyle(data.service_style);
+              if (data.base_spirit) setBaseSpirit(data.base_spirit);
               if (data.instructions) setInstructions(data.instructions);
               if (data.notes) setNotes(data.notes);
+              if (data.classification_note) setClassificationNote(data.classification_note);
               if (data.recipeSource) setRecipeSource(data.recipeSource);
               
               if (data.ingredients && Array.isArray(data.ingredients) && data.ingredients.length > 0) {
@@ -6139,12 +6552,24 @@
         
         const recipeData = { 
           name: name.trim(), 
-          category, 
           glass: glass.trim(), 
           instructions: instructions.trim(), 
           notes: notes.trim(),
           recipeSource: recipeSource.trim(),
-          ingredients: formattedIngredients 
+          ingredients: formattedIngredients,
+          primary_family: primaryFamily || inferPrimaryFamilyFromRecipe({ ingredients: formattedIngredients, glass, instructions }),
+          primary_template: primaryTemplate.trim(),
+          secondary_template: secondaryTemplate.trim(),
+          build_method: buildMethod || inferBuildMethodFromRecipe({ instructions }),
+          service_style: serviceStyle || inferServiceStyleFromRecipe({ glass, ingredients: formattedIngredients }),
+          base_spirit: baseSpirit || inferBaseSpiritFromRecipe({ ingredients: formattedIngredients }),
+          citrus_present: recipeHasCitrus({ ingredients: formattedIngredients }),
+          lengthened: recipeHasLengthener({ ingredients: formattedIngredients }),
+          texture_agents: inferTextureAgents({ ingredients: formattedIngredients }),
+          experience_tags: splitTagInput(experienceTagsText),
+          occasion_tags: splitTagInput(occasionTagsText),
+          structural_tags: splitTagInput(structuralTagsText),
+          classification_note: classificationNote.trim()
         };
         
         if (editingDrink && onUpdate) {
@@ -6219,13 +6644,14 @@
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Recipe name" className="w-full px-4 py-3 input-field  text-ink-100 font-light" autoFocus />
                   </div>
 
-                  {/* Category & Glass */}
+                  {/* Family & Glass */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Category</label>
-                      <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-3 input-field  text-ink-100 font-light bg-transparent appearance-none cursor-pointer">
-                        {['Cocktail', 'Sour', 'Spirit Forward', 'Highball', 'Tiki', 'Spritz', 'Martini', 'Flip', 'Hot Drink', 'Other'].map(c => (
-                          <option key={c} value={c} className="bg-ink-900">{c}</option>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Primary Family</label>
+                      <select value={primaryFamily} onChange={(e) => setPrimaryFamily(e.target.value)} className="w-full px-4 py-3 input-field  text-ink-100 font-light bg-transparent appearance-none cursor-pointer">
+                        <option value="" className="bg-ink-900">Select family...</option>
+                        {PRIMARY_FAMILY_OPTIONS.map(family => (
+                          <option key={family} value={family} className="bg-ink-900">{family}</option>
                         ))}
                       </select>
                     </div>
@@ -6235,6 +6661,44 @@
                         <option value="" className="bg-ink-900">Select glass...</option>
                         {glassware.map(g => (
                           <option key={g.id} value={g.name} className="bg-ink-900">{g.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Primary Template</label>
+                      <input type="text" value={primaryTemplate} onChange={(e) => setPrimaryTemplate(e.target.value)} placeholder="Negroni, Daiquiri, Martini..." className="w-full px-4 py-3 input-field text-ink-100 font-light" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Secondary Template</label>
+                      <input type="text" value={secondaryTemplate} onChange={(e) => setSecondaryTemplate(e.target.value)} placeholder="Optional" className="w-full px-4 py-3 input-field text-ink-100 font-light" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Build Method</label>
+                      <select value={buildMethod} onChange={(e) => setBuildMethod(e.target.value)} className="w-full px-4 py-3 input-field text-ink-100 font-light bg-transparent appearance-none cursor-pointer">
+                        <option value="" className="bg-ink-900">Infer from instructions</option>
+                        {BUILD_METHOD_OPTIONS.map(method => (
+                          <option key={method} value={method} className="bg-ink-900">{method}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Service Style</label>
+                      <select value={serviceStyle} onChange={(e) => setServiceStyle(e.target.value)} className="w-full px-4 py-3 input-field text-ink-100 font-light bg-transparent appearance-none cursor-pointer">
+                        <option value="" className="bg-ink-900">Infer from glass / build</option>
+                        {SERVICE_STYLE_OPTIONS.map(styleOption => (
+                          <option key={styleOption} value={styleOption} className="bg-ink-900">{styleOption}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Base Spirit</label>
+                      <select value={baseSpirit} onChange={(e) => setBaseSpirit(e.target.value)} className="w-full px-4 py-3 input-field text-ink-100 font-light bg-transparent appearance-none cursor-pointer">
+                        <option value="" className="bg-ink-900">Infer from ingredients</option>
+                        {BASE_SPIRIT_OPTIONS.map(spirit => (
+                          <option key={spirit} value={spirit} className="bg-ink-900">{spirit}</option>
                         ))}
                       </select>
                     </div>
@@ -6518,6 +6982,25 @@
                         </button>
                       </div>
                     )}
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Experience Tags</label>
+                      <input type="text" value={experienceTagsText} onChange={(e) => setExperienceTagsText(e.target.value)} placeholder="Bitter, Refreshing, Boozy" className="w-full px-4 py-3 input-field text-ink-100 font-light" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Occasion Tags</label>
+                      <input type="text" value={occasionTagsText} onChange={(e) => setOccasionTagsText(e.target.value)} placeholder="Aperitivo, Nightcap, Summer" className="w-full px-4 py-3 input-field text-ink-100 font-light" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Structural Tags</label>
+                      <input type="text" value={structuralTagsText} onChange={(e) => setStructuralTagsText(e.target.value)} placeholder="Equal-parts, Three-ingredient, Carbonated" className="w-full px-4 py-3 input-field text-ink-100 font-light" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-ink-500 uppercase tracking-wider mb-2 block">Classification Note</label>
+                      <textarea value={classificationNote} onChange={(e) => setClassificationNote(e.target.value)} placeholder="Optional rationale or ambiguity note" rows="3" className="w-full px-4 py-3 input-field text-ink-100 font-light resize-none" />
+                    </div>
                   </div>
 
                   {/* Method */}
