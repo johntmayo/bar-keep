@@ -655,6 +655,14 @@
       { value: 'most-made', label: 'Most Made' },
       { value: 'ingredients', label: 'Fewest Ingredients' },
     ];
+    const EMPTY_FILTERS = {
+      spirits: [],
+      families: [],
+      methods: [],
+      glasses: [],
+      tags: [],
+      templates: []
+    };
     
     const PRIMARY_FAMILY_OPTIONS = [
       'Old-Fashioned',
@@ -668,6 +676,91 @@
       'Rich & Creamy',
       'Tropical / Punch-derived'
     ];
+    const BROWSE_LENSES = [
+      {
+        id: 'structure',
+        label: 'Structure',
+        eyebrow: 'Family = structure',
+        title: 'Start with the balancing logic.',
+        description: 'These families describe how a drink works. Learn the architecture first, then move outward into names and moods.'
+      },
+      {
+        id: 'experience',
+        label: 'Experience',
+        eyebrow: 'Tags = experience',
+        title: 'Start with the feeling in the glass.',
+        description: 'Use tags when you know what you want to drink but not what it is called yet. They are a doorway into the structure, not a replacement for it.'
+      },
+      {
+        id: 'template',
+        label: 'Template',
+        eyebrow: 'Template = lineage',
+        title: 'Start with the neighborhood.',
+        description: 'Templates are recognizable branch points like Negroni, Martini, and Daiquiri. They tell you where a drink comes from.'
+      }
+    ];
+    const FAMILY_REFERENCE = {
+      'Old-Fashioned': {
+        index: '01',
+        short: 'Spirit, sweetener, seasoning.',
+        helper: 'Spirit-led and uncompromising.',
+        templates: ['Old-Fashioned', 'Sazerac', 'Toronto']
+      },
+      'Aromatized': {
+        index: '02',
+        short: 'Spirit plus fortified or aromatized wine.',
+        helper: 'Distilled and fermented complexity together.',
+        templates: ['Martini', 'Manhattan', 'Bamboo']
+      },
+      'Bitter Aromatized': {
+        index: '03',
+        short: 'Aromatized structure with a load-bearing bitter.',
+        helper: 'The bitter earns its place.',
+        templates: ['Negroni', 'Boulevardier', 'Old Pal']
+      },
+      'Sour': {
+        index: '04',
+        short: 'Spirit, citrus, sweetener.',
+        helper: 'The acid-balance triangle.',
+        templates: ['Daiquiri', 'Whiskey Sour', 'Gimlet']
+      },
+      'Daisy': {
+        index: '05',
+        short: 'A sour with a modifier that has personality.',
+        helper: 'The sweetener shapes the identity.',
+        templates: ['Margarita', 'Sidecar', 'White Lady']
+      },
+      'Enhanced Sour': {
+        index: '06',
+        short: 'A sour with multiple coequal modifiers.',
+        helper: 'Every ingredient is load-bearing.',
+        templates: ['Last Word', 'Paper Plane', 'Corpse Reviver No. 2']
+      },
+      'Collins': {
+        index: '07',
+        short: 'A sour, lengthened with neutral carbonation.',
+        helper: 'A sour made long.',
+        templates: ['Tom Collins', 'John Collins', 'Gin Fizz']
+      },
+      'Highball': {
+        index: '08',
+        short: 'Spirit and mixer, without sour architecture.',
+        helper: 'Simplicity as structure.',
+        templates: ['Whisky Highball', 'Gin and Tonic', 'Moscow Mule']
+      },
+      'Rich & Creamy': {
+        index: '09',
+        short: 'Texture is structural, not decorative.',
+        helper: 'Egg, cream, dairy, and depth.',
+        templates: ['Flip', 'Eggnog', 'Alexander']
+      },
+      'Tropical / Punch-derived': {
+        index: '10',
+        short: 'Layered modifiers, juice, spice, and dilution.',
+        helper: 'Punch logic, not simple sour logic.',
+        templates: ['Mai Tai', "Planter's Punch", 'Zombie']
+      }
+    };
     const BUILD_METHOD_OPTIONS = ['Stirred', 'Shaken', 'Built', 'Blended', 'Swizzled', 'Thrown', 'Whipped'];
     const SERVICE_STYLE_OPTIONS = ['Up', 'Rocks', 'Large rock', 'Long / tall', 'Neat', 'Frozen', 'Hot'];
     const BASE_SPIRIT_OPTIONS = [
@@ -739,6 +832,93 @@
     };
     
     const splitTagInput = (value) => uniqStrings((value || '').split(','));
+    const buildFilterState = (payload = {}) => ({
+      spirits: uniqStrings(payload.spirits || []),
+      families: uniqStrings(payload.families || []),
+      methods: uniqStrings(payload.methods || []),
+      glasses: uniqStrings(payload.glasses || []),
+      tags: uniqStrings(payload.tags || []),
+      templates: uniqStrings(payload.templates || [])
+    });
+    const mergeFilterState = (current = EMPTY_FILTERS, payload = {}) => ({
+      spirits: uniqStrings([...(current.spirits || []), ...(payload.spirits || [])]),
+      families: uniqStrings([...(current.families || []), ...(payload.families || [])]),
+      methods: uniqStrings([...(current.methods || []), ...(payload.methods || [])]),
+      glasses: uniqStrings([...(current.glasses || []), ...(payload.glasses || [])]),
+      tags: uniqStrings([...(current.tags || []), ...(payload.tags || [])]),
+      templates: uniqStrings([...(current.templates || []), ...(payload.templates || [])])
+    });
+    const drinkMatchesFilterPayload = (drink, payload = {}) => {
+      if (payload.families?.length && !payload.families.includes(drink.primary_family)) return false;
+      if (payload.templates?.length) {
+        const drinkTemplates = [drink.primary_template, drink.secondary_template].filter(Boolean);
+        if (!drinkTemplates.some(template => payload.templates.includes(template))) return false;
+      }
+      if (payload.spirits?.length) {
+        const spirit = detectSpirit(drink);
+        if (!payload.spirits.includes(spirit)) return false;
+      }
+      if (payload.methods?.length) {
+        const method = detectMethod(drink);
+        if (!payload.methods.includes(method)) return false;
+      }
+      if (payload.glasses?.length && !payload.glasses.includes(drink.glass)) return false;
+      if (payload.tags?.length) {
+        const drinkTags = getRecipeTaxonomyTags(drink);
+        if (!payload.tags.some(tag => drinkTags.includes(tag))) return false;
+      }
+      return true;
+    };
+    const EXPERIENCE_PATHS = [
+      {
+        id: 'spirit-forward',
+        label: 'Spirit-forward',
+        description: 'Dry, boozy, and contemplative.',
+        filters: { tags: ['Spirit-forward', 'Boozy'] }
+      },
+      {
+        id: 'refreshing',
+        label: 'Refreshing',
+        description: 'Bright, cold, and easy to keep drinking.',
+        filters: { tags: ['Refreshing', 'Sessionable'] }
+      },
+      {
+        id: 'aperitivo',
+        label: 'Aperitivo',
+        description: 'Bitter, food-friendly, and opening the night.',
+        filters: { tags: ['Aperitivo', 'Bitter'] }
+      },
+      {
+        id: 'bright',
+        label: 'Bright',
+        description: 'Sharp citrus and lifted acidity.',
+        filters: { tags: ['Bright', 'Tart'] }
+      },
+      {
+        id: 'herbal',
+        label: 'Herbal',
+        description: 'Green, alpine, and botanical.',
+        filters: { tags: ['Herbal'] }
+      },
+      {
+        id: 'plush',
+        label: 'Plush',
+        description: 'Round, soft, and richness-forward.',
+        filters: { tags: ['Plush', 'Sweet'] }
+      },
+      {
+        id: 'nightcap',
+        label: 'Nightcap',
+        description: 'Dark, warming, and late-evening.',
+        filters: { tags: ['Nightcap', 'Warming'] }
+      },
+      {
+        id: 'tropical',
+        label: 'Tropical',
+        description: 'Layered fruit, spice, and punch logic.',
+        filters: { families: ['Tropical / Punch-derived'], tags: ['Fruity'] }
+      }
+    ];
     const ingredientNamesForRecipe = (drink) => (drink.ingredients || []).map(ing => String(ing?.name || '').toLowerCase()).filter(Boolean);
     const getRecipeTaxonomyTags = (drink) => uniqStrings([
       ...(drink.experience_tags || []),
@@ -1461,17 +1641,11 @@
       const [showAddDrink, setShowAddDrink] = useState(false);
       const [editingDrink, setEditingDrink] = useState(null);
       const [showImportExport, setShowImportExport] = useState(false);
-      const [filters, setFilters] = useState({
-        spirits: [],
-        families: [],
-        methods: [],
-        glasses: [],
-        tags: [],
-        templates: []
-      });
+      const [filters, setFilters] = useState(EMPTY_FILTERS);
       const [filtersExpanded, setFiltersExpanded] = useState(false);
       const [sortBy, setSortBy] = useState('name');
       const [browseMode, setBrowseMode] = useState('recipes'); // 'recipes' or 'ingredients'
+      const [browseLens, setBrowseLens] = useState('structure');
       const [madeCounts, setMadeCounts] = useState({}); // Track how many times each recipe was made
       const [userRecipeNotes, setUserRecipeNotes] = useState({}); // User notes per recipe: { recipeId: "note text" }
       const [showConfirmDelete, setShowConfirmDelete] = useState(null);
@@ -2906,41 +3080,129 @@
       };
       
       const clearFilters = () => {
-        setFilters({ spirits: [], families: [], methods: [], glasses: [], tags: [], templates: [] });
+        setFilters(buildFilterState());
         setSearchTerm('');
+      };
+      const openBrowseWith = ({ mode = 'recipes', lens = 'structure', filters: presetFilters = null } = {}) => {
+        setBrowseMode(mode);
+        setBrowseLens(mode === 'ingredients' ? 'structure' : lens);
+        setFilters(presetFilters ? buildFilterState(presetFilters) : buildFilterState());
+        setFiltersExpanded(false);
+        setSearchTerm('');
+        setView('browse');
+      };
+      const applyBrowsePreset = (payload = {}, lens = browseLens, replace = true) => {
+        setBrowseMode('recipes');
+        setBrowseLens(lens);
+        setFilters(prev => replace ? buildFilterState(payload) : mergeFilterState(prev, payload));
+        setSearchTerm('');
+        setFiltersExpanded(false);
       };
       
       const hasActiveFilters = filters.spirits.length > 0 || filters.families.length > 0 || filters.methods.length > 0 || filters.glasses.length > 0 || filters.tags.length > 0 || filters.templates.length > 0 || searchTerm.trim();
+      const activeFilterCount = filters.spirits.length + filters.families.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length;
+      const allDrinks = useMemo(() => getAllDrinks(), [curatedDrinks, customDrinks]);
       
       // Get unique glass types from all drinks
       const availableGlasses = useMemo(() => {
         const glassesSet = new Set();
-        const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
         allDrinks.forEach(drink => {
           if (drink.glass) glassesSet.add(drink.glass);
         });
         return Array.from(glassesSet).sort();
-      }, [curatedDrinks, customDrinks]);
+      }, [allDrinks]);
 
       const availableFamilies = useMemo(() => {
         const familySet = new Set();
-        const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
         allDrinks.forEach(drink => {
           if (drink.primary_family) familySet.add(drink.primary_family);
         });
         return Array.from(familySet).sort();
-      }, [curatedDrinks, customDrinks]);
+      }, [allDrinks]);
 
       // Get unique templates from all drinks
       const availableTemplates = useMemo(() => {
         const templatesSet = new Set();
-        const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
         allDrinks.forEach(drink => {
           if (drink.primary_template) templatesSet.add(drink.primary_template);
           if (drink.secondary_template) templatesSet.add(drink.secondary_template);
         });
         return Array.from(templatesSet).sort();
-      }, [curatedDrinks, customDrinks]);
+      }, [allDrinks]);
+      const availableExperienceTags = useMemo(() => {
+        const tags = new Set();
+        allDrinks.forEach(drink => inferExperienceTags(drink, drink.primary_family, drink.citrus_present, drink.lengthened).forEach(tag => tags.add(tag)));
+        return Array.from(tags).sort();
+      }, [allDrinks]);
+      const availableOccasionTags = useMemo(() => {
+        const tags = new Set();
+        allDrinks.forEach(drink => inferOccasionTags(drink).forEach(tag => tags.add(tag)));
+        return Array.from(tags).sort();
+      }, [allDrinks]);
+      const availableStructuralTags = useMemo(() => {
+        const tags = new Set();
+        allDrinks.forEach(drink => inferStructuralTags(drink, drink.citrus_present, drink.lengthened).forEach(tag => tags.add(tag)));
+        return Array.from(tags).sort();
+      }, [allDrinks]);
+      const familyBrowseCards = useMemo(() => {
+        return PRIMARY_FAMILY_OPTIONS.map(family => {
+          const matching = allDrinks.filter(drink => drink.primary_family === family);
+          const templateCounts = {};
+          matching.forEach(drink => {
+            [drink.primary_template, drink.secondary_template].filter(Boolean).forEach(template => {
+              templateCounts[template] = (templateCounts[template] || 0) + 1;
+            });
+          });
+          const topTemplates = Object.entries(templateCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([template]) => template);
+          return {
+            family,
+            count: matching.length,
+            samples: matching.slice(0, 3).map(drink => drink.name),
+            topTemplates: topTemplates.length > 0 ? topTemplates : (FAMILY_REFERENCE[family]?.templates || [])
+          };
+        }).filter(card => card.count > 0);
+      }, [allDrinks]);
+      const templateBrowseCards = useMemo(() => {
+        const counts = {};
+        allDrinks.forEach(drink => {
+          [drink.primary_template, drink.secondary_template].filter(Boolean).forEach(template => {
+            if (!counts[template]) {
+              counts[template] = { template, count: 0, families: new Set(), samples: [] };
+            }
+            counts[template].count += 1;
+            if (drink.primary_family) counts[template].families.add(drink.primary_family);
+            if (counts[template].samples.length < 3 && !counts[template].samples.includes(drink.name)) {
+              counts[template].samples.push(drink.name);
+            }
+          });
+        });
+        return Object.values(counts)
+          .map(entry => ({
+            ...entry,
+            family: Array.from(entry.families)[0] || '',
+            families: Array.from(entry.families)
+          }))
+          .sort((a, b) => b.count - a.count || a.template.localeCompare(b.template))
+          .slice(0, 18);
+      }, [allDrinks]);
+      const experienceBrowseCards = useMemo(() => {
+        return EXPERIENCE_PATHS.map(path => ({
+          ...path,
+          count: allDrinks.filter(drink => drinkMatchesFilterPayload(drink, path.filters)).length
+        })).filter(path => path.count > 0);
+      }, [allDrinks]);
+      const activeBrowseLens = BROWSE_LENSES.find(lens => lens.id === browseLens) || BROWSE_LENSES[0];
+      const activeFilterPills = [
+        ...filters.families.map(value => ({ group: 'families', value, label: value })),
+        ...filters.templates.map(value => ({ group: 'templates', value, label: value })),
+        ...filters.spirits.map(value => ({ group: 'spirits', value, label: value })),
+        ...filters.methods.map(value => ({ group: 'methods', value, label: value })),
+        ...filters.glasses.map(value => ({ group: 'glasses', value, label: value })),
+        ...filters.tags.map(value => ({ group: 'tags', value, label: value }))
+      ];
 
       const getAlmostMakeCount = () => {
         return getAllDrinks().filter(d => {
@@ -2952,7 +3214,7 @@
       const navItems = [
         { id: 'home', label: 'Mix', icon: 'Home' },
         { id: 'bars', label: 'Bar', icon: 'Wine' },
-        { id: 'library', label: 'Notebook', icon: 'BookOpen' },
+        { id: 'library', label: 'Discover', icon: 'BookOpen' },
         { id: 'settings', label: 'Settings', icon: 'Settings' },
       ];
 
@@ -3015,7 +3277,7 @@
                 <h1 className="text-xl font-bold text-ink-100">Barkeep</h1>
               ) : (
                 <button onClick={() => {
-                  // Go back to Home for personalized views, Library for browse
+                  // Go back to Home for personalized views, Discover for browse
                   if (view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view === 'ingredients_to_try' || view?.startsWith('collection-')) {
                     setView('home');
                   } else if (view === 'browse') {
@@ -3024,7 +3286,7 @@
                     setView('library');
                   }
                 }} className="flex items-center gap-2 text-ink-100">
-                  <span className="text-2xl">←</span> <span className="text-xl font-bold uppercase">{view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view === 'ingredients_to_try' || view?.startsWith('collection-') ? 'Home' : 'Library'}</span>
+                  <span className="text-2xl">←</span> <span className="text-xl font-bold uppercase">{view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view === 'ingredients_to_try' || view?.startsWith('collection-') ? 'Home' : 'Discover'}</span>
                 </button>
               )}
               <div className="flex items-center gap-1">
@@ -3117,7 +3379,8 @@
                 canMakeDrink={canMakeDrink}
                 getActiveBarInventory={getActiveBarInventory}
                 normalizeIngredient={normalizeIngredient}
-                setBrowseMode={setBrowseMode}
+                onOpenBrowse={openBrowseWith}
+                onOpenTheory={openTheoryManifesto}
               />
             ) : view === 'bars' ? (
               <InventoryView 
@@ -3205,9 +3468,8 @@
               />
             ) : (
               <>
-                {/* Search & Filters - Sticky Container */}
-                <div className="sticky top-0 z-30 bg-ink-950 pb-3 -mx-4 px-4 pt-2 mb-5 border-b border-ink-700">
-                  <div className="flex flex-col gap-3">
+                <div className="sticky top-0 z-30 bg-ink-950/96 backdrop-blur-sm pb-4 -mx-4 px-4 pt-2 mb-5 border-b border-ink-700">
+                  <div className="flex flex-col gap-4">
                     <div className="flex gap-2">
                       <div className="flex-1 relative">
                         <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-600" />
@@ -3215,8 +3477,8 @@
                           type="text"
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          placeholder="Search recipes or ingredients..."
-                          className="w-full pl-10 pr-10 py-3 input-field  text-sm text-ink-200 font-light"
+                          placeholder={view === 'browse' && browseMode === 'ingredients' ? 'Search ingredients, aliases, or categories...' : 'Search recipes, ingredients, families, templates, or tags...'}
+                          className="w-full pl-10 pr-10 py-3 input-field text-sm text-ink-200 font-light"
                         />
                         {searchTerm && (
                           <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-600 hover:text-ink-400">
@@ -3227,273 +3489,355 @@
                       {!(view === 'browse' && browseMode === 'ingredients') && (
                         <button
                           onClick={pickRandom}
-                          className="px-3 py-3 input-field  text-ink-500 hover:text-ink-300 transition-colors"
+                          className="px-3 py-3 input-field text-ink-500 hover:text-ink-300 transition-colors"
                           title="Random cocktail"
                         >
                           <Icon name="Shuffle" className="w-4 h-4" />
                         </button>
                       )}
                     </div>
-                    
-                    {/* Filter Toggle Button */}
-                    <div className="flex items-center justify-between">
-                      <button
-                        onClick={() => setFiltersExpanded(!filtersExpanded)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-ink-400 hover:text-ink-200 transition-colors"
-                      >
-                        <Icon name={filtersExpanded ? "ChevronUp" : "ChevronDown"} className="w-4 h-4" />
-                        <span>Filters</span>
-                        {hasActiveFilters && (
-                          <span className="text-xs text-ink-500 ml-1">
-                            ({filters.spirits.length + filters.families.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length})
-                          </span>
-                        )}
-                      </button>
-                      {/* Sort (always visible) */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-ink-600 uppercase tracking-wider">Sort:</span>
-                        <select
-                          value={sortBy}
-                          onChange={(e) => setSortBy(e.target.value)}
-                          className="px-3 py-1.5 input-field  text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer"
-                        >
-                          {SORT_OPTIONS.map(opt => (
-                            <option key={opt.value} value={opt.value} className="bg-ink-900">{opt.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    
-                    {/* Expandable Filter Drawer */}
-                    {filtersExpanded && (
-                    <div className="space-y-4 pt-3 border-t border-ink-700">
-                      {/* Quick Browse Presets */}
-                      <div className="flex flex-wrap gap-1.5 items-baseline">
-                        <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Browse</span>
-                        <div className="flex flex-wrap gap-1.5">
+
+                    {view === 'browse' && (
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap gap-2">
                           {[
-                            { id: 'boozy', label: 'Boozy', filters: { tags: ['Boozy', 'Spirit-forward'] } },
-                            { id: 'refreshing', label: 'Refreshing', filters: { tags: ['Refreshing'] } },
-                            { id: 'bitter', label: 'Bitter / Amaro', filters: { tags: ['Bitter'] } },
-                            { id: 'tropical', label: 'Tropical', filters: { families: ['Tropical / Punch-derived'] } },
-                            { id: 'dessert', label: 'Dessert', filters: { families: ['Rich & Creamy'] } },
-                            { id: 'nightcap', label: 'Nightcap', filters: { tags: ['Nightcap'] } },
-                            { id: 'sparkling', label: 'Sparkling', filters: { tags: ['Carbonated'] } }
-                          ].map(preset => (
+                            { id: 'recipes', label: 'Cocktails' },
+                            { id: 'ingredients', label: 'Ingredients' }
+                          ].map(mode => (
                             <button
-                              key={preset.id}
+                              key={mode.id}
                               onClick={() => {
-                                // Apply preset filters
-                                const newFilters = { ...filters };
-                                
-                                if (preset.filters.families) {
-                                  preset.filters.families.forEach(family => {
-                                    if (!newFilters.families.includes(family)) {
-                                      newFilters.families.push(family);
-                                    }
-                                  });
+                                setBrowseMode(mode.id);
+                                if (mode.id === 'ingredients') {
+                                  setBrowseLens('structure');
+                                  setFilters(buildFilterState());
+                                  setFiltersExpanded(false);
                                 }
-                                if (preset.filters.templates) {
-                                  preset.filters.templates.forEach(templateName => {
-                                    if (!newFilters.templates.includes(templateName)) {
-                                      newFilters.templates.push(templateName);
-                                    }
-                                  });
-                                }
-                                if (preset.filters.tags) {
-                                  preset.filters.tags.forEach(tag => {
-                                    if (!newFilters.tags.includes(tag)) {
-                                      newFilters.tags.push(tag);
-                                    }
-                                  });
-                                }
-                                
-                                setFilters(newFilters);
                               }}
-                              className="px-2 py-1 text-xs whitespace-nowrap text-ink-500 hover:text-ink-300 border border-ink-700 hover:border-ink-600"
+                              className={`px-3 py-1.5 text-xs uppercase tracking-[0.22em] border transition-colors ${
+                                browseMode === mode.id ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                              }`}
                             >
-                              {preset.label}
+                              {mode.label}
                             </button>
                           ))}
                         </div>
-                      </div>
 
-                      {/* Families */}
-                      {availableFamilies.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Family</span>
-                          <div className="flex flex-wrap gap-1.5">
-                            {availableFamilies.map(family => (
-                              <button
-                                key={family}
-                                onClick={() => toggleFilter('families', family)}
-                                className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                  filters.families.includes(family)
-                                    ? 'text-ink-100 font-bold'
-                                    : 'text-ink-500 hover:text-ink-300'
-                                }`}
-                              >
-                                {family}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
+                        {browseMode === 'recipes' && (
+                          <>
+                            <div className="flex flex-wrap gap-2">
+                              {BROWSE_LENSES.map(lens => (
+                                <button
+                                  key={lens.id}
+                                  onClick={() => setBrowseLens(lens.id)}
+                                  className={`px-3 py-1.5 text-xs uppercase tracking-[0.22em] border transition-colors ${
+                                    browseLens === lens.id ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                  }`}
+                                >
+                                  {lens.label}
+                                </button>
+                              ))}
+                            </div>
+                            <div className="border border-ink-800 bg-ink-900/30 p-4">
+                              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/75">{activeBrowseLens.eyebrow}</p>
+                              <p className="mt-2 text-base text-ink-100">{activeBrowseLens.title}</p>
+                              <p className="mt-2 text-sm leading-6 text-ink-500 max-w-3xl">{activeBrowseLens.description}</p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+
+                    {activeFilterPills.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {activeFilterPills.map(pill => (
+                          <button
+                            key={`${pill.group}-${pill.value}`}
+                            onClick={() => toggleFilter(pill.group, pill.value)}
+                            className="px-2 py-1 text-[0.65rem] uppercase tracking-[0.18em] border border-copper/30 bg-copper/10 text-copper hover:bg-copper/15 transition-colors"
+                          >
+                            {pill.label} ×
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      {browseMode === 'recipes' ? (
+                        <button
+                          onClick={() => setFiltersExpanded(!filtersExpanded)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-ink-400 hover:text-ink-200 transition-colors"
+                        >
+                          <Icon name={filtersExpanded ? "ChevronUp" : "ChevronDown"} className="w-4 h-4" />
+                          <span>Refine</span>
+                          {hasActiveFilters && (
+                            <span className="text-xs text-ink-500 ml-1">({activeFilterCount})</span>
+                          )}
+                        </button>
+                      ) : (
+                        <div className="text-xs uppercase tracking-[0.22em] text-ink-600">Ingredient atlas</div>
                       )}
 
-                      {/* Templates */}
-                      {availableTemplates.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Template</span>
-                          <div className="flex flex-wrap gap-1.5">
-                            {availableTemplates.map(template => {
-                              return (
+                      {browseMode === 'recipes' && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-ink-600 uppercase tracking-wider">Sort</span>
+                          <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="px-3 py-1.5 input-field text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer"
+                          >
+                            {SORT_OPTIONS.map(opt => (
+                              <option key={opt.value} value={opt.value} className="bg-ink-900">{opt.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>
+
+                    {filtersExpanded && browseMode === 'recipes' && (
+                      <div className="space-y-5 pt-4 border-t border-ink-700">
+                        {browseLens === 'structure' && (
+                          <>
+                            <div className="space-y-2">
+                              <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Families</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {availableFamilies.map(family => (
+                                  <button
+                                    key={family}
+                                    onClick={() => toggleFilter('families', family)}
+                                    className={`px-2 py-1 text-xs border transition-colors ${
+                                      filters.families.includes(family) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                    }`}
+                                  >
+                                    {family}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Structural tags</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {availableStructuralTags.map(tag => (
+                                  <button
+                                    key={tag}
+                                    onClick={() => toggleFilter('tags', tag)}
+                                    className={`px-2 py-1 text-xs border transition-colors ${
+                                      filters.tags.includes(tag) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                    }`}
+                                  >
+                                    {tag}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {browseLens === 'experience' && (
+                          <>
+                            <div className="space-y-2">
+                              <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Experience tags</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {availableExperienceTags.map(tag => (
+                                  <button
+                                    key={tag}
+                                    onClick={() => toggleFilter('tags', tag)}
+                                    className={`px-2 py-1 text-xs border transition-colors ${
+                                      filters.tags.includes(tag) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                    }`}
+                                  >
+                                    {tag}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Occasions</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {availableOccasionTags.map(tag => (
+                                  <button
+                                    key={tag}
+                                    onClick={() => toggleFilter('tags', tag)}
+                                    className={`px-2 py-1 text-xs border transition-colors ${
+                                      filters.tags.includes(tag) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                    }`}
+                                  >
+                                    {tag}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {browseLens === 'template' && (
+                          <div className="space-y-2">
+                            <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Templates</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {availableTemplates.map(template => (
                                 <button
                                   key={template}
                                   onClick={() => toggleFilter('templates', template)}
-                                  className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                    filters.templates.includes(template)
-                                      ? 'text-ink-100 font-bold'
-                                      : 'text-ink-500 hover:text-ink-300'
+                                  className={`px-2 py-1 text-xs border transition-colors ${
+                                    filters.templates.includes(template) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
                                   }`}
                                 >
                                   {template}
                                 </button>
-                              );
-                            })}
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      
-                      {/* Spirits */}
-                      <div className="flex flex-wrap gap-1.5 items-baseline">
-                        <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Spirit</span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {SPIRIT_CATEGORIES.map(spirit => (
-                            <button
-                              key={spirit}
-                              onClick={() => toggleFilter('spirits', spirit)}
-                              className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                filters.spirits.includes(spirit)
-                                  ? 'text-ink-100 font-bold'
-                                  : 'text-ink-500 hover:text-ink-300'
-                              }`}
-                            >
-                              {spirit}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      {/* Methods */}
-                      <div className="flex flex-wrap gap-1.5 items-baseline">
-                        <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Method</span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {METHOD_OPTIONS.map(method => (
-                            <button
-                              key={method}
-                              onClick={() => toggleFilter('methods', method)}
-                              className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                filters.methods.includes(method)
-                                  ? 'text-ink-100 font-bold'
-                                  : 'text-ink-500 hover:text-ink-300'
-                              }`}
-                            >
-                              {method}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      {/* Glasses */}
-                      {availableGlasses.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Glass</span>
+                        )}
+
+                        <div className="space-y-2">
+                          <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Base spirit</p>
                           <div className="flex flex-wrap gap-1.5">
-                            {availableGlasses.slice(0, 8).map(glass => (
+                            {SPIRIT_CATEGORIES.map(spirit => (
                               <button
-                                key={glass}
-                                onClick={() => toggleFilter('glasses', glass)}
-                                className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                  filters.glasses.includes(glass)
-                                    ? 'text-ink-100 font-bold'
-                                    : 'text-ink-500 hover:text-ink-300'
+                                key={spirit}
+                                onClick={() => toggleFilter('spirits', spirit)}
+                                className={`px-2 py-1 text-xs border transition-colors ${
+                                  filters.spirits.includes(spirit) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
                                 }`}
                               >
-                                {glass}
+                                {spirit}
                               </button>
                             ))}
                           </div>
                         </div>
-                      )}
-                      
-                      {/* Tags */}
-                      {(view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'custom') && (
-                        <div className="flex flex-wrap gap-1.5 items-baseline">
-                          <span className="text-xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Tags</span>
+
+                        <div className="space-y-2">
+                          <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Method</p>
                           <div className="flex flex-wrap gap-1.5">
-                            <button
-                              onClick={() => toggleFilter('tags', 'canMake')}
-                              className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                filters.tags.includes('canMake')
-                                  ? 'text-ink-100 font-bold'
-                                  : 'text-ink-500 hover:text-ink-300'
-                              }`}
-                            >
-                              Can Make
-                            </button>
-                            <button
-                              onClick={() => toggleFilter('tags', 'almostMake')}
-                              className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                filters.tags.includes('almostMake')
-                                  ? 'text-ink-100 font-bold'
-                                  : 'text-ink-500 hover:text-ink-300'
-                              }`}
-                            >
-                              Almost Make
-                            </button>
-                            {view === 'browse' && (
-                              <>
-                                <button
-                                  onClick={() => toggleFilter('tags', 'keepers')}
-                                  className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                    filters.tags.includes('keepers')
-                                      ? 'text-ink-100 font-bold'
-                                      : 'text-ink-500 hover:text-ink-300'
-                                  }`}
-                                >
-                                  Keepers
-                                </button>
-                                <button
-                                  onClick={() => toggleFilter('tags', 'toTry')}
-                                  className={`px-2 py-1 text-xs whitespace-nowrap ${
-                                    filters.tags.includes('toTry')
-                                      ? 'text-ink-100 font-bold'
-                                      : 'text-ink-500 hover:text-ink-300'
-                                  }`}
-                                >
-                                  Try
-                                </button>
-                              </>
-                            )}
+                            {METHOD_OPTIONS.map(method => (
+                              <button
+                                key={method}
+                                onClick={() => toggleFilter('methods', method)}
+                                className={`px-2 py-1 text-xs border transition-colors ${
+                                  filters.methods.includes(method) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                }`}
+                              >
+                                {method}
+                              </button>
+                            ))}
                           </div>
                         </div>
-                      )}
-                      
-                      {/* Clear All */}
-                      {hasActiveFilters && (
-                        <div className="flex justify-end pt-2">
-                          <button
-                            onClick={clearFilters}
-                            className="px-4 py-2 text-xs text-copper hover:text-copper whitespace-nowrap"
-                          >
-                            Clear all filters
-                          </button>
+
+                        {availableGlasses.length > 0 && (
+                          <div className="space-y-2">
+                            <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Glass</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {availableGlasses.slice(0, 10).map(glass => (
+                                <button
+                                  key={glass}
+                                  onClick={() => toggleFilter('glasses', glass)}
+                                  className={`px-2 py-1 text-xs border transition-colors ${
+                                    filters.glasses.includes(glass) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                  }`}
+                                >
+                                  {glass}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="space-y-2">
+                          <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Library state</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {['canMake', 'almostMake', 'keepers', 'toTry'].map(tag => (
+                              <button
+                                key={tag}
+                                onClick={() => toggleFilter('tags', tag)}
+                                className={`px-2 py-1 text-xs border transition-colors ${
+                                  filters.tags.includes(tag) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                }`}
+                              >
+                                {tag === 'canMake' ? 'Can Make' : tag === 'almostMake' ? 'Almost Make' : tag === 'toTry' ? 'Try' : 'Keepers'}
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  )}
+
+                        {hasActiveFilters && (
+                          <div className="flex justify-end pt-1">
+                            <button
+                              onClick={clearFilters}
+                              className="px-4 py-2 text-xs uppercase tracking-[0.22em] text-copper hover:text-copper whitespace-nowrap"
+                            >
+                              Clear all
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
+
+                {view === 'browse' && browseMode === 'recipes' && !hasActiveFilters && !searchTerm.trim() && (
+                  <section className="mb-6">
+                    {browseLens === 'structure' && (
+                      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                        {familyBrowseCards.map(card => (
+                          <button
+                            key={card.family}
+                            onClick={() => applyBrowsePreset({ families: [card.family] }, 'structure')}
+                            className="text-left border border-ink-700 p-4 hover:border-copper/40 hover:bg-ink-900/40 transition-colors"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">{FAMILY_REFERENCE[card.family]?.index || '00'}</p>
+                                <h3 className="mt-2 font-display text-xl text-ink-100">{card.family}</h3>
+                              </div>
+                              <span className="text-sm px-2 py-1 bg-copper/10 text-copper">{card.count}</span>
+                            </div>
+                            <p className="mt-3 text-sm leading-6 text-ink-500">{FAMILY_REFERENCE[card.family]?.short}</p>
+                            <p className="mt-3 text-xs uppercase tracking-[0.18em] text-ink-600">{card.topTemplates.join(' · ')}</p>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {browseLens === 'experience' && (
+                      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                        {experienceBrowseCards.map(path => (
+                          <button
+                            key={path.id}
+                            onClick={() => applyBrowsePreset(path.filters, 'experience')}
+                            className="text-left border border-ink-700 p-4 hover:border-copper/40 hover:bg-ink-900/40 transition-colors"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <h3 className="font-display text-xl text-ink-100">{path.label}</h3>
+                              <span className="text-sm px-2 py-1 bg-copper/10 text-copper">{path.count}</span>
+                            </div>
+                            <p className="mt-3 text-sm leading-6 text-ink-500">{path.description}</p>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {browseLens === 'template' && (
+                      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                        {templateBrowseCards.map(card => (
+                          <button
+                            key={card.template}
+                            onClick={() => applyBrowsePreset({ templates: [card.template] }, 'template')}
+                            className="text-left border border-ink-700 p-4 hover:border-copper/40 hover:bg-ink-900/40 transition-colors"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">{card.family || 'Template'}</p>
+                                <h3 className="mt-2 font-display text-xl text-ink-100">{card.template}</h3>
+                              </div>
+                              <span className="text-sm px-2 py-1 bg-copper/10 text-copper">{card.count}</span>
+                            </div>
+                            <p className="mt-3 text-sm leading-6 text-ink-500">{card.samples.join(' · ')}</p>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                )}
 
                 {/* Conditional render: Ingredients Browse or Recipe List */}
                 {view === 'browse' && browseMode === 'ingredients' ? (
@@ -3508,15 +3852,21 @@
                 ) : (
                   <>
                 {/* Results info */}
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-xs text-ink-600 tracking-wide">
+                <div className="flex items-center justify-between gap-3 mb-4">
+                  <p className="text-xs text-ink-600 tracking-wide uppercase">
                     {displayDrinks.length} {displayDrinks.length === 1 ? 'recipe' : 'recipes'}
-                    {hasActiveFilters && (
+                    {view === 'browse' && browseMode === 'recipes' && (
+                      <span className="text-ink-700 ml-1">· {activeBrowseLens.label}</span>
+                    )}
+                    {hasActiveFilters && activeFilterCount > 0 && (
                       <span className="text-copper ml-1">
-                        · {filters.spirits.length + filters.families.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length} filter{filters.spirits.length + filters.families.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.templates.length !== 1 ? 's' : ''}
+                        · {activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''}
                       </span>
                     )}
                   </p>
+                  {view === 'browse' && browseMode === 'recipes' && !hasActiveFilters && !searchTerm.trim() && (
+                    <p className="text-xs text-ink-600 hidden sm:block">Choose a family, template, or experience path above.</p>
+                  )}
                 </div>
 
                 {/* Recipe List */}
@@ -3872,7 +4222,7 @@
     };
 
     const LibraryView = ({
-      onNavigate, getAllDrinks, ingredientsDb, canMakeDrink, getActiveBarInventory, normalizeIngredient, onAdd, setBrowseMode
+      onNavigate, getAllDrinks, ingredientsDb, canMakeDrink, getActiveBarInventory, normalizeIngredient, onAdd, onOpenBrowse, onOpenTheory
     }) => {
       // Calculate gateway bottles
       const gatewayBottles = useMemo(() => {
@@ -3936,64 +4286,93 @@
           .sort((a, b) => b.count - a.count)
           .slice(0, 20); // Top 20 gateway bottles
       }, [getAllDrinks, canMakeDrink, ingredientsDb, getActiveBarInventory, normalizeIngredient]);
+      const allRecipes = getAllDrinks ? getAllDrinks() : [];
+      const familyCount = new Set(allRecipes.map(drink => drink.primary_family).filter(Boolean)).size;
+      const templateCount = new Set(allRecipes.flatMap(drink => [drink.primary_template, drink.secondary_template]).filter(Boolean)).size;
 
       return (
-        <div className="space-y-4">
-          {/* All Recipes Button */}
-          <button
-            onClick={() => {
-              if (setBrowseMode) setBrowseMode('recipes');
-              onNavigate('browse');
-            }}
-            className="w-full border border-ink-700 p-6 text-left group hover:border-copper/50 transition-colors"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-display text-xl text-ink-100 font-normal text-copper transition-colors mb-1">
-                  All Recipes
-                </h3>
-                <p className="text-sm text-ink-500">Browse all available recipes</p>
-              </div>
+        <div className="space-y-6">
+          <section className="border border-copper/20 bg-copper/[0.04] p-6 sm:p-8">
+            <p className="text-[0.65rem] uppercase tracking-[0.28em] text-copper/80">The Architecture of the Glass</p>
+            <div className="mt-4 max-w-3xl">
+              <h2 className="font-display text-3xl sm:text-4xl leading-tight text-ink-100">Discover cocktails by how they work.</h2>
+              <p className="mt-4 text-sm sm:text-[0.95rem] leading-7 text-ink-400 max-w-2xl">
+                Family is structure. Template is lineage. Tags are experience. Start with whichever layer you know, then use the others to go deeper.
+              </p>
             </div>
-          </button>
+            <div className="mt-6 flex flex-wrap gap-3 text-xs uppercase tracking-[0.22em] text-ink-500">
+              <span>{allRecipes.length} recipes</span>
+              <span>{familyCount} families</span>
+              <span>{templateCount} templates</span>
+            </div>
+          </section>
 
-          {/* All Ingredients Button */}
-          <button
-            onClick={() => {
-              if (setBrowseMode) setBrowseMode('ingredients');
-              onNavigate('browse');
-            }}
-            className="w-full border border-ink-700 p-6 text-left group hover:border-copper/50 transition-colors"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-display text-xl text-ink-100 font-normal text-copper transition-colors mb-1">
-                  All Ingredients
-                </h3>
-                <p className="text-sm text-ink-500">Browse all ingredients</p>
-              </div>
-            </div>
-          </button>
+          <div className="grid gap-4 md:grid-cols-2">
+            <button
+              onClick={() => onOpenBrowse?.({ mode: 'recipes', lens: 'structure' })}
+              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
+            >
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Structure first</p>
+              <h3 className="mt-3 font-display text-2xl text-ink-100">Browse the ten families</h3>
+              <p className="mt-3 text-sm text-ink-500 leading-6">Old-Fashioned, Aromatized, Bitter Aromatized, Sour, Daisy, and the rest. Learn the balancing logic before the names.</p>
+            </button>
 
-          {/* Gateway Bottles Button */}
-          <button
-            onClick={() => onNavigate('gatewayBottles')}
-            className="w-full border border-ink-700 p-6 text-left group hover:border-copper/50 transition-colors"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-display text-xl text-ink-100 font-normal text-copper transition-colors mb-1">
-                  Gateway Bottles
-                </h3>
-                <p className="text-sm text-ink-500">Ingredients that would unlock new recipes</p>
+            <button
+              onClick={() => onOpenBrowse?.({ mode: 'recipes', lens: 'experience' })}
+              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
+            >
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Experience first</p>
+              <h3 className="mt-3 font-display text-2xl text-ink-100">Start with the feeling</h3>
+              <p className="mt-3 text-sm text-ink-500 leading-6">Refreshing, spirit-forward, aperitivo, plush, nightcap. Use the experience layer when you know the mood before the drink.</p>
+            </button>
+
+            <button
+              onClick={() => onOpenBrowse?.({ mode: 'recipes', lens: 'template' })}
+              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
+            >
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Lineage first</p>
+              <h3 className="mt-3 font-display text-2xl text-ink-100">Explore template neighborhoods</h3>
+              <p className="mt-3 text-sm text-ink-500 leading-6">Negroni, Martini, Daiquiri, Margarita, Last Word. Follow the recognizable branch point and see what lives nearby.</p>
+            </button>
+
+            <button
+              onClick={() => onOpenBrowse?.({ mode: 'ingredients' })}
+              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
+            >
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Ingredient atlas</p>
+              <h3 className="mt-3 font-display text-2xl text-ink-100">Browse the bottle shelf</h3>
+              <p className="mt-3 text-sm text-ink-500 leading-6">Move from ingredient to drink, see what each bottle unlocks, and trace structural families through the back bar.</p>
+            </button>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-[1.25fr_0.75fr]">
+            <button
+              onClick={() => onNavigate('gatewayBottles')}
+              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Inventory path</p>
+                  <h3 className="mt-3 font-display text-2xl text-ink-100">Gateway bottles</h3>
+                  <p className="mt-3 text-sm text-ink-500 leading-6">See which single ingredient would unlock the most new cocktails from your current bar.</p>
+                </div>
+                {gatewayBottles.length > 0 && (
+                  <span className="text-sm px-3 py-1 bg-copper/20 text-copper font-medium">
+                    {gatewayBottles.length}
+                  </span>
+                )}
               </div>
-              {gatewayBottles.length > 0 && (
-                <span className="text-sm px-3 py-1 bg-copper/20 text-copper font-medium">
-                  {gatewayBottles.length}
-                </span>
-              )}
-            </div>
-          </button>
+            </button>
+
+            <button
+              onClick={() => onOpenTheory?.()}
+              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
+            >
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Manifesto</p>
+              <h3 className="mt-3 font-display text-2xl text-ink-100">Read the theory</h3>
+              <p className="mt-3 text-sm text-ink-500 leading-6">The full argument for why cocktails should be organized by structure first.</p>
+            </button>
+          </div>
         </div>
       );
     };
@@ -5245,8 +5624,7 @@
     const RecipeRow = ({ drink, isKeeper, isToTry, canMake, missingCount, onClick, onToggleKeeper, onToggleToTry, showImage = false, ingredientsDb, onEdit, onDelete }) => {
       const spirit = detectSpirit(drink);
       const method = detectMethod(drink);
-      const modifiers = extractModifiers(drink, ingredientsDb);
-      // Legacy category removed - no longer displayed
+      const tags = getRecipeTaxonomyTags(drink).slice(0, 3);
       
       // Status indicator - more prominent for better visibility
       const getStatusIndicator = () => {
@@ -5265,13 +5643,6 @@
         }
         return null;
       };
-      
-      // Build secondary line: spirit · method · glass
-      const secondaryParts = [];
-      if (spirit && spirit !== 'Other') secondaryParts.push(spirit);
-      if (method) secondaryParts.push(method);
-      if (drink.glass) secondaryParts.push(drink.glass);
-      const secondaryLine = secondaryParts.join(' · ');
 
       const ingredientPreview = (() => {
         if (!drink.ingredients?.length) return '';
@@ -5282,28 +5653,43 @@
 
       return (
         <div
-          className={`py-4 cursor-pointer group border-l-2 transition-colors duration-150 ${canMake ? 'border-l-copper/60' : missingCount > 0 && missingCount <= 2 ? 'border-l-copper/25' : 'border-l-transparent'}`}
+          className={`py-4 cursor-pointer group border-l-2 transition-colors duration-150 ${canMake ? 'border-l-copper/60 bg-copper/[0.02]' : missingCount > 0 && missingCount <= 2 ? 'border-l-copper/25' : 'border-l-transparent'}`}
           onClick={onClick}
         >
           <div className="flex items-start gap-4 pl-3">
             <div className="flex-1 min-w-0">
-              {/* Recipe name */}
-              <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.65rem] uppercase tracking-[0.22em] text-ink-500 mb-2">
+                {drink.primary_family && <span className="text-copper/85">{drink.primary_family}</span>}
+                {drink.primary_template && (
+                  <>
+                    <span className="text-ink-700">/</span>
+                    <span>Template {drink.primary_template}</span>
+                  </>
+                )}
+              </div>
+
+              <h3 className="text-base font-bold text-ink-100 mb-1 uppercase leading-tight">
                 {drink.name}
                 {isKeeper && <span className="ml-2 text-ink-100 text-sm">★</span>}
               </h3>
 
-              {/* Ingredients line */}
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {tags.map(tag => (
+                    <span key={tag} className="px-1.5 py-0.5 text-[0.65rem] uppercase tracking-[0.18em] border border-ink-800 text-ink-400">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+
               {ingredientPreview && (
                 <div className="text-sm text-ink-500 mb-1">{ingredientPreview}</div>
               )}
 
-              {/* Secondary info line */}
-              {[spirit && spirit !== 'Other' && spirit,
-               method].filter(Boolean).length > 0 && (
-                <div className="text-xs text-ink-500">
-                  {[spirit && spirit !== 'Other' && spirit,
-                   method].filter(Boolean).join(' / ')}
+              {[spirit && spirit !== 'Other' && spirit, method, drink.service_style].filter(Boolean).length > 0 && (
+                <div className="text-xs text-ink-600 uppercase tracking-[0.18em]">
+                  {[spirit && spirit !== 'Other' && spirit, method, drink.service_style].filter(Boolean).join(' / ')}
                 </div>
               )}
             </div>
