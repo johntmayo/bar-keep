@@ -223,6 +223,37 @@
     [data-theme="light"] .substitute-bullet {
       color: #6b7280; /* text-ink-500 for light theme */
     }
+
+    .onboarding-shell {
+      background:
+        radial-gradient(circle at top left, rgba(161, 98, 7, 0.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(28, 25, 23, 0.92), rgba(12, 10, 9, 0.98));
+    }
+
+    [data-theme="light"] .onboarding-shell {
+      background:
+        radial-gradient(circle at top left, rgba(161, 98, 7, 0.12), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(120, 113, 108, 0.08), transparent 28%),
+        linear-gradient(180deg, rgba(250, 248, 245, 0.98), rgba(245, 241, 236, 0.98));
+    }
+
+    .onboarding-card {
+      background: color-mix(in srgb, var(--bg-secondary) 92%, transparent);
+      border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+      backdrop-filter: blur(18px);
+    }
+
+    .onboarding-halo {
+      box-shadow: 0 0 0 1px rgba(212, 165, 116, 0.14), 0 28px 80px rgba(0, 0, 0, 0.32);
+    }
+
+    .onboarding-dots {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 9999px;
+      transition: all 0.18s ease;
+    }
   </style>
   <script>
     // Set initial theme immediately to avoid flash
@@ -1174,6 +1205,246 @@
     };
 
     // ============ MAIN APP ============
+
+    const ONBOARDING_SCREENS = [
+      {
+        eyebrow: 'Screen 1 of 3',
+        headline: 'Most cocktail lists are just lists.',
+        body: [
+          "You learn the Negroni. Then the Boulevardier. Then the Old Pal. Three separate things to memorize - when really, they're one idea expressed three ways.",
+          "This app organizes drinks by how they're built, not what they're called. Once you see the structure, you don't just know more drinks. You understand them."
+        ],
+        cta: 'Next',
+        visual: 'names'
+      },
+      {
+        eyebrow: 'Screen 2 of 3',
+        headline: 'Every cocktail is a balancing act.',
+        body: [
+          'At the heart of every well-made drink is a structural logic - the relationship between its ingredients. Spirit and sweetener. Spirit and citrus. Spirit, fortified wine, and a bitter that earns its place.',
+          'We organize drinks into ten families based on that logic. Not by spirit. Not by era. By how the drink actually works.'
+        ],
+        families: [
+          'Old-Fashioned',
+          'Aromatized',
+          'Bitter Aromatized',
+          'Sour',
+          'Daisy',
+          'Enhanced Sour',
+          'Collins',
+          'Highball',
+          'Rich & Creamy',
+          'Tropical / Punch-derived'
+        ],
+        cta: 'Next',
+        visual: 'families'
+      },
+      {
+        eyebrow: 'Screen 3 of 3',
+        headline: 'Family. Template. Experience.',
+        body: [
+          'Every drink in this app has three things: a family - the structural logic underneath. A template - the classic it descends from. Tags - how it feels to drink.',
+          "Take the Negroni. It belongs to the Bitter Aromatized family. Its template is the Negroni. Its tags include spirit-forward, bitter, and aperitivo. That tells you everything: how it's built, where it comes from, and what it's like.",
+          'Now you can explore by structure when you want to learn, by experience when you just want a drink, and by template when you want to know what is in the neighborhood.'
+        ],
+        cta: 'Start Exploring',
+        visual: 'layers'
+      }
+    ];
+
+    const openTheoryManifesto = () => {
+      window.open('./THEORY.md', '_blank', 'noopener,noreferrer');
+    };
+
+    const OnboardingOverlay = ({ onClose, onOpenTheory }) => {
+      const [step, setStep] = useState(0);
+      const screen = ONBOARDING_SCREENS[step];
+      const isLastScreen = step === ONBOARDING_SCREENS.length - 1;
+
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (e.key === 'Escape') {
+            onClose();
+          } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
+            if (isLastScreen) onClose();
+            else setStep(prev => Math.min(prev + 1, ONBOARDING_SCREENS.length - 1));
+          } else if (e.key === 'ArrowLeft') {
+            setStep(prev => Math.max(prev - 1, 0));
+          }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [isLastScreen, onClose]);
+
+      const nextStep = () => {
+        if (isLastScreen) {
+          onClose();
+          return;
+        }
+        setStep(prev => Math.min(prev + 1, ONBOARDING_SCREENS.length - 1));
+      };
+
+      return (
+        <div className="fixed inset-0 overflow-y-auto bg-ink-950/88 backdrop-blur-sm" style={{ zIndex: 80 }}>
+          <div className="min-h-screen p-3 sm:p-6">
+            <div className="onboarding-shell onboarding-halo max-w-6xl mx-auto min-h-[calc(100vh-1.5rem)] sm:min-h-[calc(100vh-3rem)] border border-copper/20 text-ink-100 flex flex-col">
+              <div className="flex items-center justify-between px-5 sm:px-8 pt-5 sm:pt-7 pb-4 border-b border-ink-700/70">
+                <div>
+                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-copper/80">The Architecture of the Glass</p>
+                  <p className="text-xs text-ink-500 mt-1">A structural introduction to Barkeep</p>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="text-xs uppercase tracking-[0.24em] text-ink-500 hover:text-ink-200 transition-colors"
+                >
+                  Skip
+                </button>
+              </div>
+
+              <div className="flex-1 grid lg:grid-cols-[1.15fr_0.85fr] gap-6 lg:gap-10 px-5 sm:px-8 py-6 sm:py-8">
+                <section className="flex flex-col justify-between gap-8">
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-3 text-xs uppercase tracking-[0.24em] text-ink-500">
+                      <span>{screen.eyebrow}</span>
+                      <span className="h-px flex-1 bg-ink-700" />
+                    </div>
+
+                    <div className="max-w-2xl space-y-5">
+                      <h2 className="font-display text-4xl sm:text-5xl leading-tight text-ink-100">{screen.headline}</h2>
+                      <div className="space-y-4 text-sm sm:text-[0.95rem] leading-7 text-ink-300 max-w-xl">
+                        {screen.body.map((paragraph, index) => (
+                          <p key={index}>{paragraph}</p>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+                    <div className="flex items-center gap-2">
+                      {ONBOARDING_SCREENS.map((item, index) => (
+                        <button
+                          key={item.eyebrow}
+                          onClick={() => setStep(index)}
+                          className={`onboarding-dots ${index === step ? 'bg-copper scale-110' : 'bg-ink-700 hover:bg-ink-500'}`}
+                          aria-label={`Go to ${item.eyebrow}`}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      {!isLastScreen && (
+                        <button
+                          onClick={() => setStep(prev => Math.max(prev - 1, 0))}
+                          disabled={step === 0}
+                          className={`px-4 py-2 text-sm border transition-colors ${step === 0 ? 'border-ink-800 text-ink-700 cursor-not-allowed' : 'border-ink-700 text-ink-400 hover:text-ink-100 hover:border-ink-500'}`}
+                        >
+                          Back
+                        </button>
+                      )}
+
+                      <button
+                        onClick={nextStep}
+                        className="px-5 py-2.5 text-sm border border-copper/40 bg-copper/10 text-copper hover:bg-copper/20 transition-colors inline-flex items-center gap-2"
+                      >
+                        <span>{screen.cta}</span>
+                        <Icon name={isLastScreen ? 'ArrowRight' : 'MoveRight'} className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="onboarding-card relative overflow-hidden p-5 sm:p-6 flex items-center justify-center min-h-[320px] sm:min-h-[420px]" onClick={!isLastScreen ? nextStep : undefined}>
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent,rgba(212,165,116,0.08),transparent)] opacity-70" />
+
+                  {screen.visual === 'names' && (
+                    <div className="relative w-full max-w-md h-[300px]">
+                      <div className="absolute inset-x-8 top-5 h-px bg-copper/40" />
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 text-[0.65rem] uppercase tracking-[0.28em] text-copper/70">Shared structure</div>
+
+                      {[
+                        { name: 'Old Pal', accent: 'Rye - Dry Vermouth - Campari', className: 'top-16 left-2 -rotate-6' },
+                        { name: 'Negroni', accent: 'Gin - Vermouth - Campari', className: 'top-10 left-1/2 -translate-x-1/2 z-10' },
+                        { name: 'Boulevardier', accent: 'Bourbon - Vermouth - Campari', className: 'top-16 right-2 rotate-6' }
+                      ].map(card => (
+                        <div key={card.name} className={`absolute w-48 sm:w-52 border border-ink-700 bg-ink-950/90 p-4 ${card.className}`}>
+                          <div className="text-[0.65rem] uppercase tracking-[0.24em] text-ink-500">Template</div>
+                          <div className="mt-8 text-lg text-ink-100">{card.name}</div>
+                          <div className="mt-3 text-xs leading-5 text-ink-500">{card.accent}</div>
+                        </div>
+                      ))}
+
+                      <div className="absolute left-1/2 bottom-4 -translate-x-1/2 text-xs text-ink-500 uppercase tracking-[0.18em]">
+                        One idea expressed three ways
+                      </div>
+                    </div>
+                  )}
+
+                  {screen.visual === 'families' && (
+                    <div className="w-full max-w-md">
+                      <div className="flex items-center justify-between mb-5 text-[0.65rem] uppercase tracking-[0.28em] text-ink-500">
+                        <span>Taxonomy</span>
+                        <span className="text-copper/70">10 families</span>
+                      </div>
+                      <div className="space-y-2">
+                        {screen.families.map((family, index) => (
+                          <div
+                            key={family}
+                            className={`flex items-center justify-between border-b border-ink-800 pb-2 ${family === 'Bitter Aromatized' ? 'text-copper' : 'text-ink-300'}`}
+                          >
+                            <span className="text-sm">{family}</span>
+                            <span className="text-[0.65rem] text-ink-600">{String(index + 1).padStart(2, '0')}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {screen.visual === 'layers' && (
+                    <div className="w-full max-w-md space-y-4">
+                      <div className="border border-copper/25 bg-ink-950/95 p-5">
+                        <div className="flex items-start justify-between gap-4 border-b border-ink-800 pb-4">
+                          <div>
+                            <div className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Drink preview</div>
+                            <div className="text-2xl text-ink-100 mt-2">Negroni</div>
+                          </div>
+                          <div className="text-right text-xs text-ink-500 leading-5">
+                            <div>Equal parts</div>
+                            <div>Stirred</div>
+                            <div>Orange twist</div>
+                          </div>
+                        </div>
+
+                        {[
+                          ['Family', 'Bitter Aromatized'],
+                          ['Template', 'Negroni'],
+                          ['Tags', 'Spirit-forward - Bitter - Aperitivo']
+                        ].map(([label, value]) => (
+                          <div key={label} className="py-3 border-b border-ink-800 last:border-b-0">
+                            <div className="text-[0.65rem] uppercase tracking-[0.24em] text-ink-500">{label}</div>
+                            <div className="mt-1 text-sm text-ink-200 leading-6">{value}</div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenTheory();
+                        }}
+                        className="text-xs uppercase tracking-[0.22em] text-ink-400 hover:text-copper transition-colors"
+                      >
+                        Read the full theory
+                      </button>
+                    </div>
+                  )}
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
     
     const App = () => {
       const [view, setView] = useState('home');
@@ -1208,6 +1479,7 @@
       const [showSettings, setShowSettings] = useState(false);
       const [showImportShared, setShowImportShared] = useState(false);
       const [showAiBartender, setShowAiBartender] = useState(false);
+      const [showOnboarding, setShowOnboarding] = useState(true);
       const [sharedRecipeData, setSharedRecipeData] = useState(null);
       const [collections, setCollections] = useState([]);
       const [updateAvailable, setUpdateAvailable] = useState(false);
@@ -1462,7 +1734,7 @@
 
       // Lock body scroll when modals are open
       useEffect(() => {
-        if (selectedDrink || showAddDrink || showImportExport || showConfirmDelete || showImportShared) {
+        if (selectedDrink || showAddDrink || showImportExport || showConfirmDelete || showImportShared || showOnboarding) {
           document.body.style.overflow = 'hidden';
         } else {
           document.body.style.overflow = '';
@@ -1470,7 +1742,7 @@
         return () => {
           document.body.style.overflow = '';
         };
-      }, [selectedDrink, showAddDrink, showImportExport, showConfirmDelete, showImportShared]);
+      }, [selectedDrink, showAddDrink, showImportExport, showConfirmDelete, showImportShared, showOnboarding]);
 
       const saveData = (key, data) => storage.set(key, JSON.stringify(data));
       
@@ -2882,6 +3154,8 @@
                 onImportShared={() => setShowImportShared(true)}
                 unitPreference={unitPreference}
                 onToggleUnit={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
+                onShowOnboarding={() => setShowOnboarding(true)}
+                onOpenTheory={openTheoryManifesto}
               />
             ) : view === 'collections' ? (
               <CollectionsView
@@ -3452,6 +3726,13 @@
               message="This will permanently delete this recipe. This cannot be undone."
               onConfirm={() => deleteCustomDrink(showConfirmDelete)}
               onCancel={() => setShowConfirmDelete(null)}
+            />
+          )}
+
+          {showOnboarding && (
+            <OnboardingOverlay
+              onClose={() => setShowOnboarding(false)}
+              onOpenTheory={openTheoryManifesto}
             />
           )}
           
@@ -4716,7 +4997,7 @@
       );
     };
 
-    const SettingsView = ({ onClose, onExport, onImport, unmatchedIngredients, onImportShared, unitPreference, onToggleUnit }) => {
+    const SettingsView = ({ onClose, onExport, onImport, unmatchedIngredients, onImportShared, unitPreference, onToggleUnit, onShowOnboarding, onOpenTheory }) => {
       const fileRef = useRef(null);
       const [showDebug, setShowDebug] = useState(false);
       const [importMode, setImportMode] = useState('replace');
@@ -4747,6 +5028,30 @@
                     {unitPreference === 'ml' ? 'ml' : 'oz'}
                   </button>
                 </div>
+              </div>
+            </div>
+
+            <div className="border border-ink-700 p-5">
+              <h3 className="font-display text-lg text-ink-100 font-normal mb-4">Learn</h3>
+              <div className="space-y-3">
+                <button onClick={onShowOnboarding} className="w-full p-4 bg-transparent border border-ink-700 text-left hover:bg-ink-800 hover:border-ink-600 transition-colors group">
+                  <div className="flex items-center gap-3">
+                    <Icon name="PanelsTopLeft" className="w-5 h-5 text-copper" />
+                    <div>
+                      <p className="text-ink-100 font-light text-copper transition-colors">Replay Onboarding</p>
+                      <p className="text-xs text-ink-500 mt-0.5">See the structural introduction again</p>
+                    </div>
+                  </div>
+                </button>
+                <button onClick={onOpenTheory} className="w-full p-4 bg-transparent border border-ink-700 text-left hover:bg-ink-800 hover:border-ink-600 transition-colors group">
+                  <div className="flex items-center gap-3">
+                    <Icon name="BookText" className="w-5 h-5 text-copper" />
+                    <div>
+                      <p className="text-ink-100 font-light text-copper transition-colors">Read Full Theory</p>
+                      <p className="text-xs text-ink-500 mt-0.5">Open the long-form manifesto in a new tab</p>
+                    </div>
+                  </div>
+                </button>
               </div>
             </div>
 
