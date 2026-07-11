@@ -1653,7 +1653,7 @@
       const [showSettings, setShowSettings] = useState(false);
       const [showImportShared, setShowImportShared] = useState(false);
       const [showAiBartender, setShowAiBartender] = useState(false);
-      const [showOnboarding, setShowOnboarding] = useState(true);
+      const [showOnboarding, setShowOnboarding] = useState(false);
       const [sharedRecipeData, setSharedRecipeData] = useState(null);
       const [collections, setCollections] = useState([]);
       const [updateAvailable, setUpdateAvailable] = useState(false);
@@ -3310,7 +3310,7 @@
           {/* Main Content */}
           <main ref={mainRef} className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-6">
             {view === 'home' ? (
-              <HomeView
+              <RecipesHub
                 savedCount={keepers.size}
                 favoritesCount={keepers.size}
                 canMakeCount={getMakeableDrinks().length}
@@ -3322,7 +3322,7 @@
                 onNavigate={(viewId) => {
                   setView(viewId);
                 }}
-                onAskBartender={() => setShowAiBartender(true)}
+                onOpenBrowse={openBrowseWith}
                 getMakeableDrinks={getMakeableDrinks}
                 getAlmostMakeableDrinks={() => getAllDrinks().filter(d => {
                   const missing = getMissingCount(d);
@@ -3336,6 +3336,9 @@
                 getMissingCount={getMissingCount}
                 canMakeDrink={canMakeDrink}
                 ingredientsDb={ingredientsDb}
+                bars={bars}
+                activeBar={getActiveBar()}
+                onSwitchBar={saveActiveBarId}
                 toggleKeeper={toggleKeeper}
                 toggleToTry={toggleToTry}
                 isInToTry={isInToTry}
@@ -4081,7 +4084,10 @@
 
           {showOnboarding && (
             <OnboardingOverlay
-              onClose={() => setShowOnboarding(false)}
+              onClose={() => {
+                storage.set('onboarding-complete', 'true');
+                setShowOnboarding(false);
+              }}
               onOpenTheory={openTheoryManifesto}
             />
           )}
@@ -4092,131 +4098,169 @@
 
     // ============ COMPONENTS ============
 
-    const HomeView = ({
-      savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount,
-      onNavigate, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
-      onSelectDrink, keepers, collections, getMissingCount, canMakeDrink, ingredientsDb,
-      bars = [], activeBar, onSwitchBar, toggleKeeper, toggleToTry, isInToTry, onAskBartender
+    const RecipesHub = ({ 
+      savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, 
+      onNavigate, onOpenBrowse, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
+      onSelectDrink, keepers, collections, getMissingCount, canMakeDrink, ingredientsDb, 
+      bars = [], activeBar, onSwitchBar, toggleKeeper, toggleToTry, isInToTry
     }) => {
       const allCollections = Array.isArray(getAllCollections) ? getAllCollections : [];
       
-      const cardBase = 'border border-ink-700 p-6 text-left transition-all duration-200 hover:border-copper/40 hover:bg-ink-900/50';
+      const canMakeRecipes = (Array.isArray(getMakeableDrinks?.()) ? getMakeableDrinks() : []).slice(0, 12);
+      const almostMakeRecipes = (Array.isArray(getAlmostMakeableDrinks?.()) ? getAlmostMakeableDrinks() : []).slice(0, 5);
+      
+      const shortcutItems = [
+        { id: 'almostMake', label: 'Almost', count: almostMakeCount, description: '1–2 ingredients away' },
+        { id: 'keepers', label: 'Keepers', count: favoritesCount, description: 'Recipes that stood out' },
+        { id: 'toTry', label: 'Try', count: wantToTryCount, description: 'Your queue' },
+        { id: 'collections', label: 'Collections', count: collectionsCount, description: 'Organize recipes' },
+        { id: 'custom', label: 'Custom', count: customCount, description: 'Your recipes' },
+      ];
+
+      const hasInventory = activeBar?.inventory && activeBar.inventory.length > 0;
+
       return (
-        <div className="space-y-5">
-          {/* Button Grid */}
-          <div className="space-y-4">
-            {/* Row 1: Ready (full-width) — hero card */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-bold text-ink-100">Ready to make</h2>
+              {hasInventory && canMakeCount > 0 && (
+                <p className="text-sm text-ink-500 mt-0.5">{canMakeCount} with your bar</p>
+              )}
+            </div>
             <button
-              onClick={() => onNavigate('canMake')}
-              className="w-full border-2 border-copper bg-copper/5 p-8 text-left transition-all duration-200 hover:bg-copper/10 hover:border-copper hover:shadow-[0_0_20px_0_rgba(212,165,116,0.35)]"
+              onClick={() => onOpenBrowse?.({ mode: 'recipes' })}
+              className="text-sm text-copper hover:text-copper-light whitespace-nowrap"
             >
-              <div className="flex items-end justify-between">
-                <div>
-                  <div className="font-display font-bold text-copper leading-none mb-2 text-6xl">
-                    {canMakeCount}
-                  </div>
-                  <p className="text-sm text-ink-500">ready to make</p>
-                </div>
-                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-copper/20 flex items-center justify-center">
-                  <Icon name="CheckCircle" className="w-5 h-5 text-copper" />
-                </div>
-              </div>
+              Browse all →
             </button>
-
-            {/* Row 2: Almost (half) and Keepers (half) */}
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => onNavigate('almostMake')}
-                className={cardBase}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
-                    Almost
-                  </h3>
-                  {almostMakeCount > 0 && (
-                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
-                      {almostMakeCount}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-ink-500">1-2 ingredients away</p>
-              </button>
-
-              <button
-                onClick={() => onNavigate('keepers')}
-                className={cardBase}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
-                    Keepers
-                  </h3>
-                  {favoritesCount > 0 && (
-                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
-                      {favoritesCount}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-ink-500">Recipes that stood out</p>
-              </button>
-            </div>
-
-            {/* Row 3: Wanna Try (half) and Collections (half) */}
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => onNavigate('toTry')}
-                className={cardBase}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
-                    Wanna Try
-                  </h3>
-                  {wantToTryCount > 0 && (
-                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
-                      {wantToTryCount}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-ink-500">Your queue</p>
-              </button>
-
-              <button
-                onClick={() => onNavigate('collections')}
-                className={cardBase}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
-                    Collections
-                  </h3>
-                  {collectionsCount > 0 && (
-                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
-                      {collectionsCount}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-ink-500">Organize recipes</p>
-              </button>
-            </div>
-
-            {/* Row 4: Custom (half-width) */}
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => onNavigate('custom')}
-                className={cardBase}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-display text-lg text-ink-100 font-normal text-copper">
-                    Custom
-                  </h3>
-                  {customCount > 0 && (
-                    <span className="text-xs px-2 py-1 rounded-md bg-copper/20 text-copper font-medium">
-                      {customCount}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-ink-500">Your custom recipes</p>
-              </button>
-            </div>
           </div>
+
+          {!hasInventory && (
+            <section className="border border-ink-700 p-5">
+              <p className="text-sm text-ink-300 mb-3">Add bottles to your bar to see what you can make.</p>
+              <button
+                onClick={() => onNavigate('bars')}
+                className="text-sm text-copper hover:text-copper-light"
+              >
+                Stock your bar →
+              </button>
+            </section>
+          )}
+
+          {/* Quick Bar Switch (if multiple bars) */}
+          {Array.isArray(bars) && bars.length > 1 && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm text-ink-500">
+                <Icon name="Wine" className="w-4 h-4" />
+                <span>{activeBar?.name || 'Bar'}</span>
+                {activeBar?.isMain && (
+                  <span className="text-2xs px-1.5 py-0.5 bg-copper/10 text-copper border border-copper/20">
+                    Main
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  if (!Array.isArray(bars) || bars.length === 0) return;
+                  const currentIndex = bars.findIndex(b => b.id === activeBar?.id);
+                  const nextBar = bars[(currentIndex + 1) % bars.length];
+                  if (nextBar) onSwitchBar(nextBar.id);
+                }}
+                className="text-xs text-copper hover:text-copper flex items-center gap-1"
+              >
+                <Icon name="RefreshCw" className="w-3.5 h-3.5" />
+                Switch
+              </button>
+            </div>
+          )}
+
+          {hasInventory && canMakeRecipes.length > 0 ? (
+            <section>
+              {canMakeCount > canMakeRecipes.length && (
+                <div className="flex justify-end mb-2">
+                  <button
+                    onClick={() => onNavigate('canMake')}
+                    className="text-sm text-ink-500 hover:text-ink-300"
+                  >
+                    see all {canMakeCount} →
+                  </button>
+                </div>
+              )}
+              <div className="divide-y divide-ink-800/20 border border-ink-800/40">
+                {canMakeRecipes.map(drink => (
+                  <RecipeRow
+                    key={drink.id}
+                    drink={drink}
+                    isKeeper={keepers?.has?.(drink.id)}
+                    isToTry={isInToTry(drink.id)}
+                    canMake={true}
+                    missingCount={0}
+                    onClick={() => onSelectDrink(drink)}
+                    onToggleKeeper={() => toggleKeeper(drink.id)}
+                    onToggleToTry={() => toggleToTry(drink.id)}
+                    ingredientsDb={ingredientsDb}
+                  />
+                ))}
+              </div>
+            </section>
+          ) : hasInventory ? (
+            <section className="py-4 border border-ink-800/40 px-4">
+              <p className="text-sm text-ink-500">Nothing ready with your current bar.</p>
+              {almostMakeRecipes.length > 0 && (
+                <p className="text-xs text-ink-500 mt-2">Check Almost below — you may be close.</p>
+              )}
+            </section>
+          ) : null}
+
+          {hasInventory && almostMakeRecipes.length > 0 && (
+            <section>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-ink-100 uppercase tracking-wide">Almost</h3>
+                {almostMakeCount > almostMakeRecipes.length && (
+                  <button
+                    onClick={() => onNavigate('almostMake')}
+                    className="text-sm text-ink-500 hover:text-ink-300"
+                  >
+                    see all →
+                  </button>
+                )}
+              </div>
+              <div className="divide-y divide-ink-800/20">
+                {almostMakeRecipes.map(drink => (
+                  <RecipeRow
+                    key={drink.id}
+                    drink={drink}
+                    isKeeper={keepers?.has?.(drink.id)}
+                    isToTry={isInToTry(drink.id)}
+                    canMake={false}
+                    missingCount={getMissingCount(drink)}
+                    onClick={() => onSelectDrink(drink)}
+                    onToggleKeeper={() => toggleKeeper(drink.id)}
+                    onToggleToTry={() => toggleToTry(drink.id)}
+                    ingredientsDb={ingredientsDb}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section>
+            <div className="flex flex-wrap gap-2">
+              {shortcutItems.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  className="border border-ink-700 px-3 py-2 text-left hover:border-copper/40 transition-colors"
+                >
+                  <span className="text-sm text-ink-100">{item.label}</span>
+                  {item.count > 0 && (
+                    <span className="ml-2 text-xs text-copper">{item.count}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
       );
     };
@@ -4539,175 +4583,6 @@
               ))}
             </div>
           )}
-        </div>
-      );
-    };
-
-    const RecipesHub = ({ 
-      savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, 
-      onNavigate, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
-      onSelectDrink, keepers, collections, getMissingCount, canMakeDrink, ingredientsDb, 
-      bars = [], activeBar, onSwitchBar, toggleKeeper, toggleToTry, isInToTry
-    }) => {
-      const allCollections = Array.isArray(getAllCollections) ? getAllCollections : [];
-      
-      const canMakeRecipes = (Array.isArray(getMakeableDrinks?.()) ? getMakeableDrinks() : []).slice(0, 8);
-      const almostMakeRecipes = (Array.isArray(getAlmostMakeableDrinks?.()) ? getAlmostMakeableDrinks() : []).slice(0, 5);
-      
-      const recipeItems = [
-        { id: 'canMake', label: 'Can Make', icon: 'CheckCircle', count: canMakeCount, description: 'Ready to make now' },
-        { id: 'almostMake', label: 'Almost Make', icon: 'AlertCircle', count: almostMakeCount, description: '1-2 ingredients away' },
-        { id: 'keepers', label: 'Keepers', icon: 'Star', count: favoritesCount, description: 'Recipes that stood out' },
-        { id: 'toTry', label: 'Try', icon: 'Bookmark', count: wantToTryCount, description: 'Your queue' },
-        { id: 'collections', label: 'Collections', icon: 'Folder', count: collectionsCount, description: 'Organize recipes' },
-        { id: 'custom', label: 'Custom', icon: 'FlaskConical', count: customCount, description: 'Your custom recipes' },
-      ];
-
-      // Show recipe items even if bar is empty, but with a subtle prompt
-      const hasInventory = activeBar?.inventory && activeBar.inventory.length > 0;
-
-      return (
-        <div className=" space-y-8">
-          {/* Quick Bar Switch (if multiple bars) */}
-          {Array.isArray(bars) && bars.length > 1 && (
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2 text-sm text-ink-500">
-                <Icon name="Wine" className="w-4 h-4" />
-                <span>Active bar:</span>
-                <span className="text-ink-100 font-medium">{activeBar?.name || 'Bar'}</span>
-                {activeBar?.isMain && (
-                  <span className="text-2xs px-1.5 py-0.5  bg-copper/10 text-copper border border-copper/20">
-                    Main
-                  </span>
-                )}
-              </div>
-              <button
-                onClick={() => {
-                  if (!Array.isArray(bars) || bars.length === 0) return;
-                  const currentIndex = bars.findIndex(b => b.id === activeBar?.id);
-                  const nextBar = bars[(currentIndex + 1) % bars.length];
-                  if (nextBar) onSwitchBar(nextBar.id);
-                }}
-                className="text-xs text-copper hover:text-copper flex items-center gap-1"
-              >
-                <Icon name="RefreshCw" className="w-3.5 h-3.5" />
-                Switch
-              </button>
-            </div>
-          )}
-
-          {/* You can make section - only show if has inventory */}
-          {hasInventory && canMakeRecipes.length > 0 ? (
-            <section>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-ink-100 uppercase">You can make</h2>
-                <button
-                  onClick={() => onNavigate('canMake')}
-                  className="text-sm text-ink-500 hover:text-ink-300"
-                >
-                  see all →
-                </button>
-              </div>
-              <div className="divide-y divide-ink-800/20">
-                {canMakeRecipes.map(drink => (
-                      <RecipeRow
-                        key={drink.id}
-                        drink={drink}
-                        isKeeper={keepers && keepers.has ? keepers.has(drink.id) : false}
-                        isToTry={isInToTry(drink.id)}
-                        canMake={true}
-                        missingCount={0}
-                        onClick={() => onSelectDrink(drink)}
-                        onToggleKeeper={() => toggleKeeper(drink.id)}
-                        onToggleToTry={() => toggleToTry(drink.id)}
-                        ingredientsDb={ingredientsDb}
-                        onEdit={drink.source === 'custom' ? (drink) => onEdit?.(drink) : null}
-                        onDelete={drink.source === 'custom' ? (id) => onDelete?.(id) : null}
-                      />
-                ))}
-              </div>
-            </section>
-          ) : hasInventory ? (
-            <section>
-              <h2 className="text-xl font-bold text-ink-100 uppercase mb-4">You can make</h2>
-              <div className="py-4">
-                <p className="text-sm text-ink-500">No recipes you can make right now</p>
-                {almostMakeRecipes.length > 0 && (
-                  <p className="text-xs text-ink-500 mt-2">Check out "Almost make" below to see what you're close to making</p>
-                )}
-              </div>
-            </section>
-          ) : null}
-
-          {/* Almost make section - only show if has inventory */}
-          {hasInventory && almostMakeRecipes.length > 0 && (
-            <section>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-ink-100 uppercase">Almost make</h2>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => onNavigate('almostMake')}
-                    className="text-sm text-ink-500 hover:text-ink-300"
-                  >
-                    see all →
-                  </button>
-                </div>
-              </div>
-              <div>
-                {almostMakeRecipes.map(drink => {
-                  const missing = getMissingCount(drink);
-                  return (
-                    <RecipeRow
-                      key={drink.id}
-                      drink={drink}
-                      isKeeper={keepers && keepers.has ? keepers.has(drink.id) : false}
-                      isToTry={isInToTry(drink.id)}
-                      canMake={false}
-                      missingCount={missing}
-                      onClick={() => onSelectDrink(drink)}
-                      onToggleKeeper={() => toggleKeeper(drink.id)}
-                      onToggleToTry={() => toggleToTry(drink.id)}
-                      ingredientsDb={ingredientsDb}
-                      onEdit={drink.source === 'custom' ? (drink) => onEdit?.(drink) : null}
-                      onDelete={drink.source === 'custom' ? (id) => onDelete?.(id) : null}
-                    />
-                  );
-                })}
-              </div>
-            </section>
-          )}
-
-          {/* Navigation list */}
-          <section>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {recipeItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => onNavigate(item.id)}
-                  className="border border-ink-700 p-4 text-left  group"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-transparent group-hover:bg-copper/10 transition-colors">
-                        <Icon name={item.icon} className="w-5 h-5 text-copper" />
-                      </div>
-                      <div>
-                        <h3 className="font-display text-lg text-ink-100 font-normal text-copper transition-colors">
-                          {item.label}
-                        </h3>
-                        <p className="text-xs text-ink-500 mt-0.5">{item.description}</p>
-                      </div>
-                    </div>
-                    {item.count > 0 && (
-                      <span className="text-2xs px-2 py-1  bg-copper/20 text-copper font-medium">
-                        {item.count}
-                      </span>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </section>
         </div>
       );
     };

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'barkeep-cache-v9';
+const CACHE_NAME = 'barkeep-cache-v10';
 const urlsToCache = [
   './',
   './index.html',
