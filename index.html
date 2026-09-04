@@ -678,22 +678,29 @@
     ];
     const BROWSE_LENSES = [
       {
+        id: 'all',
+        label: 'All',
+        eyebrow: 'All recipes',
+        title: 'Every recipe, A–Z.',
+        description: 'Search the full collection or narrow it down with filters.'
+      },
+      {
         id: 'structure',
-        label: 'Structure',
+        label: 'Families',
         eyebrow: 'Family = structure',
         title: 'Start with the balancing logic.',
         description: 'These families describe how a drink works. Learn the architecture first, then move outward into names and moods.'
       },
       {
         id: 'experience',
-        label: 'Experience',
+        label: 'Taste',
         eyebrow: 'Tags = experience',
         title: 'Start with the feeling in the glass.',
         description: 'Use tags when you know what you want to drink but not what it is called yet. They are a doorway into the structure, not a replacement for it.'
       },
       {
         id: 'template',
-        label: 'Template',
+        label: 'Classics',
         eyebrow: 'Template = lineage',
         title: 'Start with the neighborhood.',
         description: 'Templates are recognizable branch points like Negroni, Martini, and Daiquiri. They tell you where a drink comes from.'
@@ -1645,7 +1652,7 @@
       const [filtersExpanded, setFiltersExpanded] = useState(false);
       const [sortBy, setSortBy] = useState('name');
       const [browseMode, setBrowseMode] = useState('recipes'); // 'recipes' or 'ingredients'
-      const [browseLens, setBrowseLens] = useState('structure');
+      const [browseLens, setBrowseLens] = useState('all');
       const [madeCounts, setMadeCounts] = useState({}); // Track how many times each recipe was made
       const [userRecipeNotes, setUserRecipeNotes] = useState({}); // User notes per recipe: { recipeId: "note text" }
       const [showConfirmDelete, setShowConfirmDelete] = useState(null);
@@ -3083,9 +3090,9 @@
         setFilters(buildFilterState());
         setSearchTerm('');
       };
-      const openBrowseWith = ({ mode = 'recipes', lens = 'structure', filters: presetFilters = null } = {}) => {
+      const openBrowseWith = ({ mode = 'recipes', lens = 'all', filters: presetFilters = null } = {}) => {
         setBrowseMode(mode);
-        setBrowseLens(mode === 'ingredients' ? 'structure' : lens);
+        setBrowseLens(mode === 'ingredients' ? 'all' : lens);
         setFilters(presetFilters ? buildFilterState(presetFilters) : buildFilterState());
         setFiltersExpanded(false);
         setSearchTerm('');
@@ -3212,9 +3219,9 @@
       };
 
       const navItems = [
-        { id: 'home', label: 'Mix', icon: 'Home' },
+        { id: 'home', label: 'Home', icon: 'Home' },
+        { id: 'browse', label: 'Recipes', icon: 'BookOpen' },
         { id: 'bars', label: 'Bar', icon: 'Wine' },
-        { id: 'library', label: 'Discover', icon: 'BookOpen' },
         { id: 'settings', label: 'Settings', icon: 'Settings' },
       ];
 
@@ -3241,52 +3248,46 @@
                   )}
                 </div>
               </div>
-              {(view !== 'home' && view !== 'settings' && view !== 'bars' && view !== 'library' && view !== 'manageBars' && view !== 'inventory' && view !== 'browse') && (
-                <nav className="flex gap-1 pb-3">
-                  {navItems.map(item => (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        setView(item.id);
-                        if (item.id === 'browse') {
-                          setSearchTerm('');
-                        }
-                      }}
-                      className={`flex items-center gap-2 px-3 py-2 text-sm ${
-                        view === item.id ? 'text-ink-100 font-bold' : 'text-ink-500 hover:text-ink-300'
-                      }`}
-                    >
-                      <Icon name={item.icon} className="w-4 h-4" />
-                      <span>{item.label}</span>
-                      {item.count > 0 && (
-                        <span className={`text-2xs px-1.5 py-0.5  ${view === item.id ? 'bg-copper/20 text-copper' : 'bg-transparent text-ink-500'}`}>
-                          {item.count}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </nav>
-              )}
+              <nav className="flex gap-1 pb-3" aria-label="Primary navigation">
+                {navItems.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setView(item.id);
+                      if (item.id === 'browse') {
+                        setBrowseMode('recipes');
+                        setBrowseLens('all');
+                        setFilters(buildFilterState());
+                        setFiltersExpanded(false);
+                        setSearchTerm('');
+                      }
+                    }}
+                    className={`flex items-center gap-2 px-3 py-2 text-sm ${
+                      view === item.id || (item.id === 'settings' && view === 'library') ? 'text-ink-100 font-bold border-b border-copper' : 'text-ink-500 hover:text-ink-300'
+                    }`}
+                  >
+                    <Icon name={item.icon} className="w-4 h-4" />
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </nav>
             </div>
           </header>
 
           {/* Mobile Header */}
           <header className="sm:hidden sticky top-0 z-40 bg-ink-950 border-b border-ink-700">
             <div className="flex items-center justify-between px-4 h-14">
-              {(view === 'home' || view === 'settings' || view === 'bars' || view === 'library' || view === 'manageBars' || view === 'inventory') ? (
+              {(view === 'home' || view === 'browse' || view === 'settings' || view === 'bars' || view === 'library' || view === 'manageBars' || view === 'inventory') ? (
                 <h1 className="text-xl font-bold text-ink-100">Barkeep</h1>
               ) : (
                 <button onClick={() => {
-                  // Go back to Home for personalized views, Discover for browse
                   if (view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view === 'ingredients_to_try' || view?.startsWith('collection-')) {
                     setView('home');
-                  } else if (view === 'browse') {
-                    setView('library');
                   } else {
-                    setView('library');
+                    setView('home');
                   }
                 }} className="flex items-center gap-2 text-ink-100">
-                  <span className="text-2xl">←</span> <span className="text-xl font-bold uppercase">{view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view === 'ingredients_to_try' || view?.startsWith('collection-') ? 'Home' : 'Discover'}</span>
+                  <span className="text-2xl">←</span> <span className="text-xl font-bold uppercase">Home</span>
                 </button>
               )}
               <div className="flex items-center gap-1">
@@ -3375,13 +3376,7 @@
                 onClose={() => setView('inventory')}
               />
             ) : view === 'library' ? (
-              <LibraryView
-                onNavigate={(viewId) => setView(viewId)}
-                getAllDrinks={getAllDrinks}
-                ingredientsDb={ingredientsDb}
-                canMakeDrink={canMakeDrink}
-                getActiveBarInventory={getActiveBarInventory}
-                normalizeIngredient={normalizeIngredient}
+              <LearnView
                 onOpenBrowse={openBrowseWith}
                 onOpenTheory={openTheoryManifesto}
               />
@@ -3420,6 +3415,7 @@
                 onImportShared={() => setShowImportShared(true)}
                 unitPreference={unitPreference}
                 onToggleUnit={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
+                onOpenLearn={() => setView('library')}
                 onShowOnboarding={() => setShowOnboarding(true)}
                 onOpenTheory={openTheoryManifesto}
               />
@@ -3512,7 +3508,7 @@
                               onClick={() => {
                                 setBrowseMode(mode.id);
                                 if (mode.id === 'ingredients') {
-                                  setBrowseLens('structure');
+                                  setBrowseLens('all');
                                   setFilters(buildFilterState());
                                   setFiltersExpanded(false);
                                 }
@@ -3541,11 +3537,9 @@
                                 </button>
                               ))}
                             </div>
-                            <div className="border border-ink-800 bg-ink-900/30 p-4">
-                              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/75">{activeBrowseLens.eyebrow}</p>
-                              <p className="mt-2 text-base text-ink-100">{activeBrowseLens.title}</p>
-                              <p className="mt-2 text-sm leading-6 text-ink-500 max-w-3xl">{activeBrowseLens.description}</p>
-                            </div>
+                            {browseLens !== 'all' && (
+                              <p className="text-sm leading-6 text-ink-500 max-w-3xl">{activeBrowseLens.description}</p>
+                            )}
                           </>
                         )}
                       </div>
@@ -3629,6 +3623,43 @@
                                     }`}
                                   >
                                     {tag}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {browseLens === 'all' && (
+                          <>
+                            <div className="space-y-2">
+                              <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Family</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {availableFamilies.map(family => (
+                                  <button
+                                    key={family}
+                                    onClick={() => toggleFilter('families', family)}
+                                    className={`px-2 py-1 text-xs border transition-colors ${
+                                      filters.families.includes(family) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                    }`}
+                                  >
+                                    {family}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-xs uppercase tracking-[0.22em] text-ink-600">Template</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {availableTemplates.map(template => (
+                                  <button
+                                    key={template}
+                                    onClick={() => toggleFilter('templates', template)}
+                                    className={`px-2 py-1 text-xs border transition-colors ${
+                                      filters.templates.includes(template) ? 'border-copper/40 bg-copper/10 text-copper' : 'border-ink-700 text-ink-500 hover:text-ink-300'
+                                    }`}
+                                  >
+                                    {template}
                                   </button>
                                 ))}
                               </div>
@@ -3777,7 +3808,7 @@
                   </div>
                 </div>
 
-                {view === 'browse' && browseMode === 'recipes' && !hasActiveFilters && !searchTerm.trim() && (
+                {view === 'browse' && browseMode === 'recipes' && browseLens !== 'all' && !hasActiveFilters && !searchTerm.trim() && (
                   <section className="mb-6">
                     {browseLens === 'structure' && (
                       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -3859,7 +3890,7 @@
                   <p className="text-xs text-ink-600 tracking-wide uppercase">
                     {displayDrinks.length} {displayDrinks.length === 1 ? 'recipe' : 'recipes'}
                     {view === 'browse' && browseMode === 'recipes' && (
-                      <span className="text-ink-700 ml-1">· {activeBrowseLens.label}</span>
+                      browseLens !== 'all' && <span className="text-ink-700 ml-1">· {activeBrowseLens.label}</span>
                     )}
                     {hasActiveFilters && activeFilterCount > 0 && (
                       <span className="text-copper ml-1">
@@ -3867,8 +3898,8 @@
                       </span>
                     )}
                   </p>
-                  {view === 'browse' && browseMode === 'recipes' && !hasActiveFilters && !searchTerm.trim() && (
-                    <p className="text-xs text-ink-600 hidden sm:block">Choose a family, template, or experience path above.</p>
+                  {view === 'browse' && browseMode === 'recipes' && browseLens === 'all' && !hasActiveFilters && !searchTerm.trim() && (
+                    <p className="text-xs text-ink-600 hidden sm:block">The complete collection.</p>
                   )}
                 </div>
 
@@ -3972,11 +4003,15 @@
                   onClick={() => {
                     setView(item.id);
                     if (item.id === 'browse') {
+                      setBrowseMode('recipes');
+                      setBrowseLens('all');
+                      setFilters(buildFilterState());
+                      setFiltersExpanded(false);
                       setSearchTerm('');
                     }
                   }}
                   className={`relative flex flex-col items-center gap-1 px-4 py-2  transition-colors ${
-                    view === item.id ? 'text-copper' : 'text-ink-500'
+                    view === item.id || (item.id === 'settings' && view === 'library') ? 'text-copper' : 'text-ink-500'
                   }`}
                 >
                   <Icon name={item.icon} className="w-6 h-6" />
@@ -4108,6 +4143,7 @@
       
       const canMakeRecipes = (Array.isArray(getMakeableDrinks?.()) ? getMakeableDrinks() : []).slice(0, 12);
       const almostMakeRecipes = (Array.isArray(getAlmostMakeableDrinks?.()) ? getAlmostMakeableDrinks() : []).slice(0, 5);
+      const hasInventory = activeBar?.inventory && activeBar.inventory.length > 0;
       
       const shortcutItems = [
         { id: 'almostMake', label: 'Almost', count: almostMakeCount, description: '1–2 ingredients away' },
@@ -4115,9 +4151,8 @@
         { id: 'toTry', label: 'Try', count: wantToTryCount, description: 'Your queue' },
         { id: 'collections', label: 'Collections', count: collectionsCount, description: 'Organize recipes' },
         { id: 'custom', label: 'Custom', count: customCount, description: 'Your recipes' },
+        ...(hasInventory ? [{ id: 'gatewayBottles', label: 'Next bottle', count: 0, description: 'Unlock more recipes' }] : []),
       ];
-
-      const hasInventory = activeBar?.inventory && activeBar.inventory.length > 0;
 
       return (
         <div className="space-y-6">
@@ -4265,158 +4300,56 @@
       );
     };
 
-    const LibraryView = ({
-      onNavigate, getAllDrinks, ingredientsDb, canMakeDrink, getActiveBarInventory, normalizeIngredient, onAdd, onOpenBrowse, onOpenTheory
-    }) => {
-      // Calculate gateway bottles
-      const gatewayBottles = useMemo(() => {
-        if (!getAllDrinks || !canMakeDrink || !ingredientsDb || !getActiveBarInventory) return [];
-        
-        const allDrinks = getAllDrinks();
-        const currentInventory = getActiveBarInventory();
-        const invCanonical = new Set(currentInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
-        
-        // Collect all ingredients from recipes that aren't in inventory
-        const ingredientImpact = {};
-        
-        allDrinks.forEach(drink => {
-          // Check if this drink can't be made currently
-          const currentlyCanMake = drink.ingredients?.every(ing => {
-            const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
-            return invCanonical.has(ingCanonical);
-          }) || false;
-          
-          if (!currentlyCanMake && drink.ingredients) {
-            // Find missing ingredients
-            drink.ingredients.forEach(ing => {
-              const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
-              if (!invCanonical.has(ingCanonical)) {
-                // Check if adding this ingredient would make this drink makeable
-                const wouldMake = drink.ingredients.every(ing2 => {
-                  const ing2Canonical = normalizeIngredient(ing2.name, ingredientsDb);
-                  return invCanonical.has(ing2Canonical) || ing2Canonical === ingCanonical;
-                });
-                
-                if (wouldMake) {
-                  const key = ingCanonical;
-                  if (!ingredientImpact[key]) {
-                    ingredientImpact[key] = {
-                      name: ing.name,
-                      canonical: ingCanonical,
-                      recipes: []
-                    };
-                  }
-                  // Avoid duplicate recipes
-                  if (!ingredientImpact[key].recipes.find(r => r.id === drink.id)) {
-                    ingredientImpact[key].recipes.push({
-                      id: drink.id,
-                      name: drink.name
-                    });
-                  }
-                }
-              }
-            });
-          }
-        });
-        
-        // Convert to array and sort by recipe count
-        return Object.values(ingredientImpact)
-          .map(item => ({
-            name: item.name,
-            canonical: item.canonical,
-            count: item.recipes.length,
-            recipes: item.recipes
-          }))
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 20); // Top 20 gateway bottles
-      }, [getAllDrinks, canMakeDrink, ingredientsDb, getActiveBarInventory, normalizeIngredient]);
-      const allRecipes = getAllDrinks ? getAllDrinks() : [];
-      const familyCount = new Set(allRecipes.map(drink => drink.primary_family).filter(Boolean)).size;
-      const templateCount = new Set(allRecipes.flatMap(drink => [drink.primary_template, drink.secondary_template]).filter(Boolean)).size;
-
+    const LearnView = ({ onOpenBrowse, onOpenTheory }) => {
       return (
         <div className="space-y-6">
-          <section className="border border-copper/20 bg-copper/[0.04] p-6 sm:p-8">
-            <p className="text-[0.65rem] uppercase tracking-[0.28em] text-copper/80">The Architecture of the Glass</p>
-            <div className="mt-4 max-w-3xl">
-              <h2 className="font-display text-3xl sm:text-4xl leading-tight text-ink-100">Discover cocktails by how they work.</h2>
-              <p className="mt-4 text-sm sm:text-[0.95rem] leading-7 text-ink-400 max-w-2xl">
-                Family is structure. Template is lineage. Tags are experience. Start with whichever layer you know, then use the others to go deeper.
-              </p>
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3 text-xs uppercase tracking-[0.22em] text-ink-500">
-              <span>{allRecipes.length} recipes</span>
-              <span>{familyCount} families</span>
-              <span>{templateCount} templates</span>
-            </div>
+          <section className="max-w-3xl py-3 sm:py-6">
+            <p className="text-[0.65rem] uppercase tracking-[0.28em] text-copper/80">Learn · The Architecture of the Glass</p>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl leading-tight text-ink-100">The method, when you want it.</h2>
+            <p className="mt-4 text-sm sm:text-[0.95rem] leading-7 text-ink-400 max-w-2xl">
+              You do not need the taxonomy to use Barkeep. Recipes work perfectly well on their own. When you want to understand why drinks relate, these three lenses make the collection easier to read.
+            </p>
           </section>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-3 md:grid-cols-3">
             <button
               onClick={() => onOpenBrowse?.({ mode: 'recipes', lens: 'structure' })}
-              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
+              className="border border-ink-700 p-5 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
             >
-              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Structure first</p>
-              <h3 className="mt-3 font-display text-2xl text-ink-100">Browse the ten families</h3>
-              <p className="mt-3 text-sm text-ink-500 leading-6">Old-Fashioned, Aromatized, Bitter Aromatized, Sour, Daisy, and the rest. Learn the balancing logic before the names.</p>
-            </button>
-
-            <button
-              onClick={() => onOpenBrowse?.({ mode: 'recipes', lens: 'experience' })}
-              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
-            >
-              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Experience first</p>
-              <h3 className="mt-3 font-display text-2xl text-ink-100">Start with the feeling</h3>
-              <p className="mt-3 text-sm text-ink-500 leading-6">Refreshing, spirit-forward, aperitivo, plush, nightcap. Use the experience layer when you know the mood before the drink.</p>
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Family</p>
+              <h3 className="mt-3 font-display text-xl text-ink-100">How it works</h3>
+              <p className="mt-3 text-sm text-ink-500 leading-6">The balancing structure underneath the recipe.</p>
             </button>
 
             <button
               onClick={() => onOpenBrowse?.({ mode: 'recipes', lens: 'template' })}
-              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
+              className="border border-ink-700 p-5 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
             >
-              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Lineage first</p>
-              <h3 className="mt-3 font-display text-2xl text-ink-100">Explore template neighborhoods</h3>
-              <p className="mt-3 text-sm text-ink-500 leading-6">Negroni, Martini, Daiquiri, Margarita, Last Word. Follow the recognizable branch point and see what lives nearby.</p>
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Template</p>
+              <h3 className="mt-3 font-display text-xl text-ink-100">Where it comes from</h3>
+              <p className="mt-3 text-sm text-ink-500 leading-6">The recognizable classic and its close relatives.</p>
             </button>
 
             <button
-              onClick={() => onOpenBrowse?.({ mode: 'ingredients' })}
-              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
+              onClick={() => onOpenBrowse?.({ mode: 'recipes', lens: 'experience' })}
+              className="border border-ink-700 p-5 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
             >
-              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Ingredient atlas</p>
-              <h3 className="mt-3 font-display text-2xl text-ink-100">Browse the bottle shelf</h3>
-              <p className="mt-3 text-sm text-ink-500 leading-6">Move from ingredient to drink, see what each bottle unlocks, and trace structural families through the back bar.</p>
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Experience</p>
+              <h3 className="mt-3 font-display text-xl text-ink-100">How it feels</h3>
+              <p className="mt-3 text-sm text-ink-500 leading-6">Flavor, mood, strength, and occasion.</p>
             </button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-[1.25fr_0.75fr]">
-            <button
-              onClick={() => onNavigate('gatewayBottles')}
-              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Inventory path</p>
-                  <h3 className="mt-3 font-display text-2xl text-ink-100">Gateway bottles</h3>
-                  <p className="mt-3 text-sm text-ink-500 leading-6">See which single ingredient would unlock the most new cocktails from your current bar.</p>
-                </div>
-                {gatewayBottles.length > 0 && (
-                  <span className="text-sm px-3 py-1 bg-copper/20 text-copper font-medium">
-                    {gatewayBottles.length}
-                  </span>
-                )}
-              </div>
-            </button>
-
-            <button
-              onClick={() => onOpenTheory?.()}
-              className="border border-ink-700 p-6 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40"
-            >
-              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Manifesto</p>
-              <h3 className="mt-3 font-display text-2xl text-ink-100">Read the theory</h3>
-              <p className="mt-3 text-sm text-ink-500 leading-6">The full argument for why cocktails should be organized by structure first.</p>
-            </button>
-          </div>
+          <button
+            onClick={() => onOpenTheory?.()}
+            className="w-full border border-ink-700 p-5 text-left transition-colors hover:border-copper/50 hover:bg-ink-900/40 sm:flex sm:items-center sm:justify-between sm:gap-6"
+          >
+            <div>
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-copper/70">Long read</p>
+              <h3 className="mt-2 font-display text-xl text-ink-100">Read the full theory</h3>
+            </div>
+            <p className="mt-3 sm:mt-0 text-sm text-ink-500 leading-6 max-w-xl">The complete argument for structure, lineage, and experience as separate layers.</p>
+          </button>
         </div>
       );
     };
@@ -5251,7 +5184,7 @@
       );
     };
 
-    const SettingsView = ({ onClose, onExport, onImport, unmatchedIngredients, onImportShared, unitPreference, onToggleUnit, onShowOnboarding, onOpenTheory }) => {
+    const SettingsView = ({ onClose, onExport, onImport, unmatchedIngredients, onImportShared, unitPreference, onToggleUnit, onOpenLearn, onShowOnboarding, onOpenTheory }) => {
       const fileRef = useRef(null);
       const [showDebug, setShowDebug] = useState(false);
       const [importMode, setImportMode] = useState('replace');
@@ -5288,6 +5221,15 @@
             <div className="border border-ink-700 p-5">
               <h3 className="font-display text-lg text-ink-100 font-normal mb-4">Learn</h3>
               <div className="space-y-3">
+                <button onClick={onOpenLearn} className="w-full p-4 bg-transparent border border-ink-700 text-left hover:bg-ink-800 hover:border-ink-600 transition-colors group">
+                  <div className="flex items-center gap-3">
+                    <Icon name="GraduationCap" className="w-5 h-5 text-copper" />
+                    <div>
+                      <p className="text-ink-100 font-light text-copper transition-colors">Learn the Cocktail System</p>
+                      <p className="text-xs text-ink-500 mt-0.5">Families, templates, and experience — when you want them</p>
+                    </div>
+                  </div>
+                </button>
                 <button onClick={onShowOnboarding} className="w-full p-4 bg-transparent border border-ink-700 text-left hover:bg-ink-800 hover:border-ink-600 transition-colors group">
                   <div className="flex items-center gap-3">
                     <Icon name="PanelsTopLeft" className="w-5 h-5 text-copper" />
